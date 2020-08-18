@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Navbar from "./components/Navbar";
+import DailyPanel from "./components/DailyPanel";
 
 export const themeContext = React.createContext('dark');
 
@@ -13,29 +13,7 @@ function App() {
                 <Navbar/>
                 <br/>
                 <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-
+                <DailyPanel/>
             </themeContext.Provider>
         </div>
     );

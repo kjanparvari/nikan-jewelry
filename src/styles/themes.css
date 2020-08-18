@@ -1,0 +1,28 @@
+.theme-dark {
+    background-color: #2f3241
+}
+
+.theme-light {
+    background-color: #f8f9fa;
+}
+
+.nav-buttons-fa {
+    font-family: 'B Nazanin', serif;
+    font-size: 20px;
+    text-color: white;
+}
+
+.font-bn {
+    font-family: 'B Nazanin', serif;
+}
+
+
+.member-name {
+    font-family: 'B Nazanin', serif;
+    font-size: 17px;
+}
+
+.member-id {
+    font-size: 13px;
+    color: lightgray;
+}
