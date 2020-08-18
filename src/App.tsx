@@ -7,13 +7,20 @@ export const themeContext = React.createContext('dark');
 
 function App() {
     const [theme, setTheme] = useState('dark');
+    const [chosenPanel, setChosenPanel] = useState('daily');
+    let panel: any;
+    if (chosenPanel === 'daily')
+        panel = <DailyPanel />;
+    else{
+        panel = <div/>
+    }
     return (
         <div className={`App theme-${theme}`}>
             <themeContext.Provider value={theme}>
-                <Navbar/>
+                <Navbar clickHandler={setChosenPanel}/>
                 <br/>
                 <br/>
-                <DailyPanel/>
+                {panel}
             </themeContext.Provider>
         </div>
     );

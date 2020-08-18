@@ -6,21 +6,22 @@ import Tilt from "react-tilt/dist/tilt";
 function UserInfo(props: any) {
     return (
         <React.Fragment>
-            <Tilt className="Tilt container Tilt-inner bg-warning float-right rounded-pill mr-5 pt-2 pb-2"
-                  options={{max: 5}}
-                  style={{height: "12vh", width: "85%"}}>
-                <div className="bg-danger">
+            <Tilt className="Tilt container Tilt-inner bg-warning float-right mr-3 rounded-pill pt-2 pb-2"
+                  options={{max: 2, scale: 1.02}}
+                  style={{height: "12vh", width: "85%", borderRadius: 25, marginTop: "auto", marginBottom: "auto", minHeight: "100px"}}>
+                <div className="bg-danger" style={{marginTop: "1.5%", marginBottom: "auto"}}>
                     <div className="float-right">
-                        <FaUser className="float-right" style={{fontSize: 50, marginTop: "3%"}}/>
+                        <FaUser className="float-right"
+                                style={{fontSize: 50, marginTop: "auto", marginBottom: "auto"}}/>
                         <div className="float-right mr-2">
-                            <div style={{marginTop: "10%", fontSize: 25}}>
+                            <div style={{fontSize: 25, marginTop: "auto", marginBottom: "auto"}}>
                                 {props.name}
                             </div>
                             <div className="float-right text-dark">
                                 #{props.id}
                             </div>
                         </div>
-                        <div className="float-right mr-lg-4" style={{marginTop: "2%"}}>
+                        <div className="float-right mr-lg-4" style={{marginTop: "auto", marginBottom: "auto"}}>
                             <div>
                                 <div className="float-right">:شماره تماس</div>
                                 <div className="float-right mr-2">{props.phone}</div>
@@ -35,10 +36,12 @@ function UserInfo(props: any) {
                             </div>
                         </div>
                     </div>
-                    <button className="btn btn-danger btn-sm float-left mt-4 ml-4" style={{fontSize: 13}}>حذف عضو
-                    </button>
-                    <button className="btn btn-primary btn-sm float-left mt-4" style={{fontSize: 13}}>افزودن معامله
-                    </button>
+                    <div style={{marginTop: "-1", marginBottom: "auto"}}>
+                        <button className="btn btn-danger btn-sm float-left mt-4 ml-4" style={{fontSize: 13}}>حذف عضو
+                        </button>
+                        <button className="btn btn-primary btn-sm float-left mt-4" style={{fontSize: 13}}>افزودن معامله
+                        </button>
+                    </div>
                 </div>
             </Tilt>
         </React.Fragment>

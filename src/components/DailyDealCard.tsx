@@ -6,12 +6,19 @@ function DailyDealCard(props: any) {
     return (
         <div className="bg-light mt-0 justify-content-center"
              style={{borderRadius: 15, width: 300, height: 350, marginLeft: "auto", marginRight: "auto"}}>
-            <div className="mt-2 badge-danger" style={{
-                marginRight: "auto",
-                marginLeft: "auto",
-                borderTopLeftRadius: 15,
-                borderTopRightRadius: 15
-            }}>{year}/{month}/{day}</div>
+                <div className="badge-danger pt-1 pb-1" style={{
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                    borderTopLeftRadius: 15,
+                    borderTopRightRadius: 15
+                }}>{year}/{month}/{day}</div>
+            <div className="">
+                <div className="badge-info float-left" style={{height: "5vh"}}>پول</div>
+                <div>
+                    <div className="float-left bg-dark text-white w-50" style={{}}>ورود</div>
+                    <div className="float-left bg-dark text-white w-50" style={{}}>خروج</div>
+                </div>
+            </div>
             <br/>
             <br/>
             <br/>

@@ -11,7 +11,7 @@ function SideBar(props: any) {
 
     return (
         <div className="container float-right justify-content-center bg-light sidenavigation"
-             style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20}}>
+             style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
             <MDBCol md="12" className=" p-0">
                 <MDBInput hint="Search" type="text" containerClass="mt-0"
                           className="text-center d-flex justify-content-center"/>
