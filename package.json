@@ -17,6 +17,7 @@
     "crypto-js": "^4.0.0",
     "custom-electron-titlebar": "^3.2.3",
     "mdbreact": "^4.27.0",
+    "mkdirp": "^1.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.10.0",
