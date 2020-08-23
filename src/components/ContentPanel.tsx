@@ -1,13 +1,6 @@
 import React from 'react';
 // @ts-ignore
 import {Carousel} from '3d-react-carousal';
-import img1 from "../img/tmp/1.jpg";
-import img2 from "../img/tmp/2.jpg";
-import img3 from "../img/tmp/3.jpg";
-import img4 from "../img/tmp/4.jpg";
-import img5 from "../img/tmp/5.jpg";
-import img6 from "../img/tmp/6.jpg";
-import img7 from "../img/tmp/7.jpg";
 import {brotliCompress} from "zlib";
 import "../styles/themes.css"
 // @ts-ignore
@@ -32,24 +25,23 @@ const sampleDeal = {
 
 function ContentPanel(props: any) {
     let slides: any = [
-        <img src={img1} alt="1"/>,
-        <img src={img2} alt="2"/>,
-        <img src={img3} alt="3"/>,
-        <img src={img4} alt="4"/>,
-        <img src={img5} alt="5"/>,
-        <img src={img6} alt="6"/>,
-        <img src={img7} alt="7"/>
+        <DailyDealCard deal={sampleDeal}/>,
+        <DailyDealCard deal={sampleDeal}/>,
+        <DailyDealCard deal={sampleDeal}/>,
+        <DailyDealCard deal={sampleDeal}/>,
+        <DailyDealCard deal={sampleDeal}/>,
+        <DailyDealCard deal={sampleDeal}/>,
+        <DailyDealCard deal={sampleDeal}/>,
     ];
-    const {id, phone, name, oMoney, oGold} = props.chosenPerson;
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <UserInfo id={id} phone={phone} name={name} oMoney={oMoney} oGold={oGold}/>
+            <UserInfo person={props.chosenPerson}/>
             <div className="container theme-dark float-right rounded" style={{width: "100%"}}>
                 <br/>
                 <br/>
                 <br/>
                 <DailyDealCard deal={sampleDeal}/>
-                {/*<Carousel slides={slides} autoplay={false} interval={1000}/>*/}
+                {/*<Carousel slides={slides} auxtoplay={true} interval={2000} />*/}
             </div>
         </div>
     );

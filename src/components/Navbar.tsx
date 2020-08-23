@@ -22,27 +22,27 @@ function Navbar(props: any) {
 
                 <div className="collapse navbar-collapse justify-content-center mt-4" id="navbarNavAltMarkup">
                     <div className="navbar-nav ">
-                        <Tilt className="Tilt mr-3" options={{max: 30}} style={{height: 40, width: 90}}>
+                        <Tilt className="Tilt mr-3" options={{max: 30}} style={{height: 60, width: 90}}>
                             <a className="nav-link nav-buttons-fa text-white theme-dark"
                                onClick={() => navButtonHandler("setting")}>تنظیمات</a>
                         </Tilt>
-                        <Tilt className="Tilt ml-4" options={{max: 30}} style={{height: 40, width: 100}}>
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 100}}>
                             <a className="nav-link nav-buttons-fa text-white theme-dark"
                                onClick={() => navButtonHandler("owing")}>امانی بازار</a>
                         </Tilt>
-                        <Tilt className="Tilt ml-4" options={{max: 30}} style={{height: 40, width: 70}}>
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 70}}>
                             <a className="nav-link nav-buttons-fa text-white theme-dark"
                                onClick={() => navButtonHandler("melt")}>آبشده</a>
                         </Tilt>
-                        <Tilt className="Tilt ml-4" options={{max: 30}} style={{height: 40, width: 150}}>
-                            <a className="nav-link nav-buttons-fa text-white theme-dark" aria-disabled="true"
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 150}}>
+                            <a className="nav-link nav-buttons-fa text-white theme-dark pr-0 pl-0" aria-disabled="true"
                                onClick={() => navButtonHandler("daily")}>خرید و
                                 فروش
                                 روزانه
                             </a>
                         </Tilt>
-                        <Tilt className="Tilt" options={{max: 30}} style={{height: 40, width: 150}}>
-                            <a className="nav-link active nav-buttons-fa text-white Tilt-inner ml-4 theme-dark"
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 150}}>
+                            <a className="nav-link active nav-buttons-fa text-white Tilt-inner theme-dark"
                                onClick={() => navButtonHandler("home")}>صفحه
                                 اصلی <span
                                     className="sr-only">(current)</span></a>
