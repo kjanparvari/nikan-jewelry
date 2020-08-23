@@ -10,7 +10,7 @@ function DailyPanel(props: any) {
         <div className="">
             <SideBar choosePerson={(person: any) => {
                 setChosenPerson(() => person)
-            }} />
+            }}/>
             {/*<div className="text-white" style={{fontSize: 25}}>{updateVal}</div>*/}
             {chosenPerson !== null ? <ContentPanel
                     chosenPerson={chosenPerson}/>

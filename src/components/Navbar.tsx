@@ -16,8 +16,12 @@ function Navbar(props: any) {
         <React.Fragment>
             <nav className={`navbar navbar-expand-lg navbar-${theme} text-white theme-${theme}`}
                  style={{boxShadow: "none"}}>
-                <Tilt className="Tilt" options={{max: 30}} style={{height: 80, width: 70}}>
-                    <img className="navbar-brand Tilt-inner mt-3 ml-4" src={logo} style={{width: 80, height: 70}}/>
+                <Tilt className="Tilt" options={{max: 10, scale: 1.05}} style={{height: 80, width: 70}}>
+                    {/*<img className="navbar-brand Tilt-inner mt-3 ml-4" src={logo} style={{width: 80, height: 70}}/>*/}
+                    <div
+                        className="p-3 Tilt-inner mt-4 ml-5 badge badge-light    text-black-50  "
+                        style={{fontSize: 15, paddingTop: 50, paddingBottom: 50}}>NIKAN
+                    </div>
                 </Tilt>
 
                 <div className="collapse navbar-collapse justify-content-center mt-4" id="navbarNavAltMarkup">
@@ -26,22 +30,22 @@ function Navbar(props: any) {
                             <a className="nav-link nav-buttons-fa text-white theme-dark"
                                onClick={() => navButtonHandler("setting")}>تنظیمات</a>
                         </Tilt>
-                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 100}}>
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50, height: 40, width: 100}}>
                             <a className="nav-link nav-buttons-fa text-white theme-dark"
                                onClick={() => navButtonHandler("owing")}>امانی بازار</a>
                         </Tilt>
-                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 70}}>
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50, height: 40, width: 70}}>
                             <a className="nav-link nav-buttons-fa text-white theme-dark"
                                onClick={() => navButtonHandler("melt")}>آبشده</a>
                         </Tilt>
-                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 150}}>
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50, height: 40, width: 150}}>
                             <a className="nav-link nav-buttons-fa text-white theme-dark pr-0 pl-0" aria-disabled="true"
                                onClick={() => navButtonHandler("daily")}>خرید و
                                 فروش
                                 روزانه
                             </a>
                         </Tilt>
-                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50,height: 40, width: 150}}>
+                        <Tilt className="Tilt" options={{max: 30}} style={{marginLeft: 50, height: 40, width: 150}}>
                             <a className="nav-link active nav-buttons-fa text-white Tilt-inner theme-dark"
                                onClick={() => navButtonHandler("home")}>صفحه
                                 اصلی <span
@@ -54,4 +58,5 @@ function Navbar(props: any) {
         </React.Fragment>
     );
 }
+
 export default Navbar;

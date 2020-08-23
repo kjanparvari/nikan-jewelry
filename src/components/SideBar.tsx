@@ -41,10 +41,7 @@ function SideBar(props: any) {
             oMoney: 0,
             oGold: 0
         };
-        const memberDeals = {
-            id: maxId,
-            deals: []
-        };
+        const memberDeals: any[] = [];
         const newMembers: any[] = [];
         newMembers.push(...list, newMember);
         localStorage.setItem("D:"+maxId, JSON.stringify(memberDeals));
@@ -126,7 +123,7 @@ function SideBar(props: any) {
                             <input placeholder='First Name' ref={nameRef}/>
                         </Form.Field>
                         <Form.Field>
-                            <label className="float-left">شماره تلقن :</label>
+                            <label className="float-left">شماره تلفن :</label>
                             <input placeholder='Phone Number' ref={phoneRef}/>
                         </Form.Field>
                         <Button type='submit' onClick={addMemberHandler}>Submit</Button>
