@@ -89,17 +89,6 @@ function SideBar(props: any) {
                  style={{flex: 1, overflowY: "scroll", height: "80%", overflowX: "hidden"}}>
                 <div className="mt-1"/>
                 {membersTiles}
-                {/*<MemberTile person={{name: "علی", id: "1"}}/>*/}
-                {/*<MemberTile person={{name: "محمد", id: "2"}}/>*/}
-                {/*<MemberTile person={{name: "حسن", id: "3"}}/>*/}
-                {/*<MemberTile person={{name: "حسین", id: "4"}}/>*/}
-                {/*<MemberTile person={{name: "کامیار جان پروری", id: "5"}}/>*/}
-                {/*<MemberTile person={{name: "سجاد حسنی", id: "6"}}/>*/}
-                {/*<MemberTile*/}
-                {/*    person={{name: "یبتنیباتیسابنیتبکشسیتبنسیتابتنسیابنیستبستبنیباتیابتیابیستبنتیسنبتی", id: "7"}}/>*/}
-                {/*<MemberTile person={{name: "پوریا", id: "8"}}/>*/}
-                {/*<MemberTile person={{name: "جواد", id: "9"}}/>*/}
-                {/*<MemberTile person={{name: "حسین بادامی", id: "10"}}/>*/}
             </div>
             <button className="btn btn-success" onClick={openModal}
                     style={{borderRadius: 7, paddingLeft: "10%", paddingRight: "10%", marginTop: "5%"}}>افزودن عضو جدید
@@ -111,9 +100,6 @@ function SideBar(props: any) {
                 className=""
             >
                 <div className="container">
-                    {/*<a className="float-right" onClick={closeModal} style={{width: "10%"}}>*/}
-                    {/*    X*/}
-                    {/*</a>*/}
                     <a className="float-right"><GrClose onClick={closeModal}/></a>
                     <br/>
                     <br/>

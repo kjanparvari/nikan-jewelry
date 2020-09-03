@@ -31,6 +31,78 @@ function UserInfo(props: any) {
     const complexRef = useRef(null);
     const [open, setOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
+    const updateComplexLabel = () => {
+        let result: number = 0;
+        // @ts-ignore
+        let ojrat: number = parseFloat(ojratRef.current.value);
+        // @ts-ignore
+        let fi: number = parseFloat(fiRef.current.value);
+        // @ts-ignore
+        let profit: number = 1.0 + parseFloat(profitRef.current.value) / 100;
+
+        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
+            result = 0;
+        else
+            result = (ojrat + fi) * profit;
+        // @ts-ignore
+        complexRef.current.value = result;
+    };
+    const addDeal = () => {
+        // @ts-ignore
+        const pageNumber = parseInt(pageRef.current.value);
+        // @ts-ignore
+        const moneyIn = parseInt(moneyInRef.current.value);
+        // @ts-ignore
+        const moneyOut = parseInt(moneyOutRef.current.value);
+        // @ts-ignore
+        const goldIn = parseInt(goldInRef.current.value);
+        // @ts-ignore
+        const goldOut = parseInt(goldOutRef.current.value);
+        // @ts-ignore
+        const ojrat = parseInt(ojratRef.current.value);
+        // @ts-ignore
+        const fi = parseInt(fiRef.current.value);
+        // @ts-ignore
+        const profit = parseInt(profitRef.current.value);
+        const key = "D:" + props.person.id;
+        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
+            return;
+        } else {
+            let p: any = localStorage.getItem(key);
+            if (p === null || p === "" || p === undefined) {
+                p = {
+                    maxId: 0,
+                    list: []
+                }
+            } else {
+                console.log("here");
+                p = JSON.parse(p);
+            }
+            const maxId = (parseInt(p.maxId) + 1).toString();
+            const val = {
+                id: maxId,
+                date: selectedDay,
+                pageNumber: pageNumber,
+                moneyIn: moneyIn,
+                moneyOut: moneyOut,
+                goldIn: goldIn,
+                goldOut: goldOut,
+                complex: {
+                    ojrat: ojrat,
+                    fi: fi,
+                    profit: profit
+                }
+            };
+            p.maxId = maxId;
+            p.list.push(val);
+            p = JSON.stringify(p);
+            console.log(p);
+            localStorage.setItem(key, p);
+            closeModal();
+            // console.log(JSON.stringify(val));
+            // localStorage.setItem(key, JSON.stringify(val));
+        }
+    };
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
     const {id, name, phone, oGold, oMoney} = props.person;
@@ -148,7 +220,6 @@ function UserInfo(props: any) {
                                 inputPlaceholder="Select a day"
                                 shouldHighlightWeekends
                                 locale={"fa"}
-
                             />
                             <label className="float-left text-left" style={{marginLeft: 100}}>شماره صفحه :</label>
                             <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
@@ -163,24 +234,30 @@ function UserInfo(props: any) {
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">پول :</label>
-                            <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="ورود" ref={moneyInRef}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
                                    placeholder='خروج' ref={moneyOutRef}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">قیمت هر گرم :</label>
-                            <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "15%"}}
-                                   placeholder="اجرت" ref={ojratRef}/><GrAdd style={{marginTop: 10}}/>
-                            <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "15%"}}
-                                   placeholder='فی تابلو' ref={fiRef}/><GrAdd style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
-                                   style={{width: "11%"}} placeholder='درصد سود' ref={profitRef}/><FaEquals
+                            <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
+                                   placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}/><GrAdd
                             style={{marginTop: 10}}/>
-                            <input className="ml-1 mr-1 text-center" style={{width: "15%"}} value={0} readOnly={true}
+                            <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
+                                   placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}/><GrAdd
+                            style={{marginTop: 10}}/>
+                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
+                                   style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
+                                   ref={profitRef}/><FaEquals
+                            style={{marginTop: 10}}/>
+                            <input className="ml-1 mr-1 text-center" style={{width: "17%"}} value={0}
+                                   readOnly={true}
                                    ref={complexRef}/>
                         </Form.Group>
-                        <Button type='submit'>Submit</Button>
+                        <Button type='submit'
+                                // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
+                                onClick={addDeal}>Submit</Button>
                     </Form>
                 </div>
             </Popup>

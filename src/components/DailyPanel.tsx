@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import SideBar from "./SideBar";
-import ContentPanel from "./ContentPanel";
+import DailyContentPanel from "./DailyContentPanel";
 // @ts-ignore
 import Tilt from 'react-tilt/dist/tilt.js';
 
@@ -12,7 +12,7 @@ function DailyPanel(props: any) {
                 setChosenPerson(() => person)
             }}/>
             {/*<div className="text-white" style={{fontSize: 25}}>{updateVal}</div>*/}
-            {chosenPerson !== null ? <ContentPanel
+            {chosenPerson !== null ? <DailyContentPanel
                     chosenPerson={chosenPerson}/>
                 : <div/>}
         </div>
