@@ -1,9 +1,11 @@
 .theme-dark {
-    background-color: #2f3241
+    background-color: #2f3241;
+    color: white;
 }
 
 .theme-light {
     background-color: #f8f9fa;
+    color: black;
 }
 
 .nav-buttons-fa {

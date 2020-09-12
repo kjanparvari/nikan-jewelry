@@ -8,8 +8,14 @@ function HomePanel(props: any) {
     let p: any = localStorage.getItem("home");
     if (p === null || p === "" || p === undefined) {
         p = {
-            money: 0,
-            gold: 0
+            money: {
+                base: 0,
+                offset: 0
+            },
+            gold: {
+                base: 0,
+                offset: 0
+            }
         };
         localStorage.setItem("home", JSON.stringify(p));
     } else p = JSON.parse(p);
@@ -33,7 +39,7 @@ function HomePanel(props: any) {
                         <br/>
                         <br/>
                         <div className="mt-3 bold w-100"
-                             style={{marginLeft: "auto", marginRight: "auto", fontSize: 35}}>{p.gold}</div>
+                             style={{marginLeft: "auto", marginRight: "auto", fontSize: 35}}>{p.gold.base + p.gold.offset}</div>
                         <br/>
                         <br/>
                         <br/>
@@ -49,7 +55,7 @@ function HomePanel(props: any) {
                         <br/>
                         <br/>
                         <div className="mt-3 bold w-100"
-                             style={{marginLeft: "auto", marginRight: "auto", fontSize: 35}}>{p.money}</div>
+                             style={{marginLeft: "auto", marginRight: "auto", fontSize: 35}}>{p.money.base + p.money.offset}</div>
                         <br/>
                         <br/>
                         <br/>

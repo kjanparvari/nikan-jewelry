@@ -7,7 +7,13 @@ import HomePanel from "./components/HomePanel";
 export const themeContext = React.createContext('dark');
 
 function App() {
-    const [theme, setTheme] = useState('dark');
+    let initialTheme = localStorage.getItem('theme');
+    if (initialTheme === null || initialTheme === undefined || initialTheme === "") {
+        initialTheme = "dark";
+        localStorage.setItem("theme", "dark");
+    }
+    initialTheme = "light";
+    const [theme, setTheme] = useState(initialTheme);
     const [chosenPanel, setChosenPanel] = useState('daily');
     let panel: any;
     if (chosenPanel === 'daily')

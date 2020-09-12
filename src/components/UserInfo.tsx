@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {FaUser} from "react-icons/fa";
 // @ts-ignore
 import Tilt from "react-tilt/dist/tilt";
@@ -10,8 +10,21 @@ import Popup from 'reactjs-popup';
 import {Button, Form} from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
+import {serialize} from "v8";
+import {themeContext} from "../App";
+
+const changeView = (view: string, setView: any) => {
+    console.log(view);
+    if (view === "card")
+        setView(() => "calender");
+    else if (view === "calender")
+        setView(() => "table");
+    else if (view === "table")
+        setView(() => "card");
+};
 
 function UserInfo(props: any) {
+    const theme = useContext(themeContext);
     const deleteHandler = (id: string) => {
         const {maxId, list} = JSON.parse(localStorage.getItem("members") as string);
         const newMembers = list.filter((member: any) => {
@@ -150,14 +163,14 @@ function UserInfo(props: any) {
                         {/*</button>*/}
 
                         <Popup
-                            trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
+                                trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}
-                            position="right top"
-                            on="hover"
-                            closeOnDocumentClick={true}
-                            mouseLeaveDelay={200}
-                            mouseEnterDelay={0}
-                            contentStyle={{
+                                position="right top"
+                                on="hover"
+                                closeOnDocumentClick={true}
+                                mouseLeaveDelay={200}
+                                mouseEnterDelay={0}
+                                contentStyle={{
                                 padding: "2px",
                                 paddingRight: "4px",
                                 border: "none",
@@ -166,9 +179,9 @@ function UserInfo(props: any) {
                                 backgroundColor: "#343a40",
                                 width: 150
                             }}
-                            arrow={false}
-                        >
-                            <div className="mr-3" style={{
+                                arrow={false}
+                                >
+                                <div className="mr-3" style={{
                                 display: "flex",
                                 flexDirection: "column",
                                 width: "95%",
@@ -193,7 +206,8 @@ function UserInfo(props: any) {
                 <br/>
                 <br/>
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
-                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}><HiViewGrid style={{margin: "auto"}}/></a>
+                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}} onClick={() => changeView(props.view, props.setView)}><HiViewGrid
+                    style={{margin: "auto"}}/></a>
             </div>
             <Popup
                 open={open}
@@ -256,7 +270,7 @@ function UserInfo(props: any) {
                                    ref={complexRef}/>
                         </Form.Group>
                         <Button type='submit'
-                                // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
+                            // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={addDeal}>Submit</Button>
                     </Form>
                 </div>

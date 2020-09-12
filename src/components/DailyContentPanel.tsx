@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, {useContext, useEffect, useReducer, useState} from 'react';
 // @ts-ignore
 import {Carousel} from '3d-react-carousal';
 import {brotliCompress} from "zlib";
@@ -11,6 +11,7 @@ import UserInfo from "./UserInfo";
 import DailyCarousel from "./DailyCarousel";
 import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
+import {themeContext} from "../App";
 
 
 const sampleDeal = {
@@ -38,9 +39,10 @@ const getSlides = (deals: any[]) => {
 };
 
 function DailyContentPanel(props: any) {
+    const theme = useContext(themeContext);
     const sampleCard = <DailyDealCard deal={sampleDeal}/>;
     const [deals, setDeals] = useState([]);
-    const [view, setView] = useState(props.view);
+    const [view, setView] = useState("table");
     useEffect(() => {
         const key = "D:" + props.chosenPerson.id;
         if (key === undefined || key === null || key === "D:") return;
@@ -61,14 +63,13 @@ function DailyContentPanel(props: any) {
             result = <DailyDealsCalender/>;
             break;
         case "table":
-            result = <DailyDealsTable/>;
+            result = <DailyDealsTable deals={deals}/>;
             break;
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <UserInfo person={props.chosenPerson}/>
-            <div className="container theme-dark float-right rounded mr-3" style={{width: "80%"}}>
-                <br/>
+            <UserInfo view={view} setView={setView} person={props.chosenPerson}/>
+            <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "80%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}
                 {/*<Carousel slides={getSlides(deals)} auxtoplay={false} interval={2000}/>*/}
