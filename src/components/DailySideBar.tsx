@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useRef, useState} from 'react';
+import React, {useContext, useEffect, useReducer, useRef, useState} from 'react';
 import 'semantic-ui-css/semantic.min.css'
 import '../styles/search.css'
 // @ts-ignore
@@ -9,6 +9,7 @@ import MemberTile from "./MemberTile";
 import Popup from 'reactjs-popup';
 import {Form, Button} from 'semantic-ui-react';
 import {GrClose} from 'react-icons/gr';
+import {themeContext} from "../App";;
 
 const retrieveMembers = () => {
     const mems = localStorage.getItem("members");
@@ -25,7 +26,12 @@ const retrieveMembers = () => {
     }
 };
 
-function SideBar(props: any) {
+function DailySideBar(props: any) {
+    const theme = useContext(themeContext);
+    const oTheme = (theme: string) => {
+        if (theme === "light") return "dark";
+        else return "light";
+    };
     const addMemberHandler = () => {
         let {maxId, list} = retrieveMembers();
         // if (oldMembers === undefined) oldMembers = [];
@@ -79,7 +85,7 @@ function SideBar(props: any) {
     });
     console.log(localStorage.getItem("members"));
     return (
-        <div className="container float-right justify-content-center bg-light sidenavigation"
+        <div className={`container float-right justify-content-center theme-light sidenavigation`}
              style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
             <MDBCol md="12" className=" p-0">
                 <MDBInput hint="Search" type="text" containerClass="mt-0"
@@ -120,4 +126,4 @@ function SideBar(props: any) {
     );
 }
 
-export default SideBar;
+export default DailySideBar;

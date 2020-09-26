@@ -23,7 +23,7 @@ const changeView = (view: string, setView: any) => {
         setView(() => "card");
 };
 
-function UserInfo(props: any) {
+function DailyUserInfo(props: any) {
     const theme = useContext(themeContext);
     const deleteHandler = (id: string) => {
         const {maxId, list} = JSON.parse(localStorage.getItem("members") as string);
@@ -279,4 +279,4 @@ function UserInfo(props: any) {
     );
 }
 
-export default UserInfo;
+export default DailyUserInfo;

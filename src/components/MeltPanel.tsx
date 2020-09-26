@@ -1,24 +1,24 @@
 import React, {useContext, useState} from 'react';
+import {themeContext} from "../App";
 import DailySideBar from "./DailySideBar";
 import DailyContentPanel from "./DailyContentPanel";
-import {themeContext} from "../App";
-// @ts-ignore
-import Tilt from 'react-tilt/dist/tilt.js';
+import MeltSideBar from "./MeltSideBar";
+import MeltContentPanel from "./MeltContentPanel";
 
-function DailyPanel(props: any) {
+function MeltPanel(props: any) {
     const [chosenPerson, setChosenPerson] = useState(null);
     const theme = useContext(themeContext);
     return (
         <div className="theme-light">
-            <DailySideBar choosePerson={(person: any) => {
+            <MeltSideBar choosePerson={(person: any) => {
                 setChosenPerson(() => person)
             }}/>
             {/*<div className="text-white" style={{fontSize: 25}}>{updateVal}</div>*/}
-            {chosenPerson !== null ? <DailyContentPanel
+            {chosenPerson !== null ? <MeltContentPanel
                     chosenPerson={chosenPerson}/>
                 : <div/>}
         </div>
     );
 }
 
-export default DailyPanel;
+export default MeltPanel;

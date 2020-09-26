@@ -7,7 +7,7 @@ import "../styles/themes.css"
 import Tilt from "react-tilt/dist/tilt";
 import {FaUser} from "react-icons/fa";  // Font Awesome
 import DailyDealCard from "./DailyDealCard";
-import UserInfo from "./UserInfo";
+import DailyUserInfo from "./DailyUserInfo";
 import DailyCarousel from "./DailyCarousel";
 import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
@@ -68,7 +68,7 @@ function DailyContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <UserInfo view={view} setView={setView} person={props.chosenPerson}/>
+            <DailyUserInfo view={view} setView={setView} person={props.chosenPerson}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "80%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}
