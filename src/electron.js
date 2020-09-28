@@ -18,8 +18,8 @@ function createWindow() {
     const h = height * 5 / 6;
     console.log(w);
     mainWindow = new BrowserWindow({
-        width: w,
-        height: h,
+        minWidth: 1280,
+        minHeight: 720,
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')

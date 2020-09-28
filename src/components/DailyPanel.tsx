@@ -5,8 +5,9 @@ import {themeContext} from "../App";
 // @ts-ignore
 import Tilt from 'react-tilt/dist/tilt.js';
 
-function DailyPanel(props: any) {
-    const [chosenPerson, setChosenPerson] = useState(null);
+function DailyPanel({defaultPerson}: any) {
+    localStorage.setItem("last", "daily");
+    const [chosenPerson, setChosenPerson] = useState(defaultPerson);
     const theme = useContext(themeContext);
     return (
         <div className="theme-light">

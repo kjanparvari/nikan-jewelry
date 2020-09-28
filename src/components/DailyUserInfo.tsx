@@ -12,6 +12,7 @@ import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
 import {serialize} from "v8";
 import {themeContext} from "../App";
+import {offsetContext} from "../App";
 
 const changeView = (view: string, setView: any) => {
     console.log(view);
@@ -25,6 +26,7 @@ const changeView = (view: string, setView: any) => {
 
 function DailyUserInfo(props: any) {
     const theme = useContext(themeContext);
+    const offset = useContext(offsetContext);
     const deleteHandler = (id: string) => {
         const {maxId, list} = JSON.parse(localStorage.getItem("members") as string);
         const newMembers = list.filter((member: any) => {
@@ -111,6 +113,8 @@ function DailyUserInfo(props: any) {
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
+            offset.changeGold(goldIn - goldOut);
+            offset.changeMoney(moneyIn - moneyOut);
             closeModal();
             // console.log(JSON.stringify(val));
             // localStorage.setItem(key, JSON.stringify(val));

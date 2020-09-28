@@ -9,12 +9,13 @@ import MemberTile from "./MemberTile";
 import Popup from 'reactjs-popup';
 import {Form, Button} from 'semantic-ui-react';
 import {GrClose} from 'react-icons/gr';
-import {themeContext} from "../App";;
+import {themeContext} from "../App";
+
 
 const retrieveMembers = () => {
-    const mems = localStorage.getItem("members");
+    const mems = localStorage.getItem("daily-members");
     if (mems === null) {
-        localStorage.setItem("members", JSON.stringify({maxId: "0", list: []}));
+        localStorage.setItem("daily-members", JSON.stringify({maxId: "0", list: []}));
         return {maxId: "0", list: []};
     } else {
         if (JSON.stringify(JSON.parse(mems).list) === "[]") {
@@ -28,10 +29,11 @@ const retrieveMembers = () => {
 
 function DailySideBar(props: any) {
     const theme = useContext(themeContext);
-    const oTheme = (theme: string) => {
-        if (theme === "light") return "dark";
-        else return "light";
-    };
+    let oTheme;
+    if (theme === "light") oTheme = "dark";
+    else oTheme = "light";
+    let searchFont;
+    if (theme === "light") searchFont = "text-white"; else searchFont = "";
     const addMemberHandler = () => {
         let {maxId, list} = retrieveMembers();
         // if (oldMembers === undefined) oldMembers = [];
@@ -47,11 +49,10 @@ function DailySideBar(props: any) {
             oMoney: 0,
             oGold: 0
         };
-        const memberDeals: any[] = [];
         const newMembers: any[] = [];
         newMembers.push(...list, newMember);
-        localStorage.setItem("D:"+maxId, JSON.stringify(memberDeals));
-        localStorage.setItem("members", JSON.stringify({maxId: maxId, list: newMembers}));
+        localStorage.setItem("D:" + maxId, JSON.stringify({maxId: 0, list: []}));
+        localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
         setMembers(() => {
             return newMembers
         });
@@ -83,13 +84,13 @@ function DailySideBar(props: any) {
     const membersTiles = members.map((member: any) => {
         return <MemberTile key={member.id} person={member} clickHandler={props.choosePerson}/>
     });
-    console.log(localStorage.getItem("members"));
+    console.log(localStorage.getItem("daily-members"));
     return (
-        <div className={`container float-right justify-content-center theme-light sidenavigation`}
+        <div className={`container float-right justify-content-center theme-${oTheme} sidenavigation`}
              style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
             <MDBCol md="12" className=" p-0">
                 <MDBInput hint="Search" type="text" containerClass="mt-0"
-                          className="text-center d-flex justify-content-center" onChange={searchHandler}/>
+                          className={`text-center d-flex justify-content-center ${searchFont}`} onChange={searchHandler}/>
             </MDBCol>
             <div className="mb-0 justify-content-center text-center"
                  style={{flex: 1, overflowY: "scroll", height: "80%", overflowX: "hidden"}}>

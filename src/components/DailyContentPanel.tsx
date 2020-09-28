@@ -13,7 +13,35 @@ import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
 import {themeContext} from "../App";
 
+const changeOMoney = (amount: number, id: number) => {
+    const m = localStorage.getItem("daily-members");
+    let mems: [];
+    if (m !== null){
+        mems = JSON.parse(m).list;
+        for (let i in mems) {
+            //@ts-ignore
+            if (parseInt(mems[i].id) === id){
+                //@ts-ignore
+                mems[i].oMoney += amount;
+            }
+        }
+    }
+};
 
+const changeOGold = (amount: number, id: number) => {
+    const m = localStorage.getItem("daily-members");
+    let mems: [];
+    if (m !== null){
+        mems = JSON.parse(m).list;
+        for (let i in mems) {
+            //@ts-ignore
+            if (parseInt(mems[i].id) === id){
+                //@ts-ignore
+                mems[i].oGold += amount;
+            }
+        }
+    }
+};
 const sampleDeal = {
     date: {
         year: 1397,
@@ -45,6 +73,7 @@ function DailyContentPanel(props: any) {
     const [view, setView] = useState("table");
     useEffect(() => {
         const key = "D:" + props.chosenPerson.id;
+        localStorage.setItem("last", key);
         if (key === undefined || key === null || key === "D:") return;
         const p = localStorage.getItem(key);
         console.log("p:");
@@ -73,10 +102,11 @@ function DailyContentPanel(props: any) {
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}
                 {/*<Carousel slides={getSlides(deals)} auxtoplay={false} interval={2000}/>*/}
-                {deals.length === 0 ? <div/> : result}
+                {deals && deals.length === 0 ? <div/> : result}
             </div>
         </div>
     );
 }
+
 //@ts-ignore
 export default DailyContentPanel;

@@ -10,7 +10,7 @@ const DailyDealsTable = ({deals}: any) => {
     return (
         <div>
             <Table
-                style={{borderRadius: 10}}
+                style={{borderRadius: 10, color: "black"}}
                 height={400}
                 data={deals}
                 defaultExpandAllRows
@@ -21,7 +21,7 @@ const DailyDealsTable = ({deals}: any) => {
                 onRowContextMenu={(data, event) => {
                     // alert(JSON.stringify(data))
                     return (
-                        <div>
+                        <div className="bg-success">
                             <br/>
                             <br/>
                             <br/>
