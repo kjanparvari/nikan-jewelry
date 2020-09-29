@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import DatePicker, {Calendar} from 'react-modern-calendar-datepicker';
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import Popup from "reactjs-popup";
-import '../styles/calendar.css';
+import '../../styles/calendar.css';
 
 function DailyDealsCalender({deals}: any) {
     const preselectedDays = [

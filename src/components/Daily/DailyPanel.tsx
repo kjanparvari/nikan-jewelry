@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import DailySideBar from "./DailySideBar";
 import DailyContentPanel from "./DailyContentPanel";
-import {themeContext} from "../App";
+import {themeContext} from "../../App";
 // @ts-ignore
 import Tilt from 'react-tilt/dist/tilt.js';
 

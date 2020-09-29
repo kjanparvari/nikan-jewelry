@@ -11,8 +11,8 @@ import {Button, Form} from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
 import {serialize} from "v8";
-import {themeContext} from "../App";
-import {offsetContext} from "../App";
+import {themeContext} from "../../App";
+import {offsetContext} from "../../App";
 
 const getName = (id: number) => {
     const m = localStorage.getItem("daily-members");

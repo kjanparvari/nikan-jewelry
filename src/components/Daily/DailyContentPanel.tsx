@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useReducer, useState} from 'react';
 // @ts-ignore
 import {Carousel} from '3d-react-carousal';
 import {brotliCompress} from "zlib";
-import "../styles/themes.css"
+import "../../styles/themes.css"
 // @ts-ignore
 import Tilt from "react-tilt/dist/tilt";
 import {FaUser} from "react-icons/fa";  // Font Awesome
@@ -11,7 +11,7 @@ import DailyUserInfo from "./DailyUserInfo";
 import DailyCarousel from "./DailyCarousel";
 import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
-import {themeContext} from "../App";
+import {themeContext} from "../../App";
 
 const changeOMoney = (amount: number, id: number) => {
     const m = localStorage.getItem("daily-members");

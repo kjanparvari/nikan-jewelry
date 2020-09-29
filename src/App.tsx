@@ -1,10 +1,10 @@
 import React, {createContext, useEffect, useState} from 'react';
 import './App.css';
 import Navbar from "./components/Navbar";
-import DailyPanel from "./components/DailyPanel";
+import DailyPanel from "./components/Daily/DailyPanel";
 import HomePanel from "./components/HomePanel";
 import SettingPanel from "./components/SettingPanel";
-import MeltPanel from "./components/MeltPanel";
+import MeltPanel from "./components/Melt/MeltPanel";
 import LockPanel from "./components/LockPanel";
 
 export const themeContext = React.createContext('dark');
@@ -64,7 +64,7 @@ const getLastPanel = () => {
 
         } else if (c === "M") {
 
-        } else if (c === "O") {
+        } else if (c === "B") {
 
         } else {
             return <HomePanel/>;

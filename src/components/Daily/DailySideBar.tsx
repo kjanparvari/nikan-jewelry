@@ -1,21 +1,21 @@
 import React, {useContext, useEffect, useReducer, useRef, useState} from 'react';
 import 'semantic-ui-css/semantic.min.css'
-import '../styles/search.css'
+import '../../styles/search.css'
 // @ts-ignore
 import {MDBCol, MDBInput} from "mdbreact";
 import 'mdbreact/dist/css/mdb.css'
-import '../styles/themes.css'
-import MemberTile from "./MemberTile";
+import '../../styles/themes.css'
+import MemberTile from "../MemberTile";
 import Popup from 'reactjs-popup';
 import {Form, Button} from 'semantic-ui-react';
 import {GrClose} from 'react-icons/gr';
-import {themeContext} from "../App";
+import {themeContext} from "../../App";
 
 
 const retrieveMembers = () => {
-    const mems = localStorage.getItem("melt-members");
-    if (mems === null || mems === undefined || mems === null) {
-        localStorage.setItem("melt-members", JSON.stringify({maxId: "0", list: []}));
+    const mems = localStorage.getItem("daily-members");
+    if (mems === null) {
+        localStorage.setItem("daily-members", JSON.stringify({maxId: "0", list: []}));
         return {maxId: "0", list: []};
     } else {
         if (JSON.stringify(JSON.parse(mems).list) === "[]") {
@@ -27,7 +27,7 @@ const retrieveMembers = () => {
     }
 };
 
-function MeltSideBar(props: any) {
+function DailySideBar(props: any) {
     const theme = useContext(themeContext);
     let oTheme;
     if (theme === "light") oTheme = "dark";
@@ -49,11 +49,10 @@ function MeltSideBar(props: any) {
             oMoney: 0,
             oGold: 0
         };
-        const memberDeals: any[] = [];
         const newMembers: any[] = [];
         newMembers.push(...list, newMember);
-        localStorage.setItem("M:" + maxId, JSON.stringify(memberDeals));
-        localStorage.setItem("melt-members", JSON.stringify({maxId: maxId, list: newMembers}));
+        localStorage.setItem("D:" + maxId, JSON.stringify({maxId: 0, list: []}));
+        localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
         setMembers(() => {
             return newMembers
         });
@@ -85,7 +84,7 @@ function MeltSideBar(props: any) {
     const membersTiles = members.map((member: any) => {
         return <MemberTile key={member.id} person={member} clickHandler={props.choosePerson}/>
     });
-    console.log(localStorage.getItem("melt-members"));
+    console.log(localStorage.getItem("daily-members"));
     return (
         <div className={`container float-right justify-content-center theme-${oTheme} sidenavigation`}
              style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
@@ -128,4 +127,4 @@ function MeltSideBar(props: any) {
     );
 }
 
-export default MeltSideBar;
+export default DailySideBar;

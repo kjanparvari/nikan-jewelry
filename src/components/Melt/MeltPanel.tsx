@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
-import {themeContext} from "../App";
-import DailySideBar from "./DailySideBar";
-import DailyContentPanel from "./DailyContentPanel";
+import {themeContext} from "../../App";
+import DailySideBar from "../Daily/DailySideBar";
+import DailyContentPanel from "../Daily/DailyContentPanel";
 import MeltSideBar from "./MeltSideBar";
 import MeltContentPanel from "./MeltContentPanel";
 

@@ -53,7 +53,7 @@ function Navbar(props: any) {
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 100}}>
                             <a className={`nav-link nav-buttons-fa theme-${theme}`}
-                               onClick={() => navButtonHandler("owing")}>امانی بازار</a>
+                               onClick={() => navButtonHandler("borrowed")}>امانی بازار</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 70}}>
