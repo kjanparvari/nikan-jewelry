@@ -42,6 +42,8 @@ const getLastPanel = () => {
         return <SettingPanel/>;
     else if (last === "daily")
         return <DailyPanel defaultPerson={null}/>;
+    else if (last === "borrowed")
+        return <BorrowedPanel defaultPerson={null}/>;
     else {
         // @ts-ignore
         const c = last.charAt(0);
@@ -66,7 +68,20 @@ const getLastPanel = () => {
         } else if (c === "M") {
 
         } else if (c === "B") {
+            // @ts-ignore
+            id = parseInt(last.split(":")[1]);
+            const m = localStorage.getItem("borrowed-members");
+            if (m !== null) {
+                mems = JSON.parse(m).list;
+                mems.forEach((p, i) => {
+                    // @ts-ignore
+                    if (parseInt(p.id) === id)
+                        person = p;
 
+                });
+                console.log(JSON.stringify(person));
+                return <BorrowedPanel defaultPerson={person}/>
+            }
         } else {
             return <HomePanel/>;
         }

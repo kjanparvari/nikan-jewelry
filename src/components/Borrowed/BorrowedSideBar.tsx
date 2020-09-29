@@ -13,9 +13,9 @@ import {themeContext} from "../../App";
 
 
 const retrieveMembers = () => {
-    const mems = localStorage.getItem("daily-members");
+    const mems = localStorage.getItem("borrowed-members");
     if (mems === null) {
-        localStorage.setItem("daily-members", JSON.stringify({maxId: "0", list: []}));
+        localStorage.setItem("borrowed-members", JSON.stringify({maxId: "0", list: []}));
         return {maxId: "0", list: []};
     } else {
         if (JSON.stringify(JSON.parse(mems).list) === "[]") {
@@ -39,20 +39,15 @@ function BorrowedSideBar(props: any) {
         // if (oldMembers === undefined) oldMembers = [];
         // @ts-ignore
         const name = nameRef.current.value;
-        // @ts-ignore
-        const phone = phoneRef.current.value;
         maxId = (parseInt(maxId) + 1).toString();
         const newMember = {
             id: maxId,
-            name: name,
-            phone: phone,
-            oMoney: 0,
-            oGold: 0
+            name: name
         };
         const newMembers: any[] = [];
         newMembers.push(...list, newMember);
-        localStorage.setItem("D:" + maxId, JSON.stringify({maxId: 0, list: []}));
-        localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
+        localStorage.setItem("B:" + maxId, JSON.stringify({maxId: 0, list: []}));
+        localStorage.setItem("borrowed-members", JSON.stringify({maxId: maxId, list: newMembers}));
         setMembers(() => {
             return newMembers
         });
@@ -77,14 +72,13 @@ function BorrowedSideBar(props: any) {
 
     const [members, setMembers] = useState(retrieveMembers().list);
     const nameRef = useRef(null);
-    const phoneRef = useRef(null);
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
     const membersTiles = members.map((member: any) => {
         return <MemberTile key={member.id} person={member} clickHandler={props.choosePerson}/>
     });
-    console.log(localStorage.getItem("daily-members"));
+    console.log(localStorage.getItem("borrowed-members"));
     return (
         <div className={`container float-right justify-content-center theme-${oTheme} sidenavigation`}
     style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
@@ -114,10 +108,6 @@ function BorrowedSideBar(props: any) {
         <Form.Field>
             <label className="float-left">نام مشتری :</label>
     <input placeholder='First Name' ref={nameRef}/>
-    </Form.Field>
-    <Form.Field>
-    <label className="float-left">شماره تلفن :</label>
-    <input placeholder='Phone Number' ref={phoneRef}/>
     </Form.Field>
     <Button type='submit' onClick={addMemberHandler}>Submit</Button>
         </Form>

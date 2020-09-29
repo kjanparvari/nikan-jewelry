@@ -6,10 +6,11 @@ import {readFileSync} from "fs";
 import Popup from "reactjs-popup";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
-import DailyDealCard from "./DailyDealCard";
+import BorrowedDealCard from "./BorrowedDealCard";
+import BorrowedPanel from "./BorrowedPanel";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const DailyDealsTable = ({deals, personId}: any) => {
+const BorrowedDealsTable = ({deals, personId}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -70,22 +71,20 @@ const DailyDealsTable = ({deals, personId}: any) => {
                 </Column>
 
                 <Column>
-                    <HeaderCell>ورود پول</HeaderCell>
-                    <Cell dataKey="moneyIn"/>
+                    <HeaderCell>اجرت</HeaderCell>
+                    <Cell dataKey="ojrat"/>
                 </Column>
 
                 <Column>
-                    <HeaderCell>خروح پول</HeaderCell>
-                    {/*<Cell dataKey="moneyOut"/>*/}
-                    <Cell dataKey="moneyOut"/>
+                    <HeaderCell>فروخته به</HeaderCell>
+                    <Cell dataKey="buyerName"/>
                 </Column>
-
                 <Column>
-                    <HeaderCell>قیمت مرکب</HeaderCell>
+                    <HeaderCell>در تاریخ</HeaderCell>
                     <Cell>{(rowData: any, rowIndex: number) => {
-                        const {complex} = rowData;
-                        return ((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3);
+                        return rowData.soldDate.year + " / " + rowData.soldDate.month + " / " + rowData.soldDate.day;
                     }}</Cell>
+                    {/*<Cell dataKey="date.day"/>*/}
                 </Column>
 
 
@@ -117,10 +116,10 @@ const DailyDealsTable = ({deals, personId}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <DailyDealCard deal={chosenDeal} personId={personId}/>
+                    <BorrowedDealCard deal={chosenDeal} personId={personId}/>
                 </div>
             </Popup>
         </div>
     );
 };
-export default DailyDealsTable
+export default BorrowedDealsTable

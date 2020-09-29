@@ -7,7 +7,7 @@ import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 
 const deleteDealHandler = (memberId: number, dealId: number) => {
-    const key: string = "D:" + memberId.toString();
+    const key: string = "B:" + memberId.toString();
     const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
     const newDeals = list.filter((deal: any) => {
         return deal.id !== dealId;
@@ -16,42 +16,21 @@ const deleteDealHandler = (memberId: number, dealId: number) => {
     window.location.reload(false);
 };
 
-function DailyDealCard({deal, personId}: any) {
+function BorrowedDealCard({deal, personId}: any) {
     const {year, month, day} = deal.date;
-    const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex} = deal;
+    const {year: syear, month: smonth, day: sday} = deal.soldDate;
+    const {id, goldIn, goldOut, pageNumber, buyerName, ojrat} = deal;
     const pageRef = useRef(null);
-    const moneyInRef = useRef(null);
-    const moneyOutRef = useRef(null);
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
     const ojratRef = useRef(null);
-    const fiRef = useRef(null);
-    const profitRef = useRef(null);
-    const complexRef = useRef(null);
+    const buyerNameRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
-    const updateComplexLabel = () => {
-        let result: number = 0;
-        // @ts-ignore
-        let ojrat: number = parseFloat(ojratRef.current.value);
-        // @ts-ignore
-        let fi: number = parseFloat(fiRef.current.value);
-        // @ts-ignore
-        let profit: number = 1.0 + parseFloat(profitRef.current.value) / 100;
+    const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
 
-        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
-            result = 0;
-        else
-            result = (ojrat + fi) * profit;
-        // @ts-ignore
-        complexRef.current.value = result;
-    };
     const editDeal = () => {
         // @ts-ignore
         const pageNumber = parseInt(pageRef.current.value);
-        // @ts-ignore
-        const moneyIn = parseInt(moneyInRef.current.value);
-        // @ts-ignore
-        const moneyOut = parseInt(moneyOutRef.current.value);
         // @ts-ignore
         const goldIn = parseInt(goldInRef.current.value);
         // @ts-ignore
@@ -59,11 +38,9 @@ function DailyDealCard({deal, personId}: any) {
         // @ts-ignore
         const ojrat = parseInt(ojratRef.current.value);
         // @ts-ignore
-        const fi = parseInt(fiRef.current.value);
-        // @ts-ignore
-        const profit = parseInt(profitRef.current.value);
-        const key = "D:" + personId;
-        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
+        const buyerName = buyerNameRef.current.value;
+        const key = "B:" + personId;
+        if (selectedDay === null || pageNumber === null || ojrat === null || buyerName === null || goldIn === null || goldOut === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -97,15 +74,11 @@ function DailyDealCard({deal, personId}: any) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = pageNumber;
                     p.list[i].date = selectedDay;
-                    p.list[i].moneyIn = moneyIn;
-                    p.list[i].moneyOut = moneyOut;
+                    p.list[i].soldDate = soldDay;
+                    p.list[i].ojrat = ojrat;
+                    p.list[i].buyerName = buyerName;
                     p.list[i].goldIn = goldIn;
                     p.list[i].goldOut = goldOut;
-                    p.list[i].complex = {
-                        ojrat: ojrat,
-                        fi: fi,
-                        profit: profit
-                    };
                     break;
                 }
             }
@@ -137,12 +110,12 @@ function DailyDealCard({deal, personId}: any) {
             </div>
             <div className=" m-4 badge-light" style={{height: 220, borderRadius: 10}}>
                 <div className="w-100 p-3 pb-4">
-                    <div className="float-right text-right  w-50 " style={{}}>:ورود پول</div>
-                    <div className="float-left w-50">{moneyIn}</div>
+                    <div className="float-right text-right  w-50 " style={{}}>:فروخته شده به</div>
+                    <div className="float-left w-50">{buyerName}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
-                    <div className="float-right text-right w-50">:خروج پول</div>
-                    <div className="float-left w-50">{moneyOut}</div>
+                    <div className="float-right text-right w-50">: در تاریخ</div>
+                    <div className="float-left w-50">{syear}/{smonth}/{sday}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود طلا</div>
@@ -153,42 +126,10 @@ function DailyDealCard({deal, personId}: any) {
                     <div className="float-left w-50">{goldOut}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
-                    {/*<div className="float-right text-right" style={{width: "50%"}}>:قیمت مرکب طلا</div>*/}
-                    {/*<div className="float-right"*/}
-                    {/*     style={{width: "40%"}}>{((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3)}</div>*/}
-                    <Popup
-                        // trigger={<a className="float-left"><BsFillInfoCircleFill style={{fontSize: 20}}/></a>}
-                        trigger={<div className="float-right text-right w-50">:قیمت مرکب طلا</div>}
-                        position="right top"
-                        on="hover"
-                        closeOnDocumentClick={true}
-                        mouseLeaveDelay={100}
-                        mouseEnterDelay={0}
-                        contentStyle={{
-                            padding: "4px",
-                            paddingRight: "4px",
-                            border: "none",
-                            borderRadius: 10,
-                            // backgroundColor: "#fff",
-                            backgroundColor: "#343a40",
-                            width: 150
-                        }}
-                        arrow={false}
-                    >
-                        <div className="mr-3" style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            width: "95%",
-                            margin: "auto"
-                        }}>
-                            <label className="text-white" htmlFor="">اجرت: {complex.ojrat}</label>
-                            <label className="text-white" htmlFor="">فی: {complex.fi}</label>
-                            <label className="text-white" htmlFor="">درصد سود: %{complex.profit}</label>
-                        </div>
-                    </Popup>
-                    <div
-                        className="float-right w-50">{((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3)}</div>
+                    <div className="float-right text-right w-50">: اجرت</div>
+                    <div className="float-left w-50">{ojrat}</div>
                 </div>
+
 
             </div>
             <div className="mt-0">
@@ -211,7 +152,7 @@ function DailyDealCard({deal, personId}: any) {
                     <br/>
                     <Form>
                         <Form.Group>
-                            <label className="float-left text-center" style={{width: "10%"}}>تاریخ :</label>
+                            <label className="float-left text-center" style={{width: "10%", color: "black"}}>تاریخ :</label>
                             {/*<input className="float-left ml-3 mr-3 text-center" style={{width: "12%"}} placeholder="سال"/>*/}
                             {/*<input className=" mr-3 text-center" style={{width: "12%"}} placeholder='ماه'/>*/}
                             {/*<input type="date" className=" text-center" style={{width: "35%"}} placeholder='روز'/>*/}
@@ -227,38 +168,30 @@ function DailyDealCard({deal, personId}: any) {
                                    placeholder="شماره صفحه" ref={pageRef} defaultValue={pageNumber}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
+                            <label className="float-left  text-left"style={{color: "black"}}>طلا :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="ورود" ref={goldInRef} defaultValue={goldIn}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
                                    placeholder='خروج' ref={goldOutRef} defaultValue={goldOut}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>پول :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>فروخته شده به :</label>
+                            <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                   placeholder="فروخته شده به" ref={buyerNameRef} defaultValue={buyerName}/>
+                            <DatePicker
+                                value={soldDay}
+                                onChange={setSoldDay}
+                                inputPlaceholder="در تاریخ"
+                                shouldHighlightWeekends
+                                locale={"fa"}
+                            />
+                        </Form.Group>
+                        <Form.Group className="m-auto">
+                            <label className="float-left text-left" style={{color: "black"}}>اجرت :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={moneyInRef} defaultValue={moneyIn}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={moneyOutRef} defaultValue={moneyOut}/>
+                                   placeholder="اجرت" ref={ojratRef} defaultValue={ojrat}/>
                         </Form.Group>
-                        <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
-                            <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}
-                                   defaultValue={complex.ojrat}/><GrAdd
-                            style={{marginTop: 10}}/>
-                            <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}
-                                   defaultValue={complex.fi}/><GrAdd
-                            style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
-                                   style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
-                                   ref={profitRef} defaultValue={complex.profit}/><FaEquals
-                            style={{marginTop: 10}}/>
-                            <input className="ml-1 mr-1 text-center" style={{width: "17%"}}
-                                   readOnly={true}
-                                   ref={complexRef}
-                                   defaultValue={(complex.ojrat + complex.fi) * (1.0 + complex.profit / 100)}/>
-                        </Form.Group>
+                        <br/>
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={editDeal}>Submit</Button>
@@ -269,4 +202,4 @@ function DailyDealCard({deal, personId}: any) {
     );
 }
 
-export default DailyDealCard;
+export default BorrowedDealCard;

@@ -15,7 +15,7 @@ import {themeContext} from "../../App";
 import {offsetContext} from "../../App";
 
 const getName = (id: number) => {
-    const m = localStorage.getItem("daily-members");
+    const m = localStorage.getItem("borrowed-members");
     let mems: [] = [];
     let name: string = "";
     if (m !== null)
@@ -30,23 +30,6 @@ const getName = (id: number) => {
     return name;
 };
 
-const getPhone = (id: number) => {
-    const m = localStorage.getItem("daily-members");
-    let mems: [] = [];
-    let phone: string = "";
-    if (m !== null)
-        mems = JSON.parse(m).list;
-    mems.forEach((p, i) => {
-        // @ts-ignore
-        if (p.id === id) {
-            // @ts-ignore
-            phone = p.phone;
-        }
-    });
-    return phone;
-};
-
-
 const changeView = (view: string, setView: any) => {
     console.log(view);
     if (view === "card")
@@ -55,53 +38,31 @@ const changeView = (view: string, setView: any) => {
         setView(() => "card");
 };
 
-function DailyUserInfo(props: any) {
+function BorrowedUserInfo(props: any) {
     const theme = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
-        const {maxId, list} = JSON.parse(localStorage.getItem("daily-members") as string);
+        const {maxId, list} = JSON.parse(localStorage.getItem("borrowed-members") as string);
         const newMembers = list.filter((member: any) => {
             return member.id !== id;
         });
-        localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
-        localStorage.removeItem("D:" + id);
-        localStorage.setItem("last", "daily");
+        localStorage.setItem("borrowed-members", JSON.stringify({maxId: maxId, list: newMembers}));
+        localStorage.removeItem("B:" + id);
+        localStorage.setItem("last", "borrowed");
         window.location.reload(false);
     };
     const pageRef = useRef(null);
-    const moneyInRef = useRef(null);
-    const moneyOutRef = useRef(null);
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
     const ojratRef = useRef(null);
-    const fiRef = useRef(null);
-    const profitRef = useRef(null);
-    const complexRef = useRef(null);
-    const [open, setOpen] = useState(false);
+    const buyerNameRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
-    const updateComplexLabel = () => {
-        let result: number = 0;
-        // @ts-ignore
-        let ojrat: number = parseFloat(ojratRef.current.value);
-        // @ts-ignore
-        let fi: number = parseFloat(fiRef.current.value);
-        // @ts-ignore
-        let profit: number = 1.0 + parseFloat(profitRef.current.value) / 100;
+    const [soldDay, setSoldDay] = useState<DayValue>(null);
 
-        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
-            result = 0;
-        else
-            result = (ojrat + fi) * profit;
-        // @ts-ignore
-        complexRef.current.value = result;
-    };
+    const [open, setOpen] = useState(false);
     const addDeal = () => {
         // @ts-ignore
         const pageNumber = parseInt(pageRef.current.value);
-        // @ts-ignore
-        const moneyIn = parseInt(moneyInRef.current.value);
-        // @ts-ignore
-        const moneyOut = parseInt(moneyOutRef.current.value);
         // @ts-ignore
         const goldIn = parseInt(goldInRef.current.value);
         // @ts-ignore
@@ -109,11 +70,9 @@ function DailyUserInfo(props: any) {
         // @ts-ignore
         const ojrat = parseInt(ojratRef.current.value);
         // @ts-ignore
-        const fi = parseInt(fiRef.current.value);
-        // @ts-ignore
-        const profit = parseInt(profitRef.current.value);
-        const key = "D:" + props.person.id;
-        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
+        const buyerName = buyerNameRef.current.value;
+        const key = "B:" + props.person.id;
+        if (selectedDay === null || pageNumber === null || goldIn === null || goldOut === null || ojrat === null || soldDay === null || buyerName === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -130,16 +89,12 @@ function DailyUserInfo(props: any) {
             const val = {
                 id: maxId,
                 date: selectedDay,
+                soldDate: soldDay,
                 pageNumber: pageNumber,
-                moneyIn: moneyIn,
-                moneyOut: moneyOut,
                 goldIn: goldIn,
                 goldOut: goldOut,
-                complex: {
-                    ojrat: ojrat,
-                    fi: fi,
-                    profit: profit
-                }
+                ojrat: ojrat,
+                buyerName: buyerName
             };
             p.maxId = maxId;
             p.list.push(val);
@@ -147,7 +102,6 @@ function DailyUserInfo(props: any) {
             console.log(p);
             localStorage.setItem(key, p);
             offset.changeGold(goldIn - goldOut);
-            offset.changeMoney(moneyIn - moneyOut);
             closeModal();
             window.location.reload(false);
             // console.log(JSON.stringify(val));
@@ -164,16 +118,14 @@ function DailyUserInfo(props: any) {
     const phoneRef = useRef(null);
 
     const editSubmitHandler = (id: number) => {
-        let m: any = localStorage.getItem("daily-members");
+        let m: any = localStorage.getItem("borrowed-members");
         if (m !== null) {
             m = JSON.parse(m);
             for (let i in m.list) {
                 if (m.list[i].id === id) {
                     // @ts-ignore
                     m.list[i].name = nameRef.current.value;
-                    // @ts-ignore
-                    m.list[i].phone = phoneRef.current.value;
-                    localStorage.setItem("daily-members", JSON.stringify(m));
+                    localStorage.setItem("borrowed-members", JSON.stringify(m));
                     closeModal();
                     window.location.reload(false);
                     break;
@@ -184,11 +136,11 @@ function DailyUserInfo(props: any) {
 
     };
 
-    const {id, name, phone, oGold, oMoney} = props.person;
-    // @ts-ignore
+    const {id, name} = props.person;
+    console.log("im here");
     return (
         <React.Fragment>
-            <Tilt className="Tilt container Tilt-inner bg-warning rounded-pill float-right mr-3 pt-2 pb-2"
+            <Tilt className="Tilt container Tilt-inner bg-info rounded-pill float-right mr-3 pt-2 pb-2"
                   options={{max: 2, scale: 1.02}}
                   style={{
                       height: "12vh",
@@ -210,20 +162,20 @@ function DailyUserInfo(props: any) {
                                 #{id}
                             </div>
                         </div>
-                        <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
-                            <div>
-                                <div className="float-right">:شماره تماس</div>
-                                <div className="float-right mr-2">{phone}</div>
-                            </div>
-                            <div>
-                                <div className="float-right">:بدهکار پولی</div>
-                                <div className="float-right mr-2">{oMoney}</div>
-                            </div>
-                            <div>
-                                <div className="float-right">:بدهکار طلایی</div>
-                                <div className="float-right mr-2">{oGold}</div>
-                            </div>
-                        </div>
+                        {/*<div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>*/}
+                        {/*    <div>*/}
+                        {/*        <div className="float-right">:شماره تماس</div>*/}
+                        {/*        <div className="float-right mr-2">{phone}</div>*/}
+                        {/*    </div>*/}
+                        {/*    <div>*/}
+                        {/*        <div className="float-right">:بدهکار پولی</div>*/}
+                        {/*        <div className="float-right mr-2">{oMoney}</div>*/}
+                        {/*    </div>*/}
+                        {/*    <div>*/}
+                        {/*        <div className="float-right">:بدهکار طلایی</div>*/}
+                        {/*        <div className="float-right mr-2">{oGold}</div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </div>
                     <div style={{marginTop: "-1", marginBottom: "auto"}}>
                         {/*<button className="btn btn-danger btn-sm float-left mt-4 ml-4" style={{fontSize: 13}}>حذف عضو*/}
@@ -316,28 +268,46 @@ function DailyUserInfo(props: any) {
                                    placeholder='خروج' ref={goldOutRef}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left">پول :</label>
+                            <label className="float-left  text-left">فروخته شده به :</label>
+                            <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                   placeholder="فروخته شده به" ref={buyerNameRef}/>
+                            <DatePicker
+                                value={soldDay}
+                                onChange={setSoldDay}
+                                inputPlaceholder="در تاریخ"
+                                shouldHighlightWeekends
+                                locale={"fa"}
+                            />
+                        </Form.Group>
+                        <Form.Group className="m-auto">
+                            <label className="float-left text-left">اجرت :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={moneyInRef}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={moneyOutRef}/>
+                                   placeholder="اجرت" ref={ojratRef}/>
                         </Form.Group>
-                        <Form.Group>
-                            <label className="float-left  text-left">قیمت هر گرم :</label>
-                            <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}/><GrAdd
-                            style={{marginTop: 10}}/>
-                            <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}/><GrAdd
-                            style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
-                                   style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
-                                   ref={profitRef}/><FaEquals
-                            style={{marginTop: 10}}/>
-                            <input className="ml-1 mr-1 text-center" style={{width: "17%"}} value={0}
-                                   readOnly={true}
-                                   ref={complexRef}/>
-                        </Form.Group>
+                        <br/>
+                        {/*<Form.Group>*/}
+                        {/*    <label className="float-left  text-left">پول :</label>*/}
+                        {/*    <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}*/}
+                        {/*           placeholder="ورود" ref={moneyInRef}/>*/}
+                        {/*    <input type="number" min={0} className=" text-center" style={{width: "40%"}}*/}
+                        {/*           placeholder='خروج' ref={moneyOutRef}/>*/}
+                        {/*</Form.Group>*/}
+                        {/*<Form.Group>*/}
+                        {/*    <label className="float-left  text-left">قیمت هر گرم :</label>*/}
+                        {/*    <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}*/}
+                        {/*           placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}/><GrAdd*/}
+                        {/*    style={{marginTop: 10}}/>*/}
+                        {/*    <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}*/}
+                        {/*           placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}/><GrAdd*/}
+                        {/*    style={{marginTop: 10}}/>*/}
+                        {/*    <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"*/}
+                        {/*           style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'*/}
+                        {/*           ref={profitRef}/><FaEquals*/}
+                        {/*    style={{marginTop: 10}}/>*/}
+                        {/*    <input className="ml-1 mr-1 text-center" style={{width: "17%"}} value={0}*/}
+                        {/*           readOnly={true}*/}
+                        {/*           ref={complexRef}/>*/}
+                        {/*</Form.Group>*/}
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={addDeal}>Submit</Button>
@@ -359,10 +329,6 @@ function DailyUserInfo(props: any) {
                             <label className="float-left">نام مشتری :</label>
                             <input placeholder='First Name' ref={nameRef} defaultValue={getName(id)}/>
                         </Form.Field>
-                        <Form.Field>
-                            <label className="float-left">شماره تلفن :</label>
-                            <input placeholder='Phone Number' ref={phoneRef} defaultValue={getPhone(id)}/>
-                        </Form.Field>
                         <Button type='submit' onClick={() => editSubmitHandler(id)}>Submit</Button>
                     </Form>
                 </div>
@@ -371,4 +337,4 @@ function DailyUserInfo(props: any) {
     );
 }
 
-export default DailyUserInfo;
+export default BorrowedUserInfo;

@@ -75,9 +75,6 @@ function DailyContentPanel(props: any) {
         case "card":
             result = <DailyCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
             break;
-        case "calender":
-            result = <DailyDealsCalender/>;
-            break;
         case "table":
             result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id}/>;
             break;

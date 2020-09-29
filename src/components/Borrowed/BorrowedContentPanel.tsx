@@ -10,10 +10,24 @@ import {FaUser} from "react-icons/fa";  // Font Awesome
 // import DailyUserInfo from "./DailyUserInfo";
 // import DailyCarousel from "./DailyCarousel";
 // import DailyDealsCalender from "./DailyDealsCalender";
-// import DailyDealsTable from "./DailyDealsTable";
+import BorrowedDealsTable from "./BorrowedDealsTable";
 import {themeContext} from "../../App";
+import BorrowedUserInfo from "./BorrowedUserInfo";
+import BorrowedCarousel from "./BorrowedCarousel";
+import DailyDealCard from "../Daily/DailyDealCard";
+import BorrowedDealCard from "./BorrowedDealCard";
 
 
+const getSlides = (deals: any[], personId: number) => {
+    console.log("deals:");
+    console.log(deals);
+    const newSlides: any[] = [];
+    deals.forEach((deal: any) => {
+        const slide = <BorrowedDealCard key={deal.id} deal={deal} personId={personId}/>;
+        newSlides.push(slide);
+    });
+    return newSlides;
+};
 
 function BorrowedContentPanel(props: any) {
     const theme = useContext(themeContext);
@@ -34,22 +48,17 @@ function BorrowedContentPanel(props: any) {
     let result: any;
     switch (view) {
         case "card":
-            // result = <DailyCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
-            break;
-        case "calender":
-            // result = <DailyDealsCalender/>;
+            result = <BorrowedCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
             break;
         case "table":
-            // result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id}/>;
+            result = <BorrowedDealsTable deals={deals} personId={props.chosenPerson.id}/>;
             break;
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            {/*<DailyUserInfo view={view} setView={setView} person={props.chosenPerson}/>*/}
+            <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "80%"}}>
                 <br/>
-                {/*<DailyDealCard deal={sampleDeal}/>*/}
-                {/*<Carousel slides={getSlides(deals)} auxtoplay={false} interval={2000}/>*/}
                 {deals && deals.length === 0 ? <div/> : result}
             </div>
         </div>

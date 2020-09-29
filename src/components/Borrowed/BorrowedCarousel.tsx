@@ -3,7 +3,7 @@ import Carousel from 'react-bootstrap/Carousel'
 import {GrNext} from 'react-icons/gr';
 import {NavigateNext, NavigateBefore} from '@material-ui/icons'
 
-function DailyCarousel({slides}: any) {
+function BorrowedCarousel({slides}: any) {
     const [index, setIndex] = useState(0);
     const nextRef = useRef(null);
 
@@ -31,4 +31,4 @@ function DailyCarousel({slides}: any) {
     );
 }
 
-export default DailyCarousel;
+export default BorrowedCarousel;
