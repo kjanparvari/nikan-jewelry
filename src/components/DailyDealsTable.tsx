@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Table} from 'rsuite';
 import 'rsuite/dist/styles/rsuite-default.css';
 import {CgMoreVertical, CgMoreVerticalAlt} from 'react-icons/cg';
 import {readFileSync} from "fs";
 import Popup from "reactjs-popup";
+import {GrClose} from "react-icons/gr";
+import {Button, Form} from "semantic-ui-react";
+import DailyDealCard from "./DailyDealCard";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const DailyDealsTable = ({deals}: any) => {
+const DailyDealsTable = ({deals, personId}: any) => {
+    const [open, setOpen] = useState(false);
+    const closeModal = () => setOpen(false);
+    const openModal = () => setOpen(true);
+    const [chosenDeal, setChosenDeal] = useState(null);
     return (
         <div>
             <Table
@@ -17,6 +24,8 @@ const DailyDealsTable = ({deals}: any) => {
                 // loading
                 onRowClick={data => {
                     console.log(data);
+                    setChosenDeal(data);
+                    openModal();
                 }}
                 onRowContextMenu={(data, event) => {
                     // alert(JSON.stringify(data))
@@ -79,24 +88,35 @@ const DailyDealsTable = ({deals}: any) => {
                 </Column>
 
 
-                <Column width={200}>
-                    <HeaderCell>Action</HeaderCell>
+                {/*<Column width={200}>*/}
+                {/*    <HeaderCell>Action</HeaderCell>*/}
 
-                    <Cell>
-                        {(rowData: any) => {
-                            function handleAction() {
-                                alert(`id:${rowData.id}`);
-                            }
-                            return (
-                                <div className="pt-0 mt-0">
-                                    <a className="btn btn-primary btn-sm" onClick={handleAction}> ویرایش </a>
-                                    <a className="btn btn-danger btn-sm" onClick={handleAction}> حذف </a>
-                                </div>
-                            );
-                        }}
-                    </Cell>
-                </Column>
+                {/*    <Cell>*/}
+                {/*        {(rowData: any) => {*/}
+                {/*            function handleAction() {*/}
+                {/*                alert(`id:${rowData.id}`);*/}
+                {/*            }*/}
+                {/*            return (*/}
+                {/*                <div className="pt-0 mt-0">*/}
+                {/*                    <a className="btn btn-primary btn-sm" onClick={handleAction}> ویرایش </a>*/}
+                {/*                    <a className="btn btn-danger btn-sm" onClick={handleAction}> حذف </a>*/}
+                {/*                </div>*/}
+                {/*            );*/}
+                {/*        }}*/}
+                {/*    </Cell>*/}
+                {/*</Column>*/}
             </Table>
+            <Popup
+                open={open}
+                // closeOnDocumentClick={false}
+                onClose={closeModal}
+                className="container"
+            >
+                <div className="">
+                    <a className="float-right"><GrClose onClick={closeModal}/></a>
+                    <DailyDealCard deal={chosenDeal} personId={personId}/>
+                </div>
+            </Popup>
         </div>
     );
 };

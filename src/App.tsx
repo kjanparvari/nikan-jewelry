@@ -89,8 +89,7 @@ const initialize = () => {
     localStorage.setItem("daily-members", JSON.stringify({maxId: "0", list: []}));
     localStorage.setItem("melt-members", JSON.stringify({maxId: "0", list: []}));
     localStorage.setItem("owing-members", JSON.stringify({maxId: "0", list: []}));
-    localStorage.setItem("password", "false");
-    localStorage.setItem("registered", "false");
+    // localStorage.setItem("registered", "false");
     localStorage.setItem("last", "");
     localStorage.setItem("pss", "");
     localStorage.setItem("islocked", "false");
@@ -127,7 +126,6 @@ function App() {
     else {
         panel = <div/>
     }
-    localStorage.setItem("islocked", "false");
     let l = localStorage.getItem("islocked");
     if (l === "true")
         panel = <LockPanel/>;

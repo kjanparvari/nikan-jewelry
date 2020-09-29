@@ -14,6 +14,39 @@ import {serialize} from "v8";
 import {themeContext} from "../App";
 import {offsetContext} from "../App";
 
+const getName = (id: number) => {
+    const m = localStorage.getItem("daily-members");
+    let mems: [] = [];
+    let name: string = "";
+    if (m !== null)
+        mems = JSON.parse(m).list;
+    mems.forEach((p, i) => {
+        // @ts-ignore
+        if (p.id === id) {
+            // @ts-ignore
+            name = p.name;
+        }
+    });
+    return name;
+};
+
+const getPhone = (id: number) => {
+    const m = localStorage.getItem("daily-members");
+    let mems: [] = [];
+    let phone: string = "";
+    if (m !== null)
+        mems = JSON.parse(m).list;
+    mems.forEach((p, i) => {
+        // @ts-ignore
+        if (p.id === id) {
+            // @ts-ignore
+            phone = p.phone;
+        }
+    });
+    return phone;
+};
+
+
 const changeView = (view: string, setView: any) => {
     console.log(view);
     if (view === "card")
@@ -27,13 +60,15 @@ const changeView = (view: string, setView: any) => {
 function DailyUserInfo(props: any) {
     const theme = useContext(themeContext);
     const offset = useContext(offsetContext);
-    const deleteHandler = (id: string) => {
-        const {maxId, list} = JSON.parse(localStorage.getItem("members") as string);
+    const deleteMemberHandler = (id: string) => {
+        const {maxId, list} = JSON.parse(localStorage.getItem("daily-members") as string);
         const newMembers = list.filter((member: any) => {
             return member.id !== id;
         });
-        localStorage.setItem("members", JSON.stringify({maxId: maxId, list: newMembers}));
-        window.location.reload();
+        localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
+        localStorage.removeItem("D:" + id);
+        localStorage.setItem("last", "daily");
+        window.location.reload(false);
     };
     const pageRef = useRef(null);
     const moneyInRef = useRef(null);
@@ -116,13 +151,43 @@ function DailyUserInfo(props: any) {
             offset.changeGold(goldIn - goldOut);
             offset.changeMoney(moneyIn - moneyOut);
             closeModal();
+            window.location.reload(false);
             // console.log(JSON.stringify(val));
             // localStorage.setItem(key, JSON.stringify(val));
         }
     };
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
+
+    const [openEdit, setOpenEdit] = useState(false);
+    const closeEditModal = () => setOpenEdit(false);
+    const openEditModal = () => setOpenEdit(true);
+    const nameRef = useRef(null);
+    const phoneRef = useRef(null);
+
+    const editSubmitHandler = (id: number) => {
+        let m: any = localStorage.getItem("daily-members");
+        if (m !== null) {
+            m = JSON.parse(m);
+            for (let i in m.list) {
+                if (m.list[i].id === id) {
+                    // @ts-ignore
+                    m.list[i].name = nameRef.current.value;
+                    // @ts-ignore
+                    m.list[i].phone = phoneRef.current.value;
+                    localStorage.setItem("daily-members", JSON.stringify(m));
+                    closeModal();
+                    window.location.reload(false);
+                    break;
+                }
+            }
+        }
+
+
+    };
+
     const {id, name, phone, oGold, oMoney} = props.person;
+    // @ts-ignore
     return (
         <React.Fragment>
             <Tilt className="Tilt container Tilt-inner bg-warning rounded-pill float-right mr-3 pt-2 pb-2"
@@ -167,14 +232,14 @@ function DailyUserInfo(props: any) {
                         {/*</button>*/}
 
                         <Popup
-                                trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
+                            trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}
-                                position="right top"
-                                on="hover"
-                                closeOnDocumentClick={true}
-                                mouseLeaveDelay={200}
-                                mouseEnterDelay={0}
-                                contentStyle={{
+                            position="right top"
+                            on="hover"
+                            closeOnDocumentClick={true}
+                            mouseLeaveDelay={200}
+                            mouseEnterDelay={0}
+                            contentStyle={{
                                 padding: "2px",
                                 paddingRight: "4px",
                                 border: "none",
@@ -183,18 +248,19 @@ function DailyUserInfo(props: any) {
                                 backgroundColor: "#343a40",
                                 width: 150
                             }}
-                                arrow={false}
-                                >
-                                <div className="mr-3" style={{
+                            arrow={false}
+                        >
+                            <div className="mr-3" style={{
                                 display: "flex",
                                 flexDirection: "column",
                                 width: "95%",
                                 margin: "auto"
                             }}>
-                                <button className="btn btn-primary btn-sm w-100" style={{fontSize: 12}}>ویرایش عضو
+                                <button className="btn btn-primary btn-sm w-100" onClick={openEditModal}
+                                        style={{fontSize: 12}}>ویرایش عضو
                                 </button>
                                 <button className="btn btn-danger btn-sm w-100" style={{fontSize: 12}}
-                                        onClick={() => deleteHandler(id)}>حذف عضو
+                                        onClick={() => deleteMemberHandler(id)}>حذف عضو
                                 </button>
                             </div>
                         </Popup>
@@ -210,7 +276,8 @@ function DailyUserInfo(props: any) {
                 <br/>
                 <br/>
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
-                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}} onClick={() => changeView(props.view, props.setView)}><HiViewGrid
+                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
+                   onClick={() => changeView(props.view, props.setView)}><HiViewGrid
                     style={{margin: "auto"}}/></a>
             </div>
             <Popup
@@ -276,6 +343,29 @@ function DailyUserInfo(props: any) {
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={addDeal}>Submit</Button>
+                    </Form>
+                </div>
+            </Popup>
+            <Popup
+                open={openEdit}
+                // closeOnDocumentClick={false}
+                onClose={closeEditModal}
+                className=""
+            >
+                <div className="container">
+                    <a className="float-right"><GrClose onClick={closeEditModal}/></a>
+                    <br/>
+                    <br/>
+                    <Form>
+                        <Form.Field>
+                            <label className="float-left">نام مشتری :</label>
+                            <input placeholder='First Name' ref={nameRef} defaultValue={getName(id)}/>
+                        </Form.Field>
+                        <Form.Field>
+                            <label className="float-left">شماره تلفن :</label>
+                            <input placeholder='Phone Number' ref={phoneRef} defaultValue={getPhone(id)}/>
+                        </Form.Field>
+                        <Button type='submit' onClick={() => editSubmitHandler(id)}>Submit</Button>
                     </Form>
                 </div>
             </Popup>

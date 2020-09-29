@@ -55,12 +55,12 @@ const sampleDeal = {
     complex: 1000200,
     pageNumber: 45
 };
-const getSlides = (deals: any[]) => {
+const getSlides = (deals: any[], personId: number) => {
     console.log("deals:");
     console.log(deals);
     const newSlides: any[] = [];
     deals.forEach((deal: any) => {
-        const slide = <DailyDealCard key={deal.id} deal={deal}/>;
+        const slide = <DailyDealCard key={deal.id} deal={deal} personId={personId}/>;
         newSlides.push(slide);
     });
     return newSlides;
@@ -86,13 +86,13 @@ function DailyContentPanel(props: any) {
     let result: any;
     switch (view) {
         case "card":
-            result = <DailyCarousel slides={getSlides(deals)}/>;
+            result = <DailyCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
             break;
         case "calender":
             result = <DailyDealsCalender/>;
             break;
         case "table":
-            result = <DailyDealsTable deals={deals}/>;
+            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id}/>;
             break;
     }
     return (
