@@ -6,6 +6,7 @@ import HomePanel from "./components/HomePanel";
 import SettingPanel from "./components/SettingPanel";
 import MeltPanel from "./components/Melt/MeltPanel";
 import LockPanel from "./components/LockPanel";
+import BorrowedPanel from "./components/Borrowed/BorrowedPanel";
 
 export const themeContext = React.createContext('dark');
 
@@ -93,6 +94,7 @@ const initialize = () => {
     localStorage.setItem("last", "");
     localStorage.setItem("pss", "");
     localStorage.setItem("islocked", "false");
+    localStorage.setItem("registerd", "false");
     localStorage.setItem("init", "true");
 
 };
@@ -121,6 +123,8 @@ function App() {
         panel = <HomePanel/>;
     else if (chosenPanel === 'melt')
         panel = <MeltPanel defaultPerson={null}/>;
+    else if (chosenPanel === 'borrowed')
+        panel = <BorrowedPanel defaultPerson={null}/>;
     else if (chosenPanel === "setting")
         panel = <SettingPanel/>;
     else {

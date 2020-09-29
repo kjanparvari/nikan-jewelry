@@ -42,19 +42,7 @@ const changeOGold = (amount: number, id: number) => {
         }
     }
 };
-const sampleDeal = {
-    date: {
-        year: 1397,
-        month: 5,
-        day: 23
-    },
-    goldIn: 25,
-    goldOut: 14,
-    moneyIn: 2300980,
-    moneyOut: 1240900,
-    complex: 1000200,
-    pageNumber: 45
-};
+
 const getSlides = (deals: any[], personId: number) => {
     console.log("deals:");
     console.log(deals);
@@ -68,7 +56,6 @@ const getSlides = (deals: any[], personId: number) => {
 
 function DailyContentPanel(props: any) {
     const theme = useContext(themeContext);
-    const sampleCard = <DailyDealCard deal={sampleDeal}/>;
     const [deals, setDeals] = useState([]);
     const [view, setView] = useState("table");
     useEffect(() => {
