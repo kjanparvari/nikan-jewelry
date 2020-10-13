@@ -42,7 +42,9 @@ function BorrowedSideBar(props: any) {
         maxId = (parseInt(maxId) + 1).toString();
         const newMember = {
             id: maxId,
-            name: name
+            name: name,
+            oMoney: 0,
+            oGold: 0
         };
         const newMembers: any[] = [];
         newMembers.push(...list, newMember);

@@ -39,17 +39,18 @@ function MeltSideBar(props: any) {
         // if (oldMembers === undefined) oldMembers = [];
         // @ts-ignore
         const name = nameRef.current.value;
-        // @ts-ignore
-        const phone = phoneRef.current.value;
         maxId = (parseInt(maxId) + 1).toString();
         const newMember = {
             id: maxId,
             name: name,
-            phone: phone,
+            totalSGold: 0,
+            totalBGold: 0,
             oMoney: 0,
+            cMoney: 0,
+            cGold: 0,
             oGold: 0
         };
-        const memberDeals: any[] = [];
+        const memberDeals: any = {maxId: 0, list: []};
         const newMembers: any[] = [];
         newMembers.push(...list, newMember);
         localStorage.setItem("M:" + maxId, JSON.stringify(memberDeals));
@@ -78,7 +79,6 @@ function MeltSideBar(props: any) {
 
     const [members, setMembers] = useState(retrieveMembers().list);
     const nameRef = useRef(null);
-    const phoneRef = useRef(null);
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -91,7 +91,8 @@ function MeltSideBar(props: any) {
              style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
             <MDBCol md="12" className=" p-0">
                 <MDBInput hint="Search" type="text" containerClass="mt-0"
-                          className={`text-center d-flex justify-content-center ${searchFont}`} onChange={searchHandler}/>
+                          className={`text-center d-flex justify-content-center ${searchFont}`}
+                          onChange={searchHandler}/>
             </MDBCol>
             <div className="mb-0 justify-content-center text-center"
                  style={{flex: 1, overflowY: "scroll", height: "80%", overflowX: "hidden"}}>
@@ -115,10 +116,6 @@ function MeltSideBar(props: any) {
                         <Form.Field>
                             <label className="float-left">نام مشتری :</label>
                             <input placeholder='First Name' ref={nameRef}/>
-                        </Form.Field>
-                        <Form.Field>
-                            <label className="float-left">شماره تلفن :</label>
-                            <input placeholder='Phone Number' ref={phoneRef}/>
                         </Form.Field>
                         <Button type='submit' onClick={addMemberHandler}>Submit</Button>
                     </Form>

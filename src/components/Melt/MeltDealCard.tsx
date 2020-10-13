@@ -1,11 +1,11 @@
-import React, {useContext, useRef, useState} from 'react';
+// @ts-ignore
+import React, {useRef, useState} from 'react';
 import {BsFillInfoCircleFill} from "react-icons/bs";
 import Popup from "reactjs-popup";
 import {GrAdd, GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
-import {offsetContext} from "../../App";
 
 const deleteDealHandler = (memberId: number, dealId: number) => {
     const key: string = "D:" + memberId.toString();
@@ -17,31 +17,8 @@ const deleteDealHandler = (memberId: number, dealId: number) => {
     window.location.reload(false);
 };
 
-const updateOwings = (id: number) => {
-    let om = 0, og = 0;
-    const d = localStorage.getItem("D:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals){
-        // om += deals[i].leftMoney;
-        og += deals[i].leftGold;
-    }
-    const m = localStorage.getItem("daily-members");
-    if (m !== null && m !== undefined && m !== ""){
-        let mems = JSON.parse(m);
-        for (let j in mems.list){
-            if (mems.list[j].id === id){
-                mems.list[j].oMoney = om;
-                mems.list[j].oGold = og;
-                break;
-            }
-        }
-        localStorage.setItem("daily-members", JSON.stringify(mems));
-    }
-};
-
-function DailyDealCard({deal, personId}: any) {
+// @ts-ignore
+const MeltDealCard = ({deal, personId}: any) => {
     const {year, month, day} = deal.date;
     const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex} = deal;
     const pageRef = useRef(null);
@@ -54,9 +31,6 @@ function DailyDealCard({deal, personId}: any) {
     const profitRef = useRef(null);
     const complexRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
-
-    const offset = useContext(offsetContext);
-
     const updateComplexLabel = () => {
         let result: number = 0;
         // @ts-ignore
@@ -74,26 +48,24 @@ function DailyDealCard({deal, personId}: any) {
         complexRef.current.value = result;
     };
     const editDeal = () => {
-        offset.changeGold(goldOut - goldIn);
-        offset.changeMoney(moneyOut - moneyIn);
         // @ts-ignore
-        const _pageNumber = parseInt(pageRef.current.value);
+        const pageNumber = parseInt(pageRef.current.value);
         // @ts-ignore
-        const _moneyIn = parseFloat(moneyInRef.current.value);
+        const moneyIn = parseInt(moneyInRef.current.value);
         // @ts-ignore
-        const _moneyOut = parseFloat(moneyOutRef.current.value);
+        const moneyOut = parseInt(moneyOutRef.current.value);
         // @ts-ignore
-        const _goldIn = parseFloat(goldInRef.current.value);
+        const goldIn = parseInt(goldInRef.current.value);
         // @ts-ignore
-        const _goldOut = parseFloat(goldOutRef.current.value);
+        const goldOut = parseInt(goldOutRef.current.value);
         // @ts-ignore
-        const _ojrat = parseFloat(ojratRef.current.value);
+        const ojrat = parseInt(ojratRef.current.value);
         // @ts-ignore
-        const _fi = parseFloat(fiRef.current.value);
+        const fi = parseInt(fiRef.current.value);
         // @ts-ignore
-        const _profit = parseFloat(profitRef.current.value);
+        const profit = parseInt(profitRef.current.value);
         const key = "D:" + personId;
-        if (selectedDay === null || _pageNumber === null || _moneyIn === null || _moneyOut === null || _goldIn === null || _goldOut === null || _ojrat === null || _fi === null || _profit === null) {
+        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -125,25 +97,20 @@ function DailyDealCard({deal, personId}: any) {
             // p.list.push(val);
             for (let i in p.list) {
                 if (p.list[i].id === id) {
-                    p.list[i].pageNumber = _pageNumber;
+                    p.list[i].pageNumber = pageNumber;
                     p.list[i].date = selectedDay;
-                    p.list[i].moneyIn = _moneyIn;
-                    p.list[i].moneyOut = _moneyOut;
-                    p.list[i].goldIn = _goldIn;
-                    p.list[i].goldOut = _goldOut;
+                    p.list[i].moneyIn = moneyIn;
+                    p.list[i].moneyOut = moneyOut;
+                    p.list[i].goldIn = goldIn;
+                    p.list[i].goldOut = goldOut;
                     p.list[i].complex = {
-                        ojrat: _ojrat,
-                        fi: _fi,
-                        profit: _profit
+                        ojrat: ojrat,
+                        fi: fi,
+                        profit: profit
                     };
-                    // p.list[i].leftMoney = (_goldOut - _goldIn) * ((_ojrat + _fi) * (1.0 + _profit / 100)) - (_moneyIn - _moneyOut);
-                    p.list[i].leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
                     break;
                 }
             }
-            offset.changeGold(_goldIn - _goldOut);
-            offset.changeMoney(_moneyIn - _moneyOut);
-            updateOwings(personId);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
@@ -257,8 +224,7 @@ function DailyDealCard({deal, personId}: any) {
                                 shouldHighlightWeekends
                                 locale={"fa"}
                             />
-                            <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه
-                                :</label>
+                            <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه :</label>
                             <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
                                    placeholder="شماره صفحه" ref={pageRef} defaultValue={pageNumber}/>
                         </Form.Group>
@@ -303,6 +269,6 @@ function DailyDealCard({deal, personId}: any) {
             </Popup>
         </div>
     );
-}
+};
 
-export default DailyDealCard;
+export default MeltDealCard;

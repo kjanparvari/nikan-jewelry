@@ -5,8 +5,8 @@ import DailyContentPanel from "../Daily/DailyContentPanel";
 import MeltSideBar from "./MeltSideBar";
 import MeltContentPanel from "./MeltContentPanel";
 
-function MeltPanel(props: any) {
-    const [chosenPerson, setChosenPerson] = useState(null);
+function MeltPanel({defaultPerson}: any) {
+    const [chosenPerson, setChosenPerson] = useState(defaultPerson);
     const theme = useContext(themeContext);
     return (
         <div className="theme-light">

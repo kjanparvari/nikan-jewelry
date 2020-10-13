@@ -35,7 +35,7 @@ function HomePanel(props: any) {
             p.gold.base = goldBaseRef.current.value;
             localStorage.setItem("home", JSON.stringify(p));
         }
-
+        window.location.reload(false);
     };
     return (
         <div>

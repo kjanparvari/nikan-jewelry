@@ -82,7 +82,7 @@ function DailyContentPanel(props: any) {
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
             <DailyUserInfo view={view} setView={setView} person={props.chosenPerson}/>
-            <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "80%"}}>
+            <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}
                 {/*<Carousel slides={getSlides(deals)} auxtoplay={false} interval={2000}/>*/}

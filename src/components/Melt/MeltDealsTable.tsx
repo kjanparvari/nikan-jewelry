@@ -6,10 +6,10 @@ import {readFileSync} from "fs";
 import Popup from "reactjs-popup";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
-import DailyDealCard from "./DailyDealCard";
+import MeltDealCard from "./MeltDealCard";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const DailyDealsTable = ({deals, personId}: any) => {
+const MeltDealsTable = ({deals, personId}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -87,24 +87,6 @@ const DailyDealsTable = ({deals, personId}: any) => {
                         return ((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3);
                     }}</Cell>
                 </Column>
-                {/*<Column>*/}
-                {/*    <HeaderCell>بدهی پول</HeaderCell>*/}
-                {/*    /!*<Cell dataKey="moneyOut"/>*!/*/}
-                {/*    <Cell dataKey="leftMoney"/>*/}
-                {/*</Column>*/}
-                <Column>
-                    <HeaderCell>بدهی طلا</HeaderCell>
-                    {/*<Cell dataKey="moneyOut"/>*/}
-                    {/*<Cell dataKey="leftGold"/>*/}
-                    <Cell>
-                        {
-                            (rowData: any, rowIndex: number) => {
-                                const {leftGold} = rowData;
-                                return leftGold.toFixed(3);
-                            }
-                        }
-                    </Cell>
-                </Column>
 
 
                 {/*<Column width={200}>*/}
@@ -135,10 +117,10 @@ const DailyDealsTable = ({deals, personId}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <DailyDealCard deal={chosenDeal} personId={personId}/>
+                    <MeltDealCard deal={chosenDeal} personId={personId}/>
                 </div>
             </Popup>
         </div>
     );
 };
-export default DailyDealsTable
+export default MeltDealsTable

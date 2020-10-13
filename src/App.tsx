@@ -34,14 +34,17 @@ const offset = {
 
 export const offsetContext = createContext(offset);
 
-const getLastPanel = () => {
+const getLastPanel = (cp: any) => {
     const last = localStorage.getItem("last");
+    cp.panel = last;
     if (last === "home")
         return <HomePanel/>;
     else if (last === "setting")
         return <SettingPanel/>;
     else if (last === "daily")
         return <DailyPanel defaultPerson={null}/>;
+    else if (last === "melt")
+        return <MeltPanel defaultPerson={null}/>;
     else if (last === "borrowed")
         return <BorrowedPanel defaultPerson={null}/>;
     else {
@@ -51,6 +54,7 @@ const getLastPanel = () => {
         let mems: [];
         let person;
         if (c === "D") {
+            cp.panel = "daily";
             // @ts-ignore
             id = parseInt(last.split(":")[1]);
             const m = localStorage.getItem("daily-members");
@@ -66,8 +70,23 @@ const getLastPanel = () => {
             }
 
         } else if (c === "M") {
+            cp.panel = "melt";
+            // @ts-ignore
+            id = parseInt(last.split(":")[1]);
+            const m = localStorage.getItem("melt-members");
+            if (m !== null) {
+                mems = JSON.parse(m).list;
+                mems.forEach((p, i) => {
+                    // @ts-ignore
+                    if (parseInt(p.id) === id)
+                        person = p;
+
+                });
+                return <MeltPanel defaultPerson={person}/>
+            }
 
         } else if (c === "B") {
+            cp.panel = "borrowed";
             // @ts-ignore
             id = parseInt(last.split(":")[1]);
             const m = localStorage.getItem("borrowed-members");
@@ -130,8 +149,9 @@ function App() {
     document.body.className = "theme-" + theme;
     const [chosenPanel, setChosenPanel] = useState(null);
     let panel: any;
+    let cp = {panel: chosenPanel};
     if (chosenPanel === null)
-        panel = getLastPanel();
+        panel = getLastPanel(cp);
     else if (chosenPanel === 'daily')
         panel = <DailyPanel defaultPerson={null}/>;
     else if (chosenPanel === 'home')
@@ -152,7 +172,7 @@ function App() {
         <div className={`App theme-${theme}`} style={{width: "100%"}}>
             <themeContext.Provider value={theme}>
                 <offsetContext.Provider value={offset}>
-                    <Navbar clickHandler={setChosenPanel}/>
+                    <Navbar chosenPanel={cp.panel} clickHandler={setChosenPanel}/>
                     <br/>
                     <br/>
                     {panel}

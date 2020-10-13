@@ -11,7 +11,6 @@ import {Form, Button} from 'semantic-ui-react';
 import {GrClose} from 'react-icons/gr';
 import {themeContext} from "../../App";
 
-
 const retrieveMembers = () => {
     const mems = localStorage.getItem("daily-members");
     if (mems === null) {

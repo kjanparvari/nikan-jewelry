@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {FaUser} from "react-icons/fa";
 // @ts-ignore
 import Tilt from "react-tilt/dist/tilt";
@@ -55,6 +55,34 @@ const changeView = (view: string, setView: any) => {
         setView(() => "card");
 };
 
+const updateOwings = (id: number) => {
+    let om = 0, og = 0;
+    const d = localStorage.getItem("D:" + id.toString());
+    if (d === null || d === undefined || d === "")
+        return;
+    const deals: any[] = JSON.parse(d).list;
+    for (let i in deals) {
+        // om += deals[i].leftMoney;
+        og += deals[i].leftGold;
+    }
+    const m = localStorage.getItem("daily-members");
+    if (m !== null && m !== undefined && m !== "") {
+        let mems = JSON.parse(m);
+        for (let j in mems.list) {
+            if (mems.list[j].id === id) {
+                mems.list[j].oMoney = om;
+                mems.list[j].oGold = og;
+                break;
+            }
+        }
+        localStorage.setItem("daily-members", JSON.stringify(mems));
+    }
+};
+
+const computeOMoney = (): number => {
+    return 0;
+};
+
 function DailyUserInfo(props: any) {
     const theme = useContext(themeContext);
     const offset = useContext(offsetContext);
@@ -66,6 +94,7 @@ function DailyUserInfo(props: any) {
         localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
         localStorage.removeItem("D:" + id);
         localStorage.setItem("last", "daily");
+        updateOwings(parseInt(id));
         window.location.reload(false);
     };
     const pageRef = useRef(null);
@@ -77,6 +106,10 @@ function DailyUserInfo(props: any) {
     const fiRef = useRef(null);
     const profitRef = useRef(null);
     const complexRef = useRef(null);
+    const currentComplexRef = useRef(null);
+    const currentOjratRef = useRef(null);
+    const currentFiRef = useRef(null);
+    const currentProfitRef = useRef(null);
     const [open, setOpen] = useState(false);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
     const updateComplexLabel = () => {
@@ -99,19 +132,19 @@ function DailyUserInfo(props: any) {
         // @ts-ignore
         const pageNumber = parseInt(pageRef.current.value);
         // @ts-ignore
-        const moneyIn = parseInt(moneyInRef.current.value);
+        const moneyIn = parseFloat(moneyInRef.current.value);
         // @ts-ignore
-        const moneyOut = parseInt(moneyOutRef.current.value);
+        const moneyOut = parseFloat(moneyOutRef.current.value);
         // @ts-ignore
-        const goldIn = parseInt(goldInRef.current.value);
+        const goldIn = parseFloat(goldInRef.current.value);
         // @ts-ignore
-        const goldOut = parseInt(goldOutRef.current.value);
+        const goldOut = parseFloat(goldOutRef.current.value);
         // @ts-ignore
-        const ojrat = parseInt(ojratRef.current.value);
+        const ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
-        const fi = parseInt(fiRef.current.value);
+        const fi = parseFloat(fiRef.current.value);
         // @ts-ignore
-        const profit = parseInt(profitRef.current.value);
+        const profit = parseFloat(profitRef.current.value);
         const key = "D:" + props.person.id;
         if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
             return;
@@ -139,7 +172,9 @@ function DailyUserInfo(props: any) {
                     ojrat: ojrat,
                     fi: fi,
                     profit: profit
-                }
+                },
+                // leftMoney: (goldOut - goldIn) * ((ojrat + fi) * (1.0 + profit/100)) - (moneyIn - moneyOut),
+                leftGold: (goldOut - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100))
             };
             p.maxId = maxId;
             p.list.push(val);
@@ -148,6 +183,7 @@ function DailyUserInfo(props: any) {
             localStorage.setItem(key, p);
             offset.changeGold(goldIn - goldOut);
             offset.changeMoney(moneyIn - moneyOut);
+            updateOwings(id);
             closeModal();
             window.location.reload(false);
             // console.log(JSON.stringify(val));
@@ -175,6 +211,7 @@ function DailyUserInfo(props: any) {
                     m.list[i].phone = phoneRef.current.value;
                     localStorage.setItem("daily-members", JSON.stringify(m));
                     closeModal();
+                    updateOwings(id);
                     window.location.reload(false);
                     break;
                 }
@@ -183,22 +220,61 @@ function DailyUserInfo(props: any) {
 
 
     };
+    const [currentComplex, setCurrentComplex]: any[] = useState({ojrat: -1, fi: -1, profit: -1});
+    const getSavedCurrentComplex = () => {
+        const _c: any = localStorage.getItem("daily-complex");
+        let _complex: { ojrat: number, fi: number, profit: number };
+        if (_c === null || _c === undefined || _c === "") {
+            _complex = {
+                ojrat: 0,
+                fi: 0,
+                profit: 0
+            };
+            localStorage.setItem("daily-complex", JSON.stringify(_complex));
+        } else {
+            _complex = JSON.parse(_c);
+        }
+        console.log(_complex);
+        setCurrentComplex(() => {
+            return _complex;
+        });
+    };
+    const changeCurrentComplex = () => {
+        // @ts-ignore
+        const _complex: { ojrat: number, fi: number, profit: number } = {ojrat: 0, fi: 0, profit: 0};
+        // @ts-ignore
+        _complex.ojrat = parseFloat(currentOjratRef.current.value);
+        // @ts-ignore
+        _complex.fi = parseFloat(currentFiRef.current.value);
+        // @ts-ignore
+        _complex.profit = parseFloat(currentProfitRef.current.value);
+        localStorage.setItem("daily-complex", JSON.stringify(_complex));
+        setCurrentComplex(() => {
+            return _complex;
+        });
+    };
+    // useEffect(() => {
+    //     if (currentComplex.ojrat === -1)
+    //         getSavedCurrentComplex();
+    // }, []);
+    if (currentComplex.ojrat === -1)
+                getSavedCurrentComplex();
+    const {id, name, phone, oGold} = props.person;
 
-    const {id, name, phone, oGold, oMoney} = props.person;
-    // @ts-ignore
     return (
         <React.Fragment>
             <Tilt className="Tilt container Tilt-inner bg-warning rounded-pill float-right mr-3 pt-2 pb-2"
                   options={{max: 2, scale: 1.02}}
                   style={{
-                      height: "12vh",
-                      width: "75%",
+                      // height: "15vh",
+                      width: "90%",
                       borderRadius: 25,
                       marginTop: "auto",
                       marginBottom: "auto",
-                      minHeight: "100px"
+                      minHeight: "100px",
+                      maxHeight: "125px"
                   }}>
-                <div className="bg-danger" style={{marginTop: "1.5%", marginBottom: "auto"}}>
+                <div className="bg-danger" style={{marginTop: "0.5%"}}>
                     <div className="float-right">
                         <FaUser className="float-right"
                                 style={{fontSize: 50, marginTop: "auto", marginBottom: "auto"}}/>
@@ -211,18 +287,84 @@ function DailyUserInfo(props: any) {
                             </div>
                         </div>
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
+
+                            {/*<Popup*/}
+                            {/*    trigger={<div>*/}
+                            {/*        <div className="float-right">: قیمت مرکب فعلی</div>*/}
+                            {/*        <div*/}
+                            {/*            className="float-right mr-2">{((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(3)}</div>*/}
+                            {/*    </div>}*/}
+                            {/*    position="right top"*/}
+                            {/*    on="hover"*/}
+                            {/*    closeOnDocumentClick={true}*/}
+                            {/*    mouseLeaveDelay={200}*/}
+                            {/*    mouseEnterDelay={0}*/}
+                            {/*    contentStyle={{*/}
+                            {/*        padding: "2px",*/}
+                            {/*        paddingRight: "4px",*/}
+                            {/*        border: "none",*/}
+                            {/*        borderRadius: 10,*/}
+                            {/*        // backgroundColor: "#fff",*/}
+                            {/*        backgroundColor: "#343a40",*/}
+                            {/*        width: 220,*/}
+                            {/*        zIndex: 999999*/}
+                            {/*    }}*/}
+                            {/*    arrow={false}*/}
+                            {/*>*/}
+                            {/*    <div className="mr-3" style={{*/}
+                            {/*        width: "95%",*/}
+                            {/*        margin: "auto",*/}
+                            {/*    }}>*/}
+                            {/*        <div className="mt-1">*/}
+                            {/*            <label className="float-left text-white" style={{width: "50px"}}>اجرت :</label>*/}
+                            {/*            <input type="number" className="float-right form-control form-control-sm"*/}
+                            {/*                   ref={currentOjratRef} defaultValue={currentComplex.ojrat} onChange={changeCurrentComplex}*/}
+                            {/*                   style={{width: "150px"}}/>*/}
+                            {/*        </div>*/}
+                            {/*        <br/>*/}
+                            {/*        <div className="mt-3">*/}
+                            {/*            <label className="float-left text-white" style={{width: "50px"}}>فی :</label>*/}
+                            {/*            <input type="number" className="float-right form-control form-control-sm"*/}
+                            {/*                   ref={currentFiRef} defaultValue={currentComplex.fi} onChange={changeCurrentComplex}*/}
+                            {/*                   style={{width: "150px"}}/>*/}
+                            {/*        </div>*/}
+                            {/*        <br/>*/}
+                            {/*        <div className="mt-3">*/}
+                            {/*            <label className="float-left text-white" style={{width: "50px"}}>سود :</label>*/}
+                            {/*            <input type="number" className="float-right form-control form-control-sm"*/}
+                            {/*                   ref={currentProfitRef} defaultValue={currentComplex.profit} onChange={changeCurrentComplex}*/}
+                            {/*                   style={{width: "150px"}}/>*/}
+                            {/*        </div>*/}
+                            {/*        <br/>*/}
+                            {/*        <br/>*/}
+
+
+                            {/*    </div>*/}
+                            {/*</Popup>*/}
+                            <div>
+                                <div className="float-right">: قیمت مرکب فعلی</div>
+                                <div
+                                    className="float-right mr-2">{((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(3)}</div>
+                            </div>
+                            <br/>
+
+                            <div>
+                                <div className="float-right">:بستانکار طلایی</div>
+                                <div className="float-right mr-2">{oGold.toFixed(3)}</div>
+                            </div>
+                            <br/>
+                            <div>
+                                <div className="float-right">:بدهکار پولی</div>
+                                <div
+                                    className="float-right mr-2">{(oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(3)}</div>
+                            </div>
+                            <br/>
                             <div>
                                 <div className="float-right">:شماره تماس</div>
                                 <div className="float-right mr-2">{phone}</div>
                             </div>
-                            <div>
-                                <div className="float-right">:بدهکار پولی</div>
-                                <div className="float-right mr-2">{oMoney}</div>
-                            </div>
-                            <div>
-                                <div className="float-right">:بدهکار طلایی</div>
-                                <div className="float-right mr-2">{oGold}</div>
-                            </div>
+                            <br/>
+
                         </div>
                     </div>
                     <div style={{marginTop: "-1", marginBottom: "auto"}}>
@@ -230,8 +372,8 @@ function DailyUserInfo(props: any) {
                         {/*</button>*/}
 
                         <Popup
-                            trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
-                                style={{fontSize: 35}}/></a>}
+                            trigger={<a className="float-left mt-4 ml-2"><CgMoreVerticalAlt
+                                style={{fontSize: 40}}/></a>}
                             position="right top"
                             on="hover"
                             closeOnDocumentClick={true}
@@ -264,6 +406,38 @@ function DailyUserInfo(props: any) {
                         </Popup>
                         {/*<button className="btn btn-primary btn-sm float-left mt-4" style={{fontSize: 13}}>افزودن معامله*/}
                         {/*</button>*/}
+                        <div className="ml-3 float-left" style={{
+                            // width: "95%",
+                            // margin: "auto",
+                        }}>
+                            <div className="mt-1">
+                                <label className="float-left text-dark" style={{width: "50px"}}>اجرت :</label>
+                                <input type="number" className="float-right form-control form-control-sm"
+                                       ref={currentOjratRef} defaultValue={currentComplex.ojrat}
+                                       onChange={changeCurrentComplex}
+                                       style={{width: "150px"}}/>
+                            </div>
+                            <br/>
+                            <div className="mt-3">
+                                <label className="float-left text-dark" style={{width: "50px"}}>فی :</label>
+                                <input type="number" className="float-right form-control form-control-sm"
+                                       ref={currentFiRef} defaultValue={currentComplex.fi}
+                                       onChange={changeCurrentComplex}
+                                       style={{width: "150px"}}/>
+                            </div>
+                            <br/>
+                            <div className="mt-3">
+                                <label className="float-left text-dark" style={{width: "50px"}}>سود :</label>
+                                <input type="number" className="float-right small form-control form-control-sm"
+                                       ref={currentProfitRef} defaultValue={currentComplex.profit}
+                                       onChange={changeCurrentComplex}
+                                       style={{width: "150px"}}/>
+                            </div>
+                            <br/>
+                            <br/>
+
+
+                        </div>
                     </div>
                 </div>
             </Tilt>

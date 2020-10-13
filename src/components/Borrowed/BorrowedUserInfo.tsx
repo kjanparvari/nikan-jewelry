@@ -136,7 +136,7 @@ function BorrowedUserInfo(props: any) {
 
     };
 
-    const {id, name} = props.person;
+    const {id, name, oMoney, oGold} = props.person;
     console.log("im here");
     return (
         <React.Fragment>
@@ -144,7 +144,7 @@ function BorrowedUserInfo(props: any) {
                   options={{max: 2, scale: 1.02}}
                   style={{
                       height: "12vh",
-                      width: "75%",
+                      width: "90%",
                       borderRadius: 25,
                       marginTop: "auto",
                       marginBottom: "auto",
@@ -162,20 +162,16 @@ function BorrowedUserInfo(props: any) {
                                 #{id}
                             </div>
                         </div>
-                        {/*<div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>*/}
-                        {/*    <div>*/}
-                        {/*        <div className="float-right">:شماره تماس</div>*/}
-                        {/*        <div className="float-right mr-2">{phone}</div>*/}
-                        {/*    </div>*/}
-                        {/*    <div>*/}
-                        {/*        <div className="float-right">:بدهکار پولی</div>*/}
-                        {/*        <div className="float-right mr-2">{oMoney}</div>*/}
-                        {/*    </div>*/}
-                        {/*    <div>*/}
-                        {/*        <div className="float-right">:بدهکار طلایی</div>*/}
-                        {/*        <div className="float-right mr-2">{oGold}</div>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
+                        <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
+                            <div>
+                                <div className="float-right">:بدهکار پولی</div>
+                                <div className="float-right mr-2">{oMoney}</div>
+                            </div>
+                            <div>
+                                <div className="float-right">:بدهکار طلایی</div>
+                                <div className="float-right mr-2">{oGold}</div>
+                            </div>
+                        </div>
                     </div>
                     <div style={{marginTop: "-1", marginBottom: "auto"}}>
                         {/*<button className="btn btn-danger btn-sm float-left mt-4 ml-4" style={{fontSize: 13}}>حذف عضو*/}
