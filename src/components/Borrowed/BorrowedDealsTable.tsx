@@ -86,6 +86,10 @@ const BorrowedDealsTable = ({deals, personId}: any) => {
                     }}</Cell>
                     {/*<Cell dataKey="date.day"/>*/}
                 </Column>
+                <Column>
+                    <HeaderCell>بدهی طلا</HeaderCell>
+                    <Cell dataKey="leftGold"/>
+                </Column>
 
 
                 {/*<Column width={200}>*/}

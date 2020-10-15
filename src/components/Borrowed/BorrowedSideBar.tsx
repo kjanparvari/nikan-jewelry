@@ -43,7 +43,6 @@ function BorrowedSideBar(props: any) {
         const newMember = {
             id: maxId,
             name: name,
-            oMoney: 0,
             oGold: 0
         };
         const newMembers: any[] = [];
@@ -100,6 +99,7 @@ function BorrowedSideBar(props: any) {
     open={open}
     // closeOnDocumentClick={false}
     onClose={closeModal}
+    contentStyle={{borderRadius: 15}}
     className=""
     >
     <div className="container">

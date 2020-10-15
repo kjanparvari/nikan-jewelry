@@ -79,15 +79,30 @@ const MeltDealsTable = ({deals, personId}: any) => {
                     {/*<Cell dataKey="moneyOut"/>*/}
                     <Cell dataKey="moneyOut"/>
                 </Column>
-
                 <Column>
-                    <HeaderCell>قیمت مرکب</HeaderCell>
-                    <Cell>{(rowData: any, rowIndex: number) => {
-                        const {complex} = rowData;
-                        return ((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3);
-                    }}</Cell>
+                    <HeaderCell>قیمت هرگرم</HeaderCell>
+                    {/*<Cell dataKey="moneyOut"/>*/}
+                    <Cell dataKey="complex"/>
                 </Column>
-
+                <Column>
+                    <HeaderCell>فروخته به</HeaderCell>
+                    <Cell dataKey="buyerName"/>
+                </Column>
+                <Column>
+                    <HeaderCell>در تاریخ</HeaderCell>
+                    <Cell>{(rowData: any, rowIndex: number) => {
+                        return rowData.soldDate.year + " / " + rowData.soldDate.month + " / " + rowData.soldDate.day;
+                    }}</Cell>
+                    {/*<Cell dataKey="date.day"/>*/}
+                </Column>
+                <Column>
+                    <HeaderCell>بدهی طلا</HeaderCell>
+                    <Cell dataKey="leftGold"/>
+                </Column>
+                <Column>
+                    <HeaderCell>بدهی پول</HeaderCell>
+                    <Cell dataKey="leftMoney"/>
+                </Column>
 
                 {/*<Column width={200}>*/}
                 {/*    <HeaderCell>Action</HeaderCell>*/}

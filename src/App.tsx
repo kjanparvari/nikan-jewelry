@@ -23,7 +23,9 @@ const changeMoneyOffset = (amount: number) => {
     const p = localStorage.getItem("home");
     if (p !== null && p !== undefined && p !== "") {
         const home = JSON.parse(p);
+        console.log(home);
         home.money.offset += amount;
+        console.log(home);
         localStorage.setItem("home", JSON.stringify(home));
     }
 };

@@ -45,7 +45,6 @@ function DailySideBar(props: any) {
             id: maxId,
             name: name,
             phone: phone,
-            oMoney: 0,
             oGold: 0
         };
         const newMembers: any[] = [];
@@ -103,6 +102,7 @@ function DailySideBar(props: any) {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">

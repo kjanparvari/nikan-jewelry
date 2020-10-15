@@ -1,19 +1,32 @@
-import React, {useRef, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {BsFillInfoCircleFill} from "react-icons/bs";
 import Popup from "reactjs-popup";
 import {GrAdd, GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
+import {offsetContext} from "../../App";
 
-const deleteDealHandler = (memberId: number, dealId: number) => {
-    const key: string = "B:" + memberId.toString();
-    const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
-    const newDeals = list.filter((deal: any) => {
-        return deal.id !== dealId;
-    });
-    localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
-    window.location.reload(false);
+const updateOwings = (id: number) => {
+    let og = 0;
+    const d = localStorage.getItem("B:" + id.toString());
+    if (d === null || d === undefined || d === "")
+        return;
+    const deals: any[] = JSON.parse(d).list;
+    for (let i in deals) {
+        og += deals[i].leftGold;
+    }
+    const m = localStorage.getItem("borrowed-members");
+    if (m !== null && m !== undefined && m !== "") {
+        let mems = JSON.parse(m);
+        for (let j in mems.list) {
+            if (mems.list[j].id === id) {
+                mems.list[j].oGold = og;
+                break;
+            }
+        }
+        localStorage.setItem("borrowed-members", JSON.stringify(mems));
+    }
 };
 
 function BorrowedDealCard({deal, personId}: any) {
@@ -28,19 +41,24 @@ function BorrowedDealCard({deal, personId}: any) {
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
     const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
 
+    const offset = useContext(offsetContext);
+
+
     const editDeal = () => {
+        offset.changeGold(goldOut - goldIn);
+        offset.changeMoney(ojrat);
         // @ts-ignore
-        const pageNumber = parseInt(pageRef.current.value);
+        const _pageNumber = parseInt(pageRef.current.value);
         // @ts-ignore
-        const goldIn = parseInt(goldInRef.current.value);
+        const _goldIn = parseFloat(goldInRef.current.value);
         // @ts-ignore
-        const goldOut = parseInt(goldOutRef.current.value);
+        const _goldOut = parseFloat(goldOutRef.current.value);
         // @ts-ignore
-        const ojrat = parseInt(ojratRef.current.value);
+        const _ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
-        const buyerName = buyerNameRef.current.value;
+        const _buyerName = buyerNameRef.current.value;
         const key = "B:" + personId;
-        if (selectedDay === null || pageNumber === null || ojrat === null || buyerName === null || goldIn === null || goldOut === null) {
+        if (selectedDay === null || _pageNumber === null || _ojrat === null || _buyerName === null || _goldIn === null || _goldOut === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -72,27 +90,41 @@ function BorrowedDealCard({deal, personId}: any) {
             // p.list.push(val);
             for (let i in p.list) {
                 if (p.list[i].id === id) {
-                    p.list[i].pageNumber = pageNumber;
+                    p.list[i].pageNumber = _pageNumber;
                     p.list[i].date = selectedDay;
                     p.list[i].soldDate = soldDay;
-                    p.list[i].ojrat = ojrat;
-                    p.list[i].buyerName = buyerName;
-                    p.list[i].goldIn = goldIn;
-                    p.list[i].goldOut = goldOut;
+                    p.list[i].ojrat = _ojrat;
+                    p.list[i].buyerName = _buyerName;
+                    p.list[i].goldIn = _goldIn;
+                    p.list[i].goldOut = _goldOut;
                     break;
                 }
             }
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
-            // offset.changeGold(goldIn - goldOut);
-            // offset.changeMoney(moneyIn - moneyOut);
+            offset.changeGold(_goldIn - _goldOut);
+            offset.changeMoney(-1 * _ojrat);
             closeModal();
+            updateOwings(personId);
             window.location.reload(false);
             // console.log(JSON.stringify(val));
             // localStorage.setItem(key, JSON.stringify(val));
         }
     };
+    const deleteDealHandler = (memberId: number, dealId: number) => {
+        const key: string = "B:" + memberId.toString();
+        const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
+        const newDeals = list.filter((deal: any) => {
+            return deal.id !== dealId;
+        });
+        offset.changeGold(goldOut - goldIn);
+        offset.changeMoney(ojrat);
+        localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
+        updateOwings(personId);
+        window.location.reload(false);
+    };
+
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -141,6 +173,7 @@ function BorrowedDealCard({deal, personId}: any) {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">
@@ -152,7 +185,8 @@ function BorrowedDealCard({deal, personId}: any) {
                     <br/>
                     <Form>
                         <Form.Group>
-                            <label className="float-left text-center" style={{width: "10%", color: "black"}}>تاریخ :</label>
+                            <label className="float-left text-center" style={{width: "10%", color: "black"}}>تاریخ
+                                :</label>
                             {/*<input className="float-left ml-3 mr-3 text-center" style={{width: "12%"}} placeholder="سال"/>*/}
                             {/*<input className=" mr-3 text-center" style={{width: "12%"}} placeholder='ماه'/>*/}
                             {/*<input type="date" className=" text-center" style={{width: "35%"}} placeholder='روز'/>*/}
@@ -163,12 +197,13 @@ function BorrowedDealCard({deal, personId}: any) {
                                 shouldHighlightWeekends
                                 locale={"fa"}
                             />
-                            <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه :</label>
+                            <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه
+                                :</label>
                             <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
                                    placeholder="شماره صفحه" ref={pageRef} defaultValue={pageNumber}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left"style={{color: "black"}}>طلا :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="ورود" ref={goldInRef} defaultValue={goldIn}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}

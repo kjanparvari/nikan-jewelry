@@ -1,4 +1,3 @@
-// @ts-ignore
 import React, {useRef, useState} from 'react';
 import {BsFillInfoCircleFill} from "react-icons/bs";
 import Popup from "reactjs-popup";
@@ -7,65 +6,63 @@ import {Button, Form} from "semantic-ui-react";
 import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 
-const deleteDealHandler = (memberId: number, dealId: number) => {
-    const key: string = "D:" + memberId.toString();
-    const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
-    const newDeals = list.filter((deal: any) => {
-        return deal.id !== dealId;
-    });
-    localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
-    window.location.reload(false);
+
+
+const updateOwings = (id: number) => {
+    let om = 0, og = 0;
+    const d = localStorage.getItem("M:" + id.toString());
+    if (d === null || d === undefined || d === "")
+        return;
+    const deals: any[] = JSON.parse(d).list;
+    for (let i in deals){
+        om += deals[i].leftMoney;
+        og += deals[i].leftGold;
+    }
+    const m = localStorage.getItem("melt-members");
+    if (m !== null && m !== undefined && m !== ""){
+        let mems = JSON.parse(m);
+        for (let j in mems.list){
+            if (mems.list[j].id === id){
+                mems.list[j].oGold = og;
+                mems.list[j].oMoney = om;
+                break;
+            }
+        }
+        localStorage.setItem("melt-members", JSON.stringify(mems));
+    }
 };
 
-// @ts-ignore
-const MeltDealCard = ({deal, personId}: any) => {
+function BorrowedDealCard({deal, personId}: any) {
     const {year, month, day} = deal.date;
-    const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex} = deal;
+    const {year: syear, month: smonth, day: sday} = deal.soldDate;
+    const {id, goldIn, goldOut, moneyIn, moneyOut, complex, pageNumber, buyerName} = deal;
     const pageRef = useRef(null);
-    const moneyInRef = useRef(null);
-    const moneyOutRef = useRef(null);
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
-    const ojratRef = useRef(null);
-    const fiRef = useRef(null);
-    const profitRef = useRef(null);
+    const buyerNameRef = useRef(null);
+    const moneyInRef = useRef(null);
+    const moneyOutRef = useRef(null);
     const complexRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
-    const updateComplexLabel = () => {
-        let result: number = 0;
-        // @ts-ignore
-        let ojrat: number = parseFloat(ojratRef.current.value);
-        // @ts-ignore
-        let fi: number = parseFloat(fiRef.current.value);
-        // @ts-ignore
-        let profit: number = 1.0 + parseFloat(profitRef.current.value) / 100;
+    const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
 
-        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
-            result = 0;
-        else
-            result = (ojrat + fi) * profit;
-        // @ts-ignore
-        complexRef.current.value = result;
-    };
     const editDeal = () => {
         // @ts-ignore
-        const pageNumber = parseInt(pageRef.current.value);
+        const _pageNumber = parseInt(pageRef.current.value);
         // @ts-ignore
-        const moneyIn = parseInt(moneyInRef.current.value);
+        const _goldIn = parseFloat(goldInRef.current.value);
         // @ts-ignore
-        const moneyOut = parseInt(moneyOutRef.current.value);
+        const _goldOut = parseFloat(goldOutRef.current.value);
         // @ts-ignore
-        const goldIn = parseInt(goldInRef.current.value);
+        const _moneyIn = parseFloat(moneyInRef.current.value);
         // @ts-ignore
-        const goldOut = parseInt(goldOutRef.current.value);
+        const _moneyOut = parseFloat(moneyOutRef.current.value);
         // @ts-ignore
-        const ojrat = parseInt(ojratRef.current.value);
+        const _complex = parseFloat(complexRef.current.value);
         // @ts-ignore
-        const fi = parseInt(fiRef.current.value);
-        // @ts-ignore
-        const profit = parseInt(profitRef.current.value);
-        const key = "D:" + personId;
-        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
+        const _buyerName = buyerNameRef.current.value;
+        const key = "M:" + personId;
+        if (selectedDay === null || _pageNumber === null || _moneyIn === null || _moneyOut === null || _buyerName === null || _goldIn === null || _goldOut === null || _complex === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -78,56 +75,46 @@ const MeltDealCard = ({deal, personId}: any) => {
                 console.log("here");
                 p = JSON.parse(p);
             }
-            // const maxId = (parseInt(p.maxId) + 1).toString();
-            // const val = {
-            //     id: maxId,
-            //     date: selectedDay,
-            //     pageNumber: pageNumber,
-            //     moneyIn: moneyIn,
-            //     moneyOut: moneyOut,
-            //     goldIn: goldIn,
-            //     goldOut: goldOut,
-            //     complex: {
-            //         ojrat: ojrat,
-            //         fi: fi,
-            //         profit: profit
-            //     }
-            // };
-            // p.maxId = maxId;
-            // p.list.push(val);
             for (let i in p.list) {
                 if (p.list[i].id === id) {
-                    p.list[i].pageNumber = pageNumber;
+                    p.list[i].pageNumber = _pageNumber;
                     p.list[i].date = selectedDay;
-                    p.list[i].moneyIn = moneyIn;
-                    p.list[i].moneyOut = moneyOut;
-                    p.list[i].goldIn = goldIn;
-                    p.list[i].goldOut = goldOut;
-                    p.list[i].complex = {
-                        ojrat: ojrat,
-                        fi: fi,
-                        profit: profit
-                    };
+                    p.list[i].soldDate = soldDay;
+                    p.list[i].moneyIn = _moneyIn;
+                    p.list[i].moneyOut = _moneyOut;
+                    p.list[i].buyerName = _buyerName;
+                    p.list[i].goldIn = _goldIn;
+                    p.list[i].goldOut = _goldOut;
+                    p.list[i].complex = _complex;
+                    p.list[i].leftGold = (_goldIn - _goldOut) + (_moneyIn - _moneyOut) / (_complex);
+                    p.list[i].leftMoney = ((_goldIn - _goldOut) * (_complex)) + (_moneyIn - _moneyOut);
                     break;
                 }
             }
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
-            // offset.changeGold(goldIn - goldOut);
-            // offset.changeMoney(moneyIn - moneyOut);
             closeModal();
+            updateOwings(personId);
             window.location.reload(false);
-            // console.log(JSON.stringify(val));
-            // localStorage.setItem(key, JSON.stringify(val));
         }
+    };
+    const deleteDealHandler = (memberId: number, dealId: number) => {
+        const key: string = "M:" + memberId.toString();
+        const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
+        const newDeals = list.filter((deal: any) => {
+            return deal.id !== dealId;
+        });
+        localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
+        updateOwings(personId);
+        window.location.reload(false);
     };
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
     return (
         <div className="bg-light mt-0 justify-content-center"
-             style={{borderRadius: 15, width: 300, height: 380, marginLeft: "auto", marginRight: "auto"}}>
+             style={{borderRadius: 15, width: 300, height: 400, marginLeft: "auto", marginRight: "auto"}}>
             <div className="badge-danger pt-1 pb-1" style={{
                 marginRight: "auto",
                 marginLeft: "auto",
@@ -137,14 +124,14 @@ const MeltDealCard = ({deal, personId}: any) => {
             <div className="mt-3" style={{color: "black"}}>
                 شماره صفحه : {pageNumber}
             </div>
-            <div className=" m-4 badge-light" style={{height: 220, borderRadius: 10}}>
+            <div className=" m-4 badge-light" style={{height: 255, borderRadius: 10}}>
                 <div className="w-100 p-3 pb-4">
-                    <div className="float-right text-right  w-50 " style={{}}>:ورود پول</div>
-                    <div className="float-left w-50">{moneyIn}</div>
+                    <div className="float-right text-right  w-50 " style={{}}>:فروخته شده به</div>
+                    <div className="float-left w-50">{buyerName}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
-                    <div className="float-right text-right w-50">:خروج پول</div>
-                    <div className="float-left w-50">{moneyOut}</div>
+                    <div className="float-right text-right w-50">: در تاریخ</div>
+                    <div className="float-left w-50">{syear}/{smonth}/{sday}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود طلا</div>
@@ -155,42 +142,18 @@ const MeltDealCard = ({deal, personId}: any) => {
                     <div className="float-left w-50">{goldOut}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
-                    {/*<div className="float-right text-right" style={{width: "50%"}}>:قیمت مرکب طلا</div>*/}
-                    {/*<div className="float-right"*/}
-                    {/*     style={{width: "40%"}}>{((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3)}</div>*/}
-                    <Popup
-                        // trigger={<a className="float-left"><BsFillInfoCircleFill style={{fontSize: 20}}/></a>}
-                        trigger={<div className="float-right text-right w-50">:قیمت مرکب طلا</div>}
-                        position="right top"
-                        on="hover"
-                        closeOnDocumentClick={true}
-                        mouseLeaveDelay={100}
-                        mouseEnterDelay={0}
-                        contentStyle={{
-                            padding: "4px",
-                            paddingRight: "4px",
-                            border: "none",
-                            borderRadius: 10,
-                            // backgroundColor: "#fff",
-                            backgroundColor: "#343a40",
-                            width: 150
-                        }}
-                        arrow={false}
-                    >
-                        <div className="mr-3" style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            width: "95%",
-                            margin: "auto"
-                        }}>
-                            <label className="text-white" htmlFor="">اجرت: {complex.ojrat}</label>
-                            <label className="text-white" htmlFor="">فی: {complex.fi}</label>
-                            <label className="text-white" htmlFor="">درصد سود: %{complex.profit}</label>
-                        </div>
-                    </Popup>
-                    <div
-                        className="float-right w-50">{((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3)}</div>
+                    <div className="float-right text-right w-50">:ورود پول</div>
+                    <div className="float-left w-50">{moneyIn}</div>
                 </div>
+                <div className="w-100 p-3 pb-4">
+                    <div className="float-right text-right w-50">:خروج پول</div>
+                    <div className="float-left w-50">{moneyOut}</div>
+                </div>
+                <div className="w-100 p-3 pb-4">
+                    <div className="float-right text-right w-50">:قیمت هر گرم</div>
+                    <div className="float-left w-50">{complex}</div>
+                </div>
+
 
             </div>
             <div className="mt-0">
@@ -202,6 +165,7 @@ const MeltDealCard = ({deal, personId}: any) => {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">
@@ -213,7 +177,8 @@ const MeltDealCard = ({deal, personId}: any) => {
                     <br/>
                     <Form>
                         <Form.Group>
-                            <label className="float-left text-center" style={{width: "10%"}}>تاریخ :</label>
+                            <label className="float-left text-center" style={{width: "10%", color: "black"}}>تاریخ
+                                :</label>
                             {/*<input className="float-left ml-3 mr-3 text-center" style={{width: "12%"}} placeholder="سال"/>*/}
                             {/*<input className=" mr-3 text-center" style={{width: "12%"}} placeholder='ماه'/>*/}
                             {/*<input type="date" className=" text-center" style={{width: "35%"}} placeholder='روز'/>*/}
@@ -224,7 +189,8 @@ const MeltDealCard = ({deal, personId}: any) => {
                                 shouldHighlightWeekends
                                 locale={"fa"}
                             />
-                            <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه :</label>
+                            <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه
+                                :</label>
                             <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
                                    placeholder="شماره صفحه" ref={pageRef} defaultValue={pageNumber}/>
                         </Form.Group>
@@ -244,23 +210,22 @@ const MeltDealCard = ({deal, personId}: any) => {
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
-                            <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}
-                                   defaultValue={complex.ojrat}/><GrAdd
-                            style={{marginTop: 10}}/>
-                            <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}
-                                   defaultValue={complex.fi}/><GrAdd
-                            style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
-                                   style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
-                                   ref={profitRef} defaultValue={complex.profit}/><FaEquals
-                            style={{marginTop: 10}}/>
-                            <input className="ml-1 mr-1 text-center" style={{width: "17%"}}
-                                   readOnly={true}
-                                   ref={complexRef}
-                                   defaultValue={(complex.ojrat + complex.fi) * (1.0 + complex.profit / 100)}/>
+                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                   placeholder="قیمت هرگرم" ref={complexRef} defaultValue={complex}/>
                         </Form.Group>
+                        <Form.Group>
+                            <label className="float-left  text-left" style={{color: "black"}}>فروخته شده به :</label>
+                            <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                   placeholder="فروخته شده به" ref={buyerNameRef} defaultValue={buyerName}/>
+                            <DatePicker
+                                value={soldDay}
+                                onChange={setSoldDay}
+                                inputPlaceholder="در تاریخ"
+                                shouldHighlightWeekends
+                                locale={"fa"}
+                            />
+                        </Form.Group>
+                        <br/>
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={editDeal}>Submit</Button>
@@ -269,6 +234,6 @@ const MeltDealCard = ({deal, personId}: any) => {
             </Popup>
         </div>
     );
-};
+}
 
-export default MeltDealCard;
+export default BorrowedDealCard;

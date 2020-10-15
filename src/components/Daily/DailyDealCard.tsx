@@ -7,32 +7,22 @@ import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
 
-const deleteDealHandler = (memberId: number, dealId: number) => {
-    const key: string = "D:" + memberId.toString();
-    const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
-    const newDeals = list.filter((deal: any) => {
-        return deal.id !== dealId;
-    });
-    localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
-    window.location.reload(false);
-};
 
 const updateOwings = (id: number) => {
-    let om = 0, og = 0;
+    let og = 0;
     const d = localStorage.getItem("D:" + id.toString());
     if (d === null || d === undefined || d === "")
         return;
     const deals: any[] = JSON.parse(d).list;
-    for (let i in deals){
+    for (let i in deals) {
         // om += deals[i].leftMoney;
         og += deals[i].leftGold;
     }
     const m = localStorage.getItem("daily-members");
-    if (m !== null && m !== undefined && m !== ""){
+    if (m !== null && m !== undefined && m !== "") {
         let mems = JSON.parse(m);
-        for (let j in mems.list){
-            if (mems.list[j].id === id){
-                mems.list[j].oMoney = om;
+        for (let j in mems.list) {
+            if (mems.list[j].id === id) {
                 mems.list[j].oGold = og;
                 break;
             }
@@ -155,6 +145,16 @@ function DailyDealCard({deal, personId}: any) {
             // localStorage.setItem(key, JSON.stringify(val));
         }
     };
+    const deleteDealHandler = (memberId: number, dealId: number) => {
+        const key: string = "D:" + memberId.toString();
+        const {maxId, list} = JSON.parse(localStorage.getItem(key) as string);
+        const newDeals = list.filter((deal: any) => {
+            return deal.id !== dealId;
+        });
+        localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
+        updateOwings(personId);
+        window.location.reload(false);
+    };
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -235,6 +235,7 @@ function DailyDealCard({deal, personId}: any) {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">

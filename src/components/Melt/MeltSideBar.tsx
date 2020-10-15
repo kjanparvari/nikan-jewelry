@@ -43,12 +43,8 @@ function MeltSideBar(props: any) {
         const newMember = {
             id: maxId,
             name: name,
-            totalSGold: 0,
-            totalBGold: 0,
-            oMoney: 0,
-            cMoney: 0,
-            cGold: 0,
-            oGold: 0
+            oGold: 0,
+            oMoney: 0
         };
         const memberDeals: any = {maxId: 0, list: []};
         const newMembers: any[] = [];
@@ -106,6 +102,7 @@ function MeltSideBar(props: any) {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">

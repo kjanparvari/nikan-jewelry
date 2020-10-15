@@ -6,6 +6,7 @@ import MeltSideBar from "./MeltSideBar";
 import MeltContentPanel from "./MeltContentPanel";
 
 function MeltPanel({defaultPerson}: any) {
+    localStorage.setItem("last", "melt");
     const [chosenPerson, setChosenPerson] = useState(defaultPerson);
     const theme = useContext(themeContext);
     return (

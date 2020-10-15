@@ -37,6 +37,27 @@ const changeView = (view: string, setView: any) => {
     else if (view === "table")
         setView(() => "card");
 };
+const updateOwings = (id: number) => {
+    let og = 0;
+    const d = localStorage.getItem("B:" + id.toString());
+    if (d === null || d === undefined || d === "")
+        return;
+    const deals: any[] = JSON.parse(d).list;
+    for (let i in deals) {
+        og += deals[i].leftGold;
+    }
+    const m = localStorage.getItem("borrowed-members");
+    if (m !== null && m !== undefined && m !== "") {
+        let mems = JSON.parse(m);
+        for (let j in mems.list) {
+            if (mems.list[j].id === id) {
+                mems.list[j].oGold = og;
+                break;
+            }
+        }
+        localStorage.setItem("borrowed-members", JSON.stringify(mems));
+    }
+};
 
 function BorrowedUserInfo(props: any) {
     const theme = useContext(themeContext);
@@ -49,6 +70,7 @@ function BorrowedUserInfo(props: any) {
         localStorage.setItem("borrowed-members", JSON.stringify({maxId: maxId, list: newMembers}));
         localStorage.removeItem("B:" + id);
         localStorage.setItem("last", "borrowed");
+        updateOwings(parseInt(id));
         window.location.reload(false);
     };
     const pageRef = useRef(null);
@@ -64,11 +86,11 @@ function BorrowedUserInfo(props: any) {
         // @ts-ignore
         const pageNumber = parseInt(pageRef.current.value);
         // @ts-ignore
-        const goldIn = parseInt(goldInRef.current.value);
+        const goldIn = parseFloat(goldInRef.current.value);
         // @ts-ignore
-        const goldOut = parseInt(goldOutRef.current.value);
+        const goldOut = parseFloat(goldOutRef.current.value);
         // @ts-ignore
-        const ojrat = parseInt(ojratRef.current.value);
+        const ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
         const key = "B:" + props.person.id;
@@ -94,7 +116,8 @@ function BorrowedUserInfo(props: any) {
                 goldIn: goldIn,
                 goldOut: goldOut,
                 ojrat: ojrat,
-                buyerName: buyerName
+                buyerName: buyerName,
+                leftGold: (goldOut - goldIn)
             };
             p.maxId = maxId;
             p.list.push(val);
@@ -102,6 +125,8 @@ function BorrowedUserInfo(props: any) {
             console.log(p);
             localStorage.setItem(key, p);
             offset.changeGold(goldIn - goldOut);
+            offset.changeMoney(-1 * ojrat);
+            updateOwings(id);
             closeModal();
             window.location.reload(false);
             // console.log(JSON.stringify(val));
@@ -127,6 +152,7 @@ function BorrowedUserInfo(props: any) {
                     m.list[i].name = nameRef.current.value;
                     localStorage.setItem("borrowed-members", JSON.stringify(m));
                     closeModal();
+                    updateOwings(id);
                     window.location.reload(false);
                     break;
                 }
@@ -163,10 +189,10 @@ function BorrowedUserInfo(props: any) {
                             </div>
                         </div>
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
-                            <div>
-                                <div className="float-right">:بدهکار پولی</div>
-                                <div className="float-right mr-2">{oMoney}</div>
-                            </div>
+                            {/*<div>*/}
+                            {/*    <div className="float-right">:بدهکار پولی</div>*/}
+                            {/*    <div className="float-right mr-2">{oMoney}</div>*/}
+                            {/*</div>*/}
                             <div>
                                 <div className="float-right">:بدهکار طلایی</div>
                                 <div className="float-right mr-2">{oGold}</div>
@@ -230,6 +256,7 @@ function BorrowedUserInfo(props: any) {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">
@@ -314,6 +341,7 @@ function BorrowedUserInfo(props: any) {
                 open={openEdit}
                 // closeOnDocumentClick={false}
                 onClose={closeEditModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">

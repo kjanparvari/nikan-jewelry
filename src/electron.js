@@ -20,6 +20,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         minWidth: 1280,
         minHeight: 720,
+        // fullscreen: true,
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')

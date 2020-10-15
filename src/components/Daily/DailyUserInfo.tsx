@@ -56,13 +56,12 @@ const changeView = (view: string, setView: any) => {
 };
 
 const updateOwings = (id: number) => {
-    let om = 0, og = 0;
+    let og = 0;
     const d = localStorage.getItem("D:" + id.toString());
     if (d === null || d === undefined || d === "")
         return;
     const deals: any[] = JSON.parse(d).list;
     for (let i in deals) {
-        // om += deals[i].leftMoney;
         og += deals[i].leftGold;
     }
     const m = localStorage.getItem("daily-members");
@@ -70,7 +69,6 @@ const updateOwings = (id: number) => {
         let mems = JSON.parse(m);
         for (let j in mems.list) {
             if (mems.list[j].id === id) {
-                mems.list[j].oMoney = om;
                 mems.list[j].oGold = og;
                 break;
             }
@@ -258,7 +256,7 @@ function DailyUserInfo(props: any) {
     //         getSavedCurrentComplex();
     // }, []);
     if (currentComplex.ojrat === -1)
-                getSavedCurrentComplex();
+        getSavedCurrentComplex();
     const {id, name, phone, oGold} = props.person;
 
     return (
@@ -275,10 +273,10 @@ function DailyUserInfo(props: any) {
                       maxHeight: "125px"
                   }}>
                 <div className="bg-danger" style={{marginTop: "0.5%"}}>
-                    <div className="float-right">
+                    <div className="float-right ">
                         <FaUser className="float-right"
-                                style={{fontSize: 50, marginTop: "auto", marginBottom: "auto"}}/>
-                        <div className="float-right mr-2">
+                                style={{fontSize: 60, marginTop: "4%"}}/>
+                        <div className="float-right mr-3">
                             <div style={{fontSize: 25, marginTop: "auto", marginBottom: "auto"}}>
                                 {name}
                             </div>
@@ -414,7 +412,7 @@ function DailyUserInfo(props: any) {
                                 <label className="float-left text-dark" style={{width: "50px"}}>اجرت :</label>
                                 <input type="number" className="float-right form-control form-control-sm"
                                        ref={currentOjratRef} defaultValue={currentComplex.ojrat}
-                                       onChange={changeCurrentComplex}
+                                       onChange={changeCurrentComplex} min={0}
                                        style={{width: "150px"}}/>
                             </div>
                             <br/>
@@ -422,7 +420,7 @@ function DailyUserInfo(props: any) {
                                 <label className="float-left text-dark" style={{width: "50px"}}>فی :</label>
                                 <input type="number" className="float-right form-control form-control-sm"
                                        ref={currentFiRef} defaultValue={currentComplex.fi}
-                                       onChange={changeCurrentComplex}
+                                       onChange={changeCurrentComplex}  min={0}
                                        style={{width: "150px"}}/>
                             </div>
                             <br/>
@@ -430,7 +428,7 @@ function DailyUserInfo(props: any) {
                                 <label className="float-left text-dark" style={{width: "50px"}}>سود :</label>
                                 <input type="number" className="float-right small form-control form-control-sm"
                                        ref={currentProfitRef} defaultValue={currentComplex.profit}
-                                       onChange={changeCurrentComplex}
+                                       onChange={changeCurrentComplex} min={0}
                                        style={{width: "150px"}}/>
                             </div>
                             <br/>
@@ -456,6 +454,7 @@ function DailyUserInfo(props: any) {
                 open={open}
                 // closeOnDocumentClick={false}
                 onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">
@@ -522,6 +521,7 @@ function DailyUserInfo(props: any) {
                 open={openEdit}
                 // closeOnDocumentClick={false}
                 onClose={closeEditModal}
+                contentStyle={{borderRadius: 15}}
                 className=""
             >
                 <div className="container">
