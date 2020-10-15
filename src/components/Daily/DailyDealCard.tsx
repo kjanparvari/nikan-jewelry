@@ -133,13 +133,13 @@ function DailyDealCard({deal, personId}: any) {
             }
             offset.changeGold(_goldIn - _goldOut);
             offset.changeMoney(_moneyIn - _moneyOut);
-            updateOwings(personId);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
             // offset.changeGold(goldIn - goldOut);
             // offset.changeMoney(moneyIn - moneyOut);
             closeModal();
+            updateOwings(personId);
             window.location.reload(false);
             // console.log(JSON.stringify(val));
             // localStorage.setItem(key, JSON.stringify(val));
@@ -152,6 +152,8 @@ function DailyDealCard({deal, personId}: any) {
             return deal.id !== dealId;
         });
         localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
+        offset.changeGold(goldOut - goldIn);
+        offset.changeMoney(moneyOut - moneyIn);
         updateOwings(personId);
         window.location.reload(false);
     };

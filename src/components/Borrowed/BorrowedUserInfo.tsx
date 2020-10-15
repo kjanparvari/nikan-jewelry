@@ -195,7 +195,7 @@ function BorrowedUserInfo(props: any) {
                             {/*</div>*/}
                             <div>
                                 <div className="float-right">:بدهکار طلایی</div>
-                                <div className="float-right mr-2">{oGold}</div>
+                                <div className="float-right mr-2">{oGold.toFixed(3)}</div>
                             </div>
                         </div>
                     </div>

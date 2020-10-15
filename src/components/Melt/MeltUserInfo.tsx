@@ -124,8 +124,8 @@ function MeltUserInfo(props: any) {
                 complex: complex,
                 goldOut: goldOut,
                 buyerName: buyerName,
-                leftGold: (goldIn - goldOut) + (moneyIn - moneyOut) / (complex),
-                leftMoney: ((goldIn - goldOut) * complex) + (moneyIn - moneyOut)
+                leftGold: (moneyOut) / (complex) - (goldIn - goldOut),
+                leftMoney: (moneyOut) - ((goldIn - goldOut) * complex)
             };
             p.maxId = maxId;
             p.list.push(val);
@@ -207,7 +207,7 @@ function MeltUserInfo(props: any) {
                             </div>
                             <div>
                                 <div className="float-right">:بدهکار پولی</div>
-                                <div className="float-right mr-2">{oMoney}</div>
+                                <div className="float-right mr-2">{oMoney.toFixed(3)}</div>
                             </div>
                         </div>
                     </div>

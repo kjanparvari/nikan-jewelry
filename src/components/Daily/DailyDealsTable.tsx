@@ -18,7 +18,7 @@ const DailyDealsTable = ({deals, personId}: any) => {
         <div>
             <Table
                 style={{borderRadius: 10, color: "black"}}
-                height={450}
+                height={440}
                 // autoHeight
                 data={deals}
                 defaultExpandAllRows

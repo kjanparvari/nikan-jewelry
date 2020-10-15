@@ -1,10 +1,11 @@
-import React, {useRef, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {BsFillInfoCircleFill} from "react-icons/bs";
 import Popup from "reactjs-popup";
 import {GrAdd, GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
+import {offsetContext} from "../../App";
 
 
 
@@ -33,6 +34,7 @@ const updateOwings = (id: number) => {
 };
 
 function BorrowedDealCard({deal, personId}: any) {
+    const offset = useContext(offsetContext);
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
     const {id, goldIn, goldOut, moneyIn, moneyOut, complex, pageNumber, buyerName} = deal;
@@ -47,6 +49,8 @@ function BorrowedDealCard({deal, personId}: any) {
     const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
 
     const editDeal = () => {
+        offset.changeGold(goldOut - goldIn);
+        offset.changeMoney(moneyOut - moneyIn);
         // @ts-ignore
         const _pageNumber = parseInt(pageRef.current.value);
         // @ts-ignore
@@ -86,8 +90,8 @@ function BorrowedDealCard({deal, personId}: any) {
                     p.list[i].goldIn = _goldIn;
                     p.list[i].goldOut = _goldOut;
                     p.list[i].complex = _complex;
-                    p.list[i].leftGold = (_goldIn - _goldOut) + (_moneyIn - _moneyOut) / (_complex);
-                    p.list[i].leftMoney = ((_goldIn - _goldOut) * (_complex)) + (_moneyIn - _moneyOut);
+                    p.list[i].leftGold = (_moneyOut) / (_complex) - (_goldIn - _goldOut);
+                    p.list[i].leftMoney = (_moneyOut) - ((_goldIn - _goldOut) * (_complex));
                     break;
                 }
             }
@@ -95,6 +99,8 @@ function BorrowedDealCard({deal, personId}: any) {
             console.log(p);
             localStorage.setItem(key, p);
             closeModal();
+            offset.changeGold(_goldIn - _goldOut);
+            offset.changeMoney(_moneyIn - _moneyOut);
             updateOwings(personId);
             window.location.reload(false);
         }
@@ -106,6 +112,8 @@ function BorrowedDealCard({deal, personId}: any) {
             return deal.id !== dealId;
         });
         localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
+        offset.changeGold(goldOut - goldIn);
+        offset.changeMoney(moneyOut - moneyIn);
         updateOwings(personId);
         window.location.reload(false);
     };
