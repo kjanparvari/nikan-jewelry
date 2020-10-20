@@ -1,5 +1,7 @@
 const path = require('path');
 const url = require('url');
+// const { ipcRenderer } = require('electron');
+// window.ipcRenderer = ipcRenderer;
 
 const customTitlebar = require('custom-electron-titlebar');
 

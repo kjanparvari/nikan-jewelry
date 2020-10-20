@@ -40,6 +40,8 @@ function DailySideBar(props: any) {
         const name = nameRef.current.value;
         // @ts-ignore
         const phone = phoneRef.current.value;
+        if (name === null)
+            return;
         maxId = (parseInt(maxId) + 1).toString();
         const newMember = {
             id: maxId,
@@ -85,7 +87,7 @@ function DailySideBar(props: any) {
     console.log(localStorage.getItem("daily-members"));
     return (
         <div className={`container float-right justify-content-center theme-${oTheme} sidenavigation`}
-             style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
+             style={{width: "18%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
             <MDBCol md="12" className=" p-0">
                 <MDBInput hint="Search" type="text" containerClass="mt-0"
                           className={`text-center d-flex justify-content-center ${searchFont}`} onChange={searchHandler}/>

@@ -39,6 +39,8 @@ function MeltSideBar(props: any) {
         // if (oldMembers === undefined) oldMembers = [];
         // @ts-ignore
         const name = nameRef.current.value;
+        if (name === null)
+            return;
         maxId = (parseInt(maxId) + 1).toString();
         const newMember = {
             id: maxId,
