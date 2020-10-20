@@ -93,6 +93,9 @@ function BorrowedUserInfo(props: any) {
         const ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
+        if (soldDay === null){
+            setSoldDay({year: 0, day: 0, month: 0});
+        }
         const key = "B:" + props.person.id;
         if (selectedDay === null || pageNumber === null || goldIn === null || goldOut === null || ojrat === null || soldDay === null || buyerName === null) {
             return;
@@ -107,6 +110,18 @@ function BorrowedUserInfo(props: any) {
                 console.log("here");
                 p = JSON.parse(p);
             }
+
+            const _m = localStorage.getItem("borrowed-members");
+            let _ogold;
+            if (_m !== null && _m !== undefined && _m !== "") {
+                let _mems = JSON.parse(_m);
+                for (let j in _mems.list) {
+                    if (_mems.list[j].id === id) {
+                        _ogold = _mems.list[j].oGold;
+                        break;
+                    }
+                }
+            }
             const maxId = (parseInt(p.maxId) + 1).toString();
             const val = {
                 id: maxId,
@@ -117,7 +132,8 @@ function BorrowedUserInfo(props: any) {
                 goldOut: goldOut,
                 ojrat: ojrat,
                 buyerName: buyerName,
-                leftGold: (goldOut - goldIn)
+                leftGold: (goldIn - goldOut),
+                curOGold: _ogold + goldIn - goldOut
             };
             p.maxId = maxId;
             p.list.push(val);

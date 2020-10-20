@@ -6,6 +6,38 @@ import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import Popup from "reactjs-popup";
 
+const allStorage = () => {
+    let archive: any = {}; // Notice change here
+    let keys = Object.keys(localStorage);
+    let i = keys.length;
+
+    while (i--) {
+        archive[keys[i]] = localStorage.getItem(keys[i]);
+    }
+
+    console.log(JSON.parse(JSON.stringify(archive)));
+    return archive;
+};
+
+const getFilename = () => {
+    let dateTime = new Date();
+    return dateTime.toLocaleString("fa-IR").replace("/", "-").replace("/", "-")
+        .replace("،", "@").replace(":", "-").replace(":", "-");
+};
+
+const getObjectURL = () => {
+    let data = new Blob([JSON.stringify(allStorage())], {type: 'text/json'});
+    let objURL = window.URL.createObjectURL(data);
+    return objURL;
+};
+
+const getBackup = () => {
+    let tempLink = document.createElement('a');
+    tempLink.href = getObjectURL();
+    tempLink.setAttribute('download', `${getFilename()}.json`);
+    tempLink.click();
+};
+
 
 function SettingPanel(props: any) {
     localStorage.setItem("last", "setting");
@@ -70,6 +102,16 @@ function SettingPanel(props: any) {
                 <div className="float-right">
                     <button className="btn btn-danger" onClick={openModal}>تغییر رمز عبور</button>
                 </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <div className="w-75 justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
+                <div className="float-left font-bn" style={{fontSize: 25}}>ذخیره فایل پشتیبان</div>
+                <button className="btn btn-success float-right" onClick={getBackup}>Backup</button>
+                {/*<a href={getObjectURL()} target="_blank" download={getFilename() + ".json"} className="btn btn-success float-right">*/}
+                {/*    Backup*/}
+                {/*</a>*/}
             </div>
             <Popup
                 open={open}

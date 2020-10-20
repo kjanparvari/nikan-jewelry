@@ -157,6 +157,18 @@ function DailyUserInfo(props: any) {
                 console.log("here");
                 p = JSON.parse(p);
             }
+            const _m = localStorage.getItem("daily-members");
+            let _ogold;
+            if (_m !== null && _m !== undefined && _m !== "") {
+                let _mems = JSON.parse(_m);
+                for (let j in _mems.list) {
+                    if (_mems.list[j].id === id) {
+                        _ogold = _mems.list[j].oGold;
+                        break;
+                    }
+                }
+            }
+            const _leftGold = (goldOut - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100));
             const maxId = (parseInt(p.maxId) + 1).toString();
             const val = {
                 id: maxId,
@@ -172,7 +184,8 @@ function DailyUserInfo(props: any) {
                     profit: profit
                 },
                 // leftMoney: (goldOut - goldIn) * ((ojrat + fi) * (1.0 + profit/100)) - (moneyIn - moneyOut),
-                leftGold: (goldOut - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100))
+                leftGold: _leftGold,
+                curOGold: _ogold + _leftGold
             };
             p.maxId = maxId;
             p.list.push(val);
@@ -342,7 +355,7 @@ function DailyUserInfo(props: any) {
                             <div>
                                 <div className="float-right">: قیمت مرکب فعلی</div>
                                 <div
-                                    className="float-right mr-2">{((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(3)}</div>
+                                    className="float-right mr-2">{((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0))}</div>
                             </div>
                             <br/>
 
@@ -354,7 +367,7 @@ function DailyUserInfo(props: any) {
                             <div>
                                 <div className="float-right">:بدهکار پولی</div>
                                 <div
-                                    className="float-right mr-2">{(oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(3)}</div>
+                                    className="float-right mr-2">{(oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0))}</div>
                             </div>
                             <br/>
                             <div>

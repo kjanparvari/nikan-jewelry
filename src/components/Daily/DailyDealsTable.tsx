@@ -84,7 +84,7 @@ const DailyDealsTable = ({deals, personId}: any) => {
                     <HeaderCell>قیمت مرکب</HeaderCell>
                     <Cell>{(rowData: any, rowIndex: number) => {
                         const {complex} = rowData;
-                        return ((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3);
+                        return ((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100));
                     }}</Cell>
                 </Column>
                 {/*<Column>*/}
@@ -93,14 +93,14 @@ const DailyDealsTable = ({deals, personId}: any) => {
                 {/*    <Cell dataKey="leftMoney"/>*/}
                 {/*</Column>*/}
                 <Column>
-                    <HeaderCell>بدهی طلا</HeaderCell>
+                    <HeaderCell>بستانکار طلا</HeaderCell>
                     {/*<Cell dataKey="moneyOut"/>*/}
                     {/*<Cell dataKey="leftGold"/>*/}
                     <Cell>
                         {
                             (rowData: any, rowIndex: number) => {
-                                const {leftGold} = rowData;
-                                return leftGold.toFixed(3);
+                                const {curOGold} = rowData;
+                                return curOGold.toFixed(3);
                             }
                         }
                     </Cell>

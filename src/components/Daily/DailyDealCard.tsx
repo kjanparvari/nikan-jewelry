@@ -33,7 +33,7 @@ const updateOwings = (id: number) => {
 
 function DailyDealCard({deal, personId}: any) {
     const {year, month, day} = deal.date;
-    const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex} = deal;
+    const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex, leftGold, curOGold} = deal;
     const pageRef = useRef(null);
     const moneyInRef = useRef(null);
     const moneyOutRef = useRef(null);
@@ -113,6 +113,18 @@ function DailyDealCard({deal, personId}: any) {
             // };
             // p.maxId = maxId;
             // p.list.push(val);
+            const _m = localStorage.getItem("daily-members");
+            let _ogold;
+            if (_m !== null && _m !== undefined && _m !== "") {
+                let _mems = JSON.parse(_m);
+                for (let j in _mems.list) {
+                    if (_mems.list[j].id === personId) {
+                        _ogold = _mems.list[j].oGold;
+                        break;
+                    }
+                }
+            }
+            const _leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -127,7 +139,8 @@ function DailyDealCard({deal, personId}: any) {
                         profit: _profit
                     };
                     // p.list[i].leftMoney = (_goldOut - _goldIn) * ((_ojrat + _fi) * (1.0 + _profit / 100)) - (_moneyIn - _moneyOut);
-                    p.list[i].leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
+                    p.list[i].leftGold = _leftGold;
+                    p.list[i].curOGold = _ogold - leftGold + _leftGold;
                     break;
                 }
             }

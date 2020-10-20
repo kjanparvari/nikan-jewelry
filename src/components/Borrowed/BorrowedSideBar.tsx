@@ -82,41 +82,42 @@ function BorrowedSideBar(props: any) {
     console.log(localStorage.getItem("borrowed-members"));
     return (
         <div className={`container float-right justify-content-center theme-${oTheme} sidenavigation`}
-    style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
-    <MDBCol md="12" className=" p-0">
-    <MDBInput hint="Search" type="text" containerClass="mt-0"
-    className={`text-center d-flex justify-content-center ${searchFont}`} onChange={searchHandler}/>
-    </MDBCol>
-    <div className="mb-0 justify-content-center text-center"
-    style={{flex: 1, overflowY: "scroll", height: "80%", overflowX: "hidden"}}>
-    <div className="mt-1"/>
-        {membersTiles}
+             style={{width: "20%", height: "75vh", marginRight: "4%", borderRadius: 20, minHeight: "400px"}}>
+            <MDBCol md="12" className=" p-0">
+                <MDBInput hint="Search" type="text" containerClass="mt-0"
+                          className={`text-center d-flex justify-content-center ${searchFont}`}
+                          onChange={searchHandler}/>
+            </MDBCol>
+            <div className="mb-0 justify-content-center text-center"
+                 style={{flex: 1, overflowY: "scroll", height: "80%", overflowX: "hidden"}}>
+                <div className="mt-1"/>
+                {membersTiles}
+            </div>
+            <button className="btn btn-success" onClick={openModal}
+                    style={{borderRadius: 7, paddingLeft: "10%", paddingRight: "10%", marginTop: "5%"}}>افزودن عضو جدید
+            </button>
+            <Popup
+                open={open}
+                // closeOnDocumentClick={false}
+                onClose={closeModal}
+                contentStyle={{borderRadius: 15}}
+                className=""
+            >
+                <div className="container">
+                    <a className="float-right"><GrClose onClick={closeModal}/></a>
+                    <br/>
+                    <br/>
+                    <Form>
+                        <Form.Field>
+                            <label className="float-left">نام مشتری :</label>
+                            <input placeholder='First Name' ref={nameRef}/>
+                        </Form.Field>
+                        <Button type='submit' onClick={addMemberHandler}>Submit</Button>
+                    </Form>
+                </div>
+            </Popup>
         </div>
-        <button className="btn btn-success" onClick={openModal}
-    style={{borderRadius: 7, paddingLeft: "10%", paddingRight: "10%", marginTop: "5%"}}>افزودن عضو جدید
-    </button>
-    <Popup
-    open={open}
-    // closeOnDocumentClick={false}
-    onClose={closeModal}
-    contentStyle={{borderRadius: 15}}
-    className=""
-    >
-    <div className="container">
-    <a className="float-right"><GrClose onClick={closeModal}/></a>
-    <br/>
-    <br/>
-    <Form>
-        <Form.Field>
-            <label className="float-left">نام مشتری :</label>
-    <input placeholder='First Name' ref={nameRef}/>
-    </Form.Field>
-    <Button type='submit' onClick={addMemberHandler}>Submit</Button>
-        </Form>
-        </div>
-        </Popup>
-        </div>
-);
+    );
 }
 
 export default BorrowedSideBar;

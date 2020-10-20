@@ -32,7 +32,7 @@ const updateOwings = (id: number) => {
 function BorrowedDealCard({deal, personId}: any) {
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
-    const {id, goldIn, goldOut, pageNumber, buyerName, ojrat} = deal;
+    const {id, goldIn, goldOut, pageNumber, buyerName, ojrat, leftGold, curOGold} = deal;
     const pageRef = useRef(null);
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
@@ -57,8 +57,11 @@ function BorrowedDealCard({deal, personId}: any) {
         const _ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
         const _buyerName = buyerNameRef.current.value;
+        if (soldDay === null){
+            setSoldDay({year: 0, day: 0, month: 0});
+        }
         const key = "B:" + personId;
-        if (selectedDay === null || _pageNumber === null || _ojrat === null || _buyerName === null || _goldIn === null || _goldOut === null) {
+        if (selectedDay === null || _pageNumber === null || _ojrat === null || _buyerName === null || _goldIn === null || _goldOut === null || soldDay === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -88,6 +91,18 @@ function BorrowedDealCard({deal, personId}: any) {
             // };
             // p.maxId = maxId;
             // p.list.push(val);
+
+            const _m = localStorage.getItem("borrowed-members");
+            let _ogold;
+            if (_m !== null && _m !== undefined && _m !== "") {
+                let _mems = JSON.parse(_m);
+                for (let j in _mems.list) {
+                    if (_mems.list[j].id === personId) {
+                        _ogold = _mems.list[j].oGold;
+                        break;
+                    }
+                }
+            }
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -97,6 +112,8 @@ function BorrowedDealCard({deal, personId}: any) {
                     p.list[i].buyerName = _buyerName;
                     p.list[i].goldIn = _goldIn;
                     p.list[i].goldOut = _goldOut;
+                    p.list[i].leftGold = _goldIn - _goldOut;
+                    p.list[i].curOGold = _ogold - goldIn + _goldOut + _goldIn - _goldOut;
                     break;
                 }
             }

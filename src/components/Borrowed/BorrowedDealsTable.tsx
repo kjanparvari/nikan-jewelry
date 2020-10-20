@@ -88,7 +88,7 @@ const BorrowedDealsTable = ({deals, personId}: any) => {
                 </Column>
                 <Column>
                     <HeaderCell>بدهی طلا</HeaderCell>
-                    <Cell dataKey="leftGold"/>
+                    <Cell dataKey="curOGold"/>
                 </Column>
 
 
