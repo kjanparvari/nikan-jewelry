@@ -87,7 +87,7 @@ const BorrowedDealsTable = ({deals, personId}: any) => {
                     {/*<Cell dataKey="date.day"/>*/}
                 </Column>
                 <Column>
-                    <HeaderCell>بدهی طلا</HeaderCell>
+                    <HeaderCell>بستانکار طلا</HeaderCell>
                     <Cell dataKey="curOGold"/>
                 </Column>
 

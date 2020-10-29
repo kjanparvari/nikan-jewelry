@@ -6,6 +6,7 @@ import {Button, Form} from "semantic-ui-react";
 import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
+import {Toggle} from "rsuite";
 
 
 
@@ -47,6 +48,7 @@ function BorrowedDealCard({deal, personId}: any) {
     const complexRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
     const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
+    const [toggle, setToggle] = useState(deal.toggle);
 
     const editDeal = () => {
         offset.changeGold(goldOut - goldIn);
@@ -65,6 +67,7 @@ function BorrowedDealCard({deal, personId}: any) {
         const _complex = parseFloat(complexRef.current.value);
         // @ts-ignore
         const _buyerName = buyerNameRef.current.value;
+        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
         const key = "M:" + personId;
         if (selectedDay === null || _pageNumber === null || _moneyIn === null || _moneyOut === null || _buyerName === null || _goldIn === null || _goldOut === null || _complex === null) {
             return;
@@ -79,19 +82,36 @@ function BorrowedDealCard({deal, personId}: any) {
                 console.log("here");
                 p = JSON.parse(p);
             }
+            const _m = localStorage.getItem("melt-members");
+            let _ogold, _omoney;
+            if (_m !== null && _m !== undefined && _m !== "") {
+                let _mems = JSON.parse(_m);
+                for (let j in _mems.list) {
+                    if (_mems.list[j].id === id) {
+                        _ogold = _mems.list[j].oGold;
+                        _omoney = _mems.list[j].oMoney;
+                        break;
+                    }
+                }
+            }
+            const _leftMoney = toggle ? (moneyOut) - ((goldIn - goldOut) * complex) : (moneyOut) - ((goldIn) * complex);
+            const _leftGold = toggle ? (moneyOut) / (complex) - (goldIn - goldOut) : (moneyOut) / (complex) - (goldIn - goldOut);
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
                     p.list[i].date = selectedDay;
-                    p.list[i].soldDate = soldDay;
+                    p.list[i].soldDate = _s;
                     p.list[i].moneyIn = _moneyIn;
                     p.list[i].moneyOut = _moneyOut;
                     p.list[i].buyerName = _buyerName;
+                    p.list[i].toggle = toggle;
                     p.list[i].goldIn = _goldIn;
                     p.list[i].goldOut = _goldOut;
                     p.list[i].complex = _complex;
-                    p.list[i].leftGold = (_moneyOut) / (_complex) - (_goldIn - _goldOut);
-                    p.list[i].leftMoney = (_moneyOut) - ((_goldIn - _goldOut) * (_complex));
+                    p.list[i].leftGold = _leftGold;
+                    p.list[i].leftMoney = _leftMoney;
+                    p.list[i].curOGold = _ogold + _leftGold;
+                    p.list[i].curOMoney = _omoney + _leftMoney;
                     break;
                 }
             }
@@ -220,6 +240,9 @@ function BorrowedDealCard({deal, personId}: any) {
                             <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="قیمت هرگرم" ref={complexRef} defaultValue={complex}/>
+                            <label className="float-left  text-left">خروج طلا مرجوع به همکار :</label>
+                            <div className="float-right ml-4"><Toggle size="md" onChange={() => setToggle(() => !toggle)}
+                                                                      defaultChecked={toggle}/></div>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>فروخته شده به :</label>

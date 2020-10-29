@@ -1,10 +1,13 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {themeContext} from "../App";
 import {Toggle} from "rsuite";
+// @ts-ignore
+import {FilePicker} from 'react-file-picker'
 import "rsuite/dist/styles/rsuite-default.css";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import Popup from "reactjs-popup";
+import { saveAs } from '@progress/kendo-file-saver';
 
 const allStorage = () => {
     let archive: any = {}; // Notice change here
@@ -34,8 +37,11 @@ const getObjectURL = () => {
 const getBackup = () => {
     let tempLink = document.createElement('a');
     tempLink.href = getObjectURL();
-    tempLink.setAttribute('download', `${getFilename()}.json`);
+    tempLink.download = `${getFilename()}.json`;
+    document.body.append(tempLink);
     tempLink.click();
+    // saveAs(JSON.stringify(allStorage()), `${getFilename()}.json`);
+
 };
 
 
@@ -87,9 +93,27 @@ function SettingPanel(props: any) {
         localStorage.setItem("theme", savedTheme);
         window.location.reload(false);
     };
+    let fileReader: any;
+
+    const handleFileRead = (e: any) => {
+        const content = JSON.parse(fileReader.result);
+        console.log(content);
+        localStorage.clear();
+        for (let p in content){
+            localStorage.setItem(p.toString(), content[p]);
+        }
+        // … do something with the 'content' …
+    };
+
+    const handleFileChosen = (event: any) => {
+        const file = event.target.files[0];
+        fileReader = new FileReader();
+        fileReader.onloadend = handleFileRead;
+        fileReader.readAsText(file);
+    };
     return (
         <div className="w-50" style={{marginRight: "auto", marginLeft: "auto"}}>
-            <div className="w-75 bg-light justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
+            <div className="w-100 bg-light justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
                 <div className="float-left font-bn" style={{fontSize: 25}}>تم تاریک</div>
                 <div className="float-right"><Toggle size="md" onChange={themeHandler}
                                                      defaultChecked={savedTheme === "dark"}/></div>
@@ -97,7 +121,7 @@ function SettingPanel(props: any) {
             <br/>
             <br/>
             <br/>
-            <div className="w-75 bg-light justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
+            <div className="w-100 bg-light justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
                 <div className="float-left font-bn" style={{fontSize: 25}}>رمز عبور</div>
                 <div className="float-right">
                     <button className="btn btn-danger" onClick={openModal}>تغییر رمز عبور</button>
@@ -106,12 +130,23 @@ function SettingPanel(props: any) {
             <br/>
             <br/>
             <br/>
-            <div className="w-75 justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
-                <div className="float-left font-bn" style={{fontSize: 25}}>ذخیره فایل پشتیبان</div>
-                <button className="btn btn-success float-right" onClick={getBackup}>Backup</button>
-                {/*<a href={getObjectURL()} target="_blank" download={getFilename() + ".json"} className="btn btn-success float-right">*/}
-                {/*    Backup*/}
-                {/*</a>*/}
+            <div className="w-100 justify-content-center" style={{borderRadius: 15, paddingLeft: "20%"}}>
+                <div className="float-left font-bn" style={{fontSize: 25}}>فایل پشتیبان</div>
+                <button className="btn btn-success float-right pr-4 pl-4" onClick={getBackup}>ذخیره</button>
+                <input type="file" id="file" className="btn btn-warning" accept=".json" onChange={event => handleFileChosen(event)}/>
+                {/*<button className="btn btn-warning float-right" onClick={getBackup}>بارگذاری</button>*/}
+                {/*<FilePicker*/}
+                {/*    extensions={['json']}*/}
+                {/*    onChange={(file: File) => {*/}
+                {/*        console.log(file);*/}
+                {/*        const data = file.slice(0, 1000, "string");*/}
+                {/*        console.log(data.text());*/}
+                {/*    }}*/}
+                {/*    onError={(errMsg: any) => {*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <button className="btn btn-warning float-right">بارگذاری</button>*/}
+                {/*</FilePicker>*/}
             </div>
             <Popup
                 open={open}

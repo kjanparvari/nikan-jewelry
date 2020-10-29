@@ -5,7 +5,45 @@ import logo from '../img/nikan-logo-dark2-sm-cr.png';
 import Tilt from 'react-tilt/dist/tilt.js';
 import '../styles/themes.css'
 import {BsFillLockFill, BsFillUnlockFill} from "react-icons/bs";
+import {BiExit} from "react-icons/all";
+import {saveAs} from "@progress/kendo-file-saver";
 
+const allStorage = () => {
+    let archive: any = {}; // Notice change here
+    let keys = Object.keys(localStorage);
+    let i = keys.length;
+
+    while (i--) {
+        archive[keys[i]] = localStorage.getItem(keys[i]);
+    }
+
+    console.log(JSON.parse(JSON.stringify(archive)));
+    return archive;
+};
+const getFilename = () => {
+    let dateTime = new Date();
+    return dateTime.toLocaleString("fa-IR").replace("/", "-").replace("/", "-")
+        .replace("،", "@").replace(":", "-").replace(":", "-");
+};
+
+const getObjectURL = () => {
+    let data = new Blob([JSON.stringify(allStorage())], {type: 'text/json'});
+    let objURL = window.URL.createObjectURL(data);
+    return objURL;
+};
+const getBackup = () => {
+    let tempLink = document.createElement('a');
+    tempLink.href = getObjectURL();
+    tempLink.download = `${getFilename()}.json`;
+    tempLink.click();
+};
+const handleExit = () => {
+    if (localStorage.getItem("pss") !== "")
+        localStorage.setItem("islocked", "true");
+    getBackup();
+    // setTimeout(window.close, 4000);
+    setTimeout(()=>{window.close();}, 5000);
+};
 
 function Navbar(props: any) {
     const theme = useContext(themeContext);
@@ -31,6 +69,7 @@ function Navbar(props: any) {
     };
     return (
         <React.Fragment>
+            <a className="float-right bg-danger mr-3 mt-3 p-2 pt-0" style={{borderRadius: 10, fontSize: 25}}><BiExit style={{fontSize: 25}} onClick={handleExit}/></a>
             <nav className={`navbar navbar-expand-lg navbar-${theme} text-white theme-${theme}`}
                  style={{boxShadow: "none"}}>
                 <Tilt className="Tilt" options={{max: 10, scale: 1.05}} style={{height: 80, width: 70}}>

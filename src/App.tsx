@@ -7,6 +7,8 @@ import SettingPanel from "./components/SettingPanel";
 import MeltPanel from "./components/Melt/MeltPanel";
 import LockPanel from "./components/LockPanel";
 import BorrowedPanel from "./components/Borrowed/BorrowedPanel";
+// @ts-ignore
+import { useBeforeunload } from 'react-beforeunload';
 
 export const themeContext = React.createContext('dark');
 
@@ -136,6 +138,7 @@ const initialize = () => {
 };
 
 function App() {
+    // useBeforeunload(() => {alert("hey")});
     const init = localStorage.getItem("init");
     if (init === null || init === undefined || init === "" || init === "false") {
         initialize();
@@ -167,6 +170,7 @@ function App() {
     else {
         panel = <div/>
     }
+
     let l = localStorage.getItem("islocked");
     if (l === "true")
         panel = <LockPanel/>;

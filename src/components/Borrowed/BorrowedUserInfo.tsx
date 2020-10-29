@@ -93,11 +93,10 @@ function BorrowedUserInfo(props: any) {
         const ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
-        if (soldDay === null){
-            setSoldDay({year: 0, day: 0, month: 0});
-        }
+        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
+
         const key = "B:" + props.person.id;
-        if (selectedDay === null || pageNumber === null || goldIn === null || goldOut === null || ojrat === null || soldDay === null || buyerName === null) {
+        if (selectedDay === null || pageNumber === null || goldIn === null || goldOut === null || ojrat === null || buyerName === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -126,7 +125,7 @@ function BorrowedUserInfo(props: any) {
             const val = {
                 id: maxId,
                 date: selectedDay,
-                soldDate: soldDay,
+                soldDate: _s,
                 pageNumber: pageNumber,
                 goldIn: goldIn,
                 goldOut: goldOut,
@@ -210,7 +209,7 @@ function BorrowedUserInfo(props: any) {
                             {/*    <div className="float-right mr-2">{oMoney}</div>*/}
                             {/*</div>*/}
                             <div>
-                                <div className="float-right">:بدهکار طلایی</div>
+                                <div className="float-right">:بستانکار طلایی</div>
                                 <div className="float-right mr-2">{oGold.toFixed(3)}</div>
                             </div>
                         </div>

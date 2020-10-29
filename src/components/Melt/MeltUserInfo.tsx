@@ -11,6 +11,7 @@ import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
 import {themeContext} from "../../App";
 import {offsetContext} from "../../App";
+import {Toggle} from "rsuite";
 
 const getName = (id: number) => {
     const m = localStorage.getItem("melt-members");
@@ -83,6 +84,7 @@ function MeltUserInfo(props: any) {
     const buyerNameRef = useRef(null);
     const [soldDay, setSoldDay] = useState<DayValue>(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
+    const [toggle, setToggle] = useState(false);
     const addDeal = () => {
         // @ts-ignore
         const pageNumber = parseInt(pageRef.current.value);
@@ -98,8 +100,9 @@ function MeltUserInfo(props: any) {
         const complex = parseFloat(complexRef.current.value);
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
+        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
         const key = "M:" + props.person.id;
-        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || complex === null || buyerName === null || soldDay === null) {
+        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || complex === null || buyerName === null) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -112,11 +115,26 @@ function MeltUserInfo(props: any) {
                 console.log("here");
                 p = JSON.parse(p);
             }
+            const _m = localStorage.getItem("melt-members");
+            let _ogold, _omoney;
+            if (_m !== null && _m !== undefined && _m !== "") {
+                let _mems = JSON.parse(_m);
+                for (let j in _mems.list) {
+                    if (_mems.list[j].id === id) {
+                        _ogold = _mems.list[j].oGold;
+                        _omoney = _mems.list[j].oMoney;
+                        break;
+                    }
+                }
+            }
             const maxId = (parseInt(p.maxId) + 1).toString();
+
+            const _leftGold = toggle ? (goldIn - goldOut) - (moneyOut) / (complex) : (goldIn) - moneyOut/complex;
+            const _leftMoney = toggle ? ((goldIn - goldOut) * complex) - moneyOut : ((goldIn) * complex) - moneyOut;
             const val = {
                 id: maxId,
                 date: selectedDay,
-                soldDate: soldDay,
+                soldDate: _s,
                 pageNumber: pageNumber,
                 moneyIn: moneyIn,
                 moneyOut: moneyOut,
@@ -124,8 +142,11 @@ function MeltUserInfo(props: any) {
                 complex: complex,
                 goldOut: goldOut,
                 buyerName: buyerName,
-                leftGold: (moneyOut) / (complex) - (goldIn - goldOut),
-                leftMoney: (moneyOut) - ((goldIn - goldOut) * complex)
+                toggle: toggle,
+                leftGold: _leftGold,
+                leftMoney:  _leftMoney,
+                curOGold: _ogold + _leftGold,
+                curOMoney: _omoney + _leftMoney
             };
             p.maxId = maxId;
             p.list.push(val);
@@ -202,12 +223,12 @@ function MeltUserInfo(props: any) {
                         {/*    </div>*/}
 
                             <div>
-                                <div className="float-right">:بدهکار طلایی</div>
+                                <div className="float-right">:بستانکار طلایی</div>
                                 <div className="float-right mr-2">{oGold.toFixed(3)}</div>
                             </div>
                             <div>
-                                <div className="float-right">:بدهکار پولی</div>
-                                <div className="float-right mr-2">{oMoney.toFixed(3)}</div>
+                                <div className="float-right">:بستانکار پولی</div>
+                                <div className="float-right mr-2">{oMoney}</div>
                             </div>
                         </div>
                     </div>
@@ -313,8 +334,13 @@ function MeltUserInfo(props: any) {
                             <label className="float-left  text-left">قیمت هر گرم :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="قیمت هرگرم" ref={complexRef}/>
+                            <label className="float-left  text-left">خروج طلا مرجوع به همکار :</label>
+                            <div className="float-right ml-4"><Toggle size="md" onChange={() => setToggle(() => !toggle)}
+                                                                 defaultChecked={toggle}/></div>
                         </Form.Group>
-
+                        {/*<Form.Group>*/}
+                        {/*    */}
+                        {/*</Form.Group>*/}
                         <Form.Group>
                             <label className="float-left  text-left">فروخته شده به :</label>
                             <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}

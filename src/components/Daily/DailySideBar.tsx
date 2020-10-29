@@ -40,7 +40,7 @@ function DailySideBar(props: any) {
         const name = nameRef.current.value;
         // @ts-ignore
         const phone = phoneRef.current.value;
-        if (name === null)
+        if (name === null || name === "")
             return;
         maxId = (parseInt(maxId) + 1).toString();
         const newMember = {

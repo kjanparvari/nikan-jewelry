@@ -96,12 +96,12 @@ const MeltDealsTable = ({deals, personId}: any) => {
                     {/*<Cell dataKey="date.day"/>*/}
                 </Column>
                 <Column>
-                    <HeaderCell>بدهی طلا</HeaderCell>
-                    <Cell dataKey="leftGold"/>
+                    <HeaderCell>بستانکار طلا</HeaderCell>
+                    <Cell dataKey="curOGold"/>
                 </Column>
                 <Column>
-                    <HeaderCell>بدهی پول</HeaderCell>
-                    <Cell dataKey="leftMoney"/>
+                    <HeaderCell>بستانکار پول</HeaderCell>
+                    <Cell dataKey="curOMoney"/>
                 </Column>
 
                 {/*<Column width={200}>*/}
