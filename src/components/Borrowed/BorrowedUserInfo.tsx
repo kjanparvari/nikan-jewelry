@@ -93,10 +93,9 @@ function BorrowedUserInfo(props: any) {
         const ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
-        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
-
+        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "B:" + props.person.id;
-        if (selectedDay === null || pageNumber === null || goldIn === null || goldOut === null || ojrat === null || buyerName === null) {
+        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut)|| isNaN(ojrat) || buyerName === "") {
             return;
         } else {
             let p: any = localStorage.getItem(key);

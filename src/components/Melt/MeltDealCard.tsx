@@ -9,22 +9,21 @@ import {offsetContext} from "../../App";
 import {Toggle} from "rsuite";
 
 
-
 const updateOwings = (id: number) => {
     let om = 0, og = 0;
     const d = localStorage.getItem("M:" + id.toString());
     if (d === null || d === undefined || d === "")
         return;
     const deals: any[] = JSON.parse(d).list;
-    for (let i in deals){
+    for (let i in deals) {
         om += deals[i].leftMoney;
         og += deals[i].leftGold;
     }
     const m = localStorage.getItem("melt-members");
-    if (m !== null && m !== undefined && m !== ""){
+    if (m !== null && m !== undefined && m !== "") {
         let mems = JSON.parse(m);
-        for (let j in mems.list){
-            if (mems.list[j].id === id){
+        for (let j in mems.list) {
+            if (mems.list[j].id === id) {
                 mems.list[j].oGold = og;
                 mems.list[j].oMoney = om;
                 break;
@@ -67,9 +66,9 @@ function BorrowedDealCard({deal, personId}: any) {
         const _complex = parseFloat(complexRef.current.value);
         // @ts-ignore
         const _buyerName = buyerNameRef.current.value;
-        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
+        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "M:" + personId;
-        if (selectedDay === null || _pageNumber === null || _moneyIn === null || _moneyOut === null || _buyerName === null || _goldIn === null || _goldOut === null || _complex === null) {
+        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(moneyOut) || isNaN(moneyIn) || isNaN(goldIn) || isNaN(goldOut) || isNaN(complex) || buyerName === "") {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -241,7 +240,8 @@ function BorrowedDealCard({deal, personId}: any) {
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="قیمت هرگرم" ref={complexRef} defaultValue={complex}/>
                             <label className="float-left  text-left">خروج طلا مرجوع به همکار :</label>
-                            <div className="float-right ml-4"><Toggle size="md" onChange={() => setToggle(() => !toggle)}
+                            <div className="float-right ml-4"><Toggle size="md"
+                                                                      onChange={() => setToggle(() => !toggle)}
                                                                       defaultChecked={toggle}/></div>
                         </Form.Group>
                         <Form.Group>

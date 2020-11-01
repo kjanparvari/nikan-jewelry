@@ -102,7 +102,7 @@ function MeltUserInfo(props: any) {
         const buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
         const key = "M:" + props.person.id;
-        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || complex === null || buyerName === null) {
+        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(moneyOut) || isNaN(moneyIn) || isNaN(goldIn) || isNaN(goldOut) || isNaN(complex) || buyerName === "") {
             return;
         } else {
             let p: any = localStorage.getItem(key);

@@ -83,7 +83,7 @@ function DailyDealCard({deal, personId}: any) {
         // @ts-ignore
         const _profit = parseFloat(profitRef.current.value);
         const key = "D:" + personId;
-        if (selectedDay === null || _pageNumber === null || _moneyIn === null || _moneyOut === null || _goldIn === null || _goldOut === null || _ojrat === null || _fi === null || _profit === null) {
+        if (selectedDay === null || isNaN(_pageNumber) || isNaN(_moneyIn) || isNaN(_moneyOut) || isNaN(_goldIn) || isNaN(_goldOut) || isNaN(_ojrat) || isNaN(_fi) || isNaN(_profit)) {
             return;
         } else {
             let p: any = localStorage.getItem(key);

@@ -61,7 +61,7 @@ function BorrowedDealCard({deal, personId}: any) {
             setSoldDay({year: 0, day: 0, month: 0});
         }
         const key = "B:" + personId;
-        if (selectedDay === null || _pageNumber === null || _ojrat === null || _buyerName === null || _goldIn === null || _goldOut === null || soldDay === null) {
+        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || buyerName === "") {
             return;
         } else {
             let p: any = localStorage.getItem(key);

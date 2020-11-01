@@ -143,8 +143,9 @@ function DailyUserInfo(props: any) {
         const fi = parseFloat(fiRef.current.value);
         // @ts-ignore
         const profit = parseFloat(profitRef.current.value);
+        alert(pageNumber);
         const key = "D:" + props.person.id;
-        if (selectedDay === null || pageNumber === null || moneyIn === null || moneyOut === null || goldIn === null || goldOut === null || ojrat === null || fi === null || profit === null) {
+        if (selectedDay === null || isNaN(pageNumber) || isNaN(moneyIn) || isNaN(moneyOut) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || isNaN(fi) || isNaN(profit)) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
