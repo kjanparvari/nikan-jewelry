@@ -61,7 +61,7 @@ function HomePanel(props: any) {
                                  marginLeft: "auto",
                                  marginRight: "auto",
                                  fontSize: 35
-                             }}>{parseFloat(p.gold.base) + parseFloat(p.gold.offset)}</div>
+                             }}>{(parseFloat(p.gold.base) + parseFloat(p.gold.offset)).toFixed(3)}</div>
                         <Popup
                             trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}

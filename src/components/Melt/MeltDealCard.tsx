@@ -224,9 +224,9 @@ function BorrowedDealCard({deal, personId}: any) {
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={goldInRef} defaultValue={goldIn}/>
+                                   placeholder="ورود" step="0.001" ref={goldInRef} defaultValue={goldIn}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={goldOutRef} defaultValue={goldOut}/>
+                                   placeholder='خروج' step="0.001" ref={goldOutRef} defaultValue={goldOut}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>پول :</label>

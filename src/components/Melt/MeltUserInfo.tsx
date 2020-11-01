@@ -319,16 +319,16 @@ function MeltUserInfo(props: any) {
                         <Form.Group>
                             <label className="float-left  text-left">طلا :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={goldInRef}/>
+                                   placeholder="ورود" step="0.001" ref={goldInRef}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={goldOutRef}/>
+                                   placeholder='خروج' step="0.001" ref={goldOutRef}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">پول :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={moneyInRef}/>
+                                   placeholder="ورود"  ref={moneyInRef}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={moneyOutRef}/>
+                                   placeholder='خروج'  ref={moneyOutRef}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">قیمت هر گرم :</label>

@@ -143,9 +143,9 @@ function DailyUserInfo(props: any) {
         const fi = parseFloat(fiRef.current.value);
         // @ts-ignore
         const profit = parseFloat(profitRef.current.value);
-        alert(pageNumber);
         const key = "D:" + props.person.id;
         if (selectedDay === null || isNaN(pageNumber) || isNaN(moneyIn) || isNaN(moneyOut) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || isNaN(fi) || isNaN(profit)) {
+            // alert("همه ی بخش ها پر نشده اند !");
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -498,9 +498,9 @@ function DailyUserInfo(props: any) {
                         <Form.Group>
                             <label className="float-left  text-left">طلا :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={goldInRef}/>
+                                   placeholder="ورود" step="0.001" ref={goldInRef}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={goldOutRef}/>
+                                   placeholder='خروج' step="0.001" ref={goldOutRef}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">پول :</label>

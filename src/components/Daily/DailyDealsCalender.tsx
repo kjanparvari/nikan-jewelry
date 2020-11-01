@@ -27,9 +27,9 @@ function DailyDealsCalender({deals}: any) {
     });
 
     const checkDay = (day: any) => {
-        alert(JSON.stringify(day));
+        // alert(JSON.stringify(day));
         if (preselectedDays.includes(day)) {
-            alert(JSON.stringify(day));
+            // alert(JSON.stringify(day));
             // openModal();
         }
     };
