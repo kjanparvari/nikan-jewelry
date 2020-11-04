@@ -11,7 +11,7 @@ function LockPanel(props: any) {
         // @ts-ignore
         if (passwordRef.current.value === pss) {
             localStorage.setItem("islocked", "false");
-            window.location.reload(false);
+            props.unlock();
         }
     };
     return (

@@ -5,17 +5,14 @@ import {brotliCompress} from "zlib";
 import "../../styles/themes.css"
 // @ts-ignore
 import Tilt from "react-tilt/dist/tilt";
-import {FaUser} from "react-icons/fa";  // Font Awesome
-// import DailyDealCard from "./DailyDealCard";
-// import DailyUserInfo from "./DailyUserInfo";
-// import DailyCarousel from "./DailyCarousel";
-// import DailyDealsCalender from "./DailyDealsCalender";
+
 import BorrowedDealsTable from "./BorrowedDealsTable";
 import {themeContext} from "../../App";
 import BorrowedUserInfo from "./BorrowedUserInfo";
 import BorrowedCarousel from "./BorrowedCarousel";
 import DailyDealCard from "../Daily/DailyDealCard";
 import BorrowedDealCard from "./BorrowedDealCard";
+import MeltUserInfo from "../Melt/MeltUserInfo";
 
 
 const getSlides = (deals: any[], personId: number) => {
@@ -56,7 +53,7 @@ function BorrowedContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson}/>
+            <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember} editMember={props.editMember}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {deals && deals.length === 0 ? <div/> : result}

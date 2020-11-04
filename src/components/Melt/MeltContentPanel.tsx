@@ -12,36 +12,6 @@ import MeltUserInfo from "./MeltUserInfo";
 import MeltCarousel from "./MeltCarousel";
 import MeltDealsTable from "./MeltDealsTable";
 
-// const changeOMoney = (amount: number, id: number) => {
-//     const m = localStorage.getItem("melt-members");
-//     let mems: [];
-//     if (m !== null){
-//         mems = JSON.parse(m).list;
-//         for (let i in mems) {
-//             //@ts-ignore
-//             if (parseInt(mems[i].id) === id){
-//                 //@ts-ignore
-//                 mems[i].oMoney += amount;
-//             }
-//         }
-//     }
-// };
-//
-// const changeOGold = (amount: number, id: number) => {
-//     const m = localStorage.getItem("melt-members");
-//     let mems: [];
-//     if (m !== null){
-//         mems = JSON.parse(m).list;
-//         for (let i in mems) {
-//             //@ts-ignore
-//             if (parseInt(mems[i].id) === id){
-//                 //@ts-ignore
-//                 mems[i].oGold += amount;
-//             }
-//         }
-//     }
-// };
-
 const getSlides = (deals: any[], personId: number) => {
     console.log("deals:");
     console.log(deals);
@@ -80,7 +50,7 @@ function MeltContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <MeltUserInfo view={view} setView={setView} person={props.chosenPerson}/>
+            <MeltUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember} editMember={props.editMember}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "100%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

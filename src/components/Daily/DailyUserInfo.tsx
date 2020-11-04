@@ -10,7 +10,6 @@ import Popup from 'reactjs-popup';
 import {Button, Form} from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
-import {serialize} from "v8";
 import {themeContext} from "../../App";
 import {offsetContext} from "../../App";
 
@@ -85,15 +84,8 @@ function DailyUserInfo(props: any) {
     const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
-        const {maxId, list} = JSON.parse(localStorage.getItem("daily-members") as string);
-        const newMembers = list.filter((member: any) => {
-            return member.id !== id;
-        });
-        localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
-        localStorage.removeItem("D:" + id);
-        localStorage.setItem("last", "daily");
+        props.deleteMember(id);
         updateOwings(parseInt(id));
-        window.location.reload(false);
     };
     const pageRef = useRef(null);
     const moneyInRef = useRef(null);
@@ -184,7 +176,6 @@ function DailyUserInfo(props: any) {
                     fi: fi,
                     profit: profit
                 },
-                // leftMoney: (goldOut - goldIn) * ((ojrat + fi) * (1.0 + profit/100)) - (moneyIn - moneyOut),
                 leftGold: _leftGold,
                 curOGold: _ogold + _leftGold
             };
@@ -198,8 +189,6 @@ function DailyUserInfo(props: any) {
             updateOwings(id);
             closeModal();
             window.location.reload(false);
-            // console.log(JSON.stringify(val));
-            // localStorage.setItem(key, JSON.stringify(val));
         }
     };
     const closeModal = () => setOpen(false);
@@ -212,24 +201,10 @@ function DailyUserInfo(props: any) {
     const phoneRef = useRef(null);
 
     const editSubmitHandler = (id: number) => {
-        let m: any = localStorage.getItem("daily-members");
-        if (m !== null) {
-            m = JSON.parse(m);
-            for (let i in m.list) {
-                if (m.list[i].id === id) {
-                    // @ts-ignore
-                    m.list[i].name = nameRef.current.value;
-                    // @ts-ignore
-                    m.list[i].phone = phoneRef.current.value;
-                    localStorage.setItem("daily-members", JSON.stringify(m));
-                    closeModal();
-                    updateOwings(id);
-                    window.location.reload(false);
-                    break;
-                }
-            }
-        }
-
+        // @ts-ignore
+        props.editMember(id, nameRef.current.value, phoneRef.current.value);
+        closeEditModal();
+        updateOwings(id);
 
     };
     const [currentComplex, setCurrentComplex]: any[] = useState({ojrat: -1, fi: -1, profit: -1});
@@ -265,10 +240,6 @@ function DailyUserInfo(props: any) {
             return _complex;
         });
     };
-    // useEffect(() => {
-    //     if (currentComplex.ojrat === -1)
-    //         getSavedCurrentComplex();
-    // }, []);
     if (currentComplex.ojrat === -1)
         getSavedCurrentComplex();
     const {id, name, phone, oGold} = props.person;
@@ -299,60 +270,6 @@ function DailyUserInfo(props: any) {
                             </div>
                         </div>
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
-
-                            {/*<Popup*/}
-                            {/*    trigger={<div>*/}
-                            {/*        <div className="float-right">: قیمت مرکب فعلی</div>*/}
-                            {/*        <div*/}
-                            {/*            className="float-right mr-2">{((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(3)}</div>*/}
-                            {/*    </div>}*/}
-                            {/*    position="right top"*/}
-                            {/*    on="hover"*/}
-                            {/*    closeOnDocumentClick={true}*/}
-                            {/*    mouseLeaveDelay={200}*/}
-                            {/*    mouseEnterDelay={0}*/}
-                            {/*    contentStyle={{*/}
-                            {/*        padding: "2px",*/}
-                            {/*        paddingRight: "4px",*/}
-                            {/*        border: "none",*/}
-                            {/*        borderRadius: 10,*/}
-                            {/*        // backgroundColor: "#fff",*/}
-                            {/*        backgroundColor: "#343a40",*/}
-                            {/*        width: 220,*/}
-                            {/*        zIndex: 999999*/}
-                            {/*    }}*/}
-                            {/*    arrow={false}*/}
-                            {/*>*/}
-                            {/*    <div className="mr-3" style={{*/}
-                            {/*        width: "95%",*/}
-                            {/*        margin: "auto",*/}
-                            {/*    }}>*/}
-                            {/*        <div className="mt-1">*/}
-                            {/*            <label className="float-left text-white" style={{width: "50px"}}>اجرت :</label>*/}
-                            {/*            <input type="number" className="float-right form-control form-control-sm"*/}
-                            {/*                   ref={currentOjratRef} defaultValue={currentComplex.ojrat} onChange={changeCurrentComplex}*/}
-                            {/*                   style={{width: "150px"}}/>*/}
-                            {/*        </div>*/}
-                            {/*        <br/>*/}
-                            {/*        <div className="mt-3">*/}
-                            {/*            <label className="float-left text-white" style={{width: "50px"}}>فی :</label>*/}
-                            {/*            <input type="number" className="float-right form-control form-control-sm"*/}
-                            {/*                   ref={currentFiRef} defaultValue={currentComplex.fi} onChange={changeCurrentComplex}*/}
-                            {/*                   style={{width: "150px"}}/>*/}
-                            {/*        </div>*/}
-                            {/*        <br/>*/}
-                            {/*        <div className="mt-3">*/}
-                            {/*            <label className="float-left text-white" style={{width: "50px"}}>سود :</label>*/}
-                            {/*            <input type="number" className="float-right form-control form-control-sm"*/}
-                            {/*                   ref={currentProfitRef} defaultValue={currentComplex.profit} onChange={changeCurrentComplex}*/}
-                            {/*                   style={{width: "150px"}}/>*/}
-                            {/*        </div>*/}
-                            {/*        <br/>*/}
-                            {/*        <br/>*/}
-
-
-                            {/*    </div>*/}
-                            {/*</Popup>*/}
                             <div>
                                 <div className="float-right">: قیمت مرکب فعلی</div>
                                 <div

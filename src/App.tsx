@@ -7,8 +7,6 @@ import SettingPanel from "./components/SettingPanel";
 import MeltPanel from "./components/Melt/MeltPanel";
 import LockPanel from "./components/LockPanel";
 import BorrowedPanel from "./components/Borrowed/BorrowedPanel";
-// @ts-ignore
-import {useBeforeunload} from 'react-beforeunload';
 
 export const themeContext: any = React.createContext({
     theme: 'dark', setTheme: () => {
@@ -41,29 +39,26 @@ const offset = {
 
 export const offsetContext = createContext(offset);
 
-const getLastPanel = (cp: any) => {
-    const last = localStorage.getItem("last");
-    cp.panel = last;
-    if (last === "home")
+const getPanel = (chosenPanel: string) => {
+    if (chosenPanel === "home")
         return <HomePanel/>;
-    else if (last === "setting")
+    else if (chosenPanel === "setting")
         return <SettingPanel/>;
-    else if (last === "daily")
+    else if (chosenPanel === "daily")
         return <DailyPanel defaultPerson={null}/>;
-    else if (last === "melt")
+    else if (chosenPanel === "melt")
         return <MeltPanel defaultPerson={null}/>;
-    else if (last === "borrowed")
+    else if (chosenPanel === "borrowed")
         return <BorrowedPanel defaultPerson={null}/>;
     else {
         // @ts-ignore
-        const c = last.charAt(0);
+        const c = chosenPanel.charAt(0);
         let id: any;
         let mems: [];
         let person;
         if (c === "D") {
-            cp.panel = "daily";
             // @ts-ignore
-            id = parseInt(last.split(":")[1]);
+            id = parseInt(chosenPanel.split(":")[1]);
             const m = localStorage.getItem("daily-members");
             if (m !== null) {
                 mems = JSON.parse(m).list;
@@ -77,9 +72,8 @@ const getLastPanel = (cp: any) => {
             }
 
         } else if (c === "M") {
-            cp.panel = "melt";
             // @ts-ignore
-            id = parseInt(last.split(":")[1]);
+            id = parseInt(chosenPanel.split(":")[1]);
             const m = localStorage.getItem("melt-members");
             if (m !== null) {
                 mems = JSON.parse(m).list;
@@ -93,9 +87,8 @@ const getLastPanel = (cp: any) => {
             }
 
         } else if (c === "B") {
-            cp.panel = "borrowed";
             // @ts-ignore
-            id = parseInt(last.split(":")[1]);
+            id = parseInt(chosenPanel.split(":")[1]);
             const m = localStorage.getItem("borrowed-members");
             if (m !== null) {
                 mems = JSON.parse(m).list;
@@ -141,7 +134,6 @@ const initialize = () => {
 };
 
 function App() {
-    // useBeforeunload(() => {alert("hey")});
     const init = localStorage.getItem("init");
     if (init === null || init === undefined || init === "" || init === "false") {
         initialize();
@@ -154,37 +146,34 @@ function App() {
     }
 // initialTheme = "light";
     const [theme, setTheme] = useState(initialTheme);
+    const [isLocked, setLock] = useState(localStorage.getItem("islocked"));
     document.body.className = "theme-" + theme;
-    const [chosenPanel, setChosenPanel] = useState(null);
-    let panel: any;
-    let cp = {panel: chosenPanel};
-    if (chosenPanel === null)
-        panel = getLastPanel(cp);
-    else if (chosenPanel === 'daily')
-        panel = <DailyPanel defaultPerson={null}/>;
-    else if (chosenPanel === 'home')
-        panel = <HomePanel/>;
-    else if (chosenPanel === 'melt')
-        panel = <MeltPanel defaultPerson={null}/>;
-    else if (chosenPanel === 'borrowed')
-        panel = <BorrowedPanel defaultPerson={null}/>;
-    else if (chosenPanel === "setting")
-        panel = <SettingPanel/>;
-    else {
-        panel = <div/>
-    }
+    const [chosenPanel, setChosenPanel]: any = useState(null);
+    const [panel, setPanel]: any = useState(<div/>);
+    useEffect(() => {
+            if (isLocked === "true")
+                setPanel(() => <LockPanel unlock={() => {
+                    setLock("false");
+                    setChosenPanel(localStorage.getItem("tmp"));
+                }}/>);
+            else if (chosenPanel === null) {
+                setChosenPanel(localStorage.getItem("last"));
+            } else {
+                setPanel(() => setPanel(() => getPanel(chosenPanel)));
+            }
+        }
+        , [chosenPanel, isLocked]
+    );
 
-    let l = localStorage.getItem("islocked");
-    if (l === "true")
-        panel = <LockPanel/>;
     return (
         <div className={`App theme-${theme}`} style={{width: "100%"}}>
             <themeContext.Provider value={{theme: theme, setTheme: setTheme}}>
                 <offsetContext.Provider value={offset}>
-                    <Navbar chosenPanel={cp.panel} clickHandler={setChosenPanel}/>
-                    <br/>
-                    <br/>
-                    {panel}
+                        <Navbar panel={chosenPanel} setPanel={setChosenPanel} locked={isLocked === "true"}
+                                lockHandler={() => setLock("true")}/>
+                        <br/>
+                        <br/>
+                        {panel}
                 </offsetContext.Provider>
             </themeContext.Provider>
         </div>

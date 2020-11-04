@@ -92,7 +92,6 @@ function SettingPanel(props: any) {
         else savedTheme = "light";
         localStorage.setItem("theme", savedTheme);
         setTheme(() => savedTheme);
-        // window.location.reload(false);
     };
     let fileReader: any;
 

@@ -63,15 +63,8 @@ function BorrowedUserInfo(props: any) {
     const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
-        const {maxId, list} = JSON.parse(localStorage.getItem("borrowed-members") as string);
-        const newMembers = list.filter((member: any) => {
-            return member.id !== id;
-        });
-        localStorage.setItem("borrowed-members", JSON.stringify({maxId: maxId, list: newMembers}));
-        localStorage.removeItem("B:" + id);
-        localStorage.setItem("last", "borrowed");
+        props.deleteMember(id);
         updateOwings(parseInt(id));
-        window.location.reload(false);
     };
     const pageRef = useRef(null);
     const goldInRef = useRef(null);
@@ -162,23 +155,10 @@ function BorrowedUserInfo(props: any) {
     const phoneRef = useRef(null);
 
     const editSubmitHandler = (id: number) => {
-        let m: any = localStorage.getItem("borrowed-members");
-        if (m !== null) {
-            m = JSON.parse(m);
-            for (let i in m.list) {
-                if (m.list[i].id === id) {
-                    // @ts-ignore
-                    m.list[i].name = nameRef.current.value;
-                    localStorage.setItem("borrowed-members", JSON.stringify(m));
-                    closeModal();
-                    updateOwings(id);
-                    window.location.reload(false);
-                    break;
-                }
-            }
-        }
-
-
+        // @ts-ignore
+        props.editMember(id, nameRef.current.value);
+        closeEditModal();
+        updateOwings(id);
     };
 
     const {id, name, oMoney, oGold} = props.person;

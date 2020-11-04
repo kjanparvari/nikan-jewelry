@@ -52,7 +52,6 @@ function HomePanel(props: any) {
             });
             localStorage.setItem("home", JSON.stringify(homeValues));
         }
-        // window.location.reload(false);
     };
     return (
         <div>

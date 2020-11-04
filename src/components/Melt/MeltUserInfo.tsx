@@ -64,15 +64,8 @@ function MeltUserInfo(props: any) {
     const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
-        const {maxId, list} = JSON.parse(localStorage.getItem("melt-members") as string);
-        const newMembers = list.filter((member: any) => {
-            return member.id !== id;
-        });
-        localStorage.setItem("melt-members", JSON.stringify({maxId: maxId, list: newMembers}));
-        localStorage.removeItem("M:" + id);
-        localStorage.setItem("last", "melt");
+        props.deleteMember(id);
         updateOwings(parseInt(id));
-        window.location.reload(false);
     };
     const pageRef = useRef(null);
     const moneyInRef = useRef(null);
@@ -100,7 +93,7 @@ function MeltUserInfo(props: any) {
         const complex = parseFloat(complexRef.current.value);
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
-        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0}: soldDay;
+        const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "M:" + props.person.id;
         if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(moneyOut) || isNaN(moneyIn) || isNaN(goldIn) || isNaN(goldOut) || isNaN(complex) || buyerName === "") {
             return;
@@ -129,7 +122,7 @@ function MeltUserInfo(props: any) {
             }
             const maxId = (parseInt(p.maxId) + 1).toString();
 
-            const _leftGold = toggle ? (goldIn - goldOut) - (moneyOut) / (complex) : (goldIn) - moneyOut/complex;
+            const _leftGold = toggle ? (goldIn - goldOut) - (moneyOut) / (complex) : (goldIn) - moneyOut / complex;
             const _leftMoney = toggle ? ((goldIn - goldOut) * complex) - moneyOut : ((goldIn) * complex) - moneyOut;
             const val = {
                 id: maxId,
@@ -144,7 +137,7 @@ function MeltUserInfo(props: any) {
                 buyerName: buyerName,
                 toggle: toggle,
                 leftGold: _leftGold,
-                leftMoney:  _leftMoney,
+                leftMoney: _leftMoney,
                 curOGold: _ogold + _leftGold,
                 curOMoney: _omoney + _leftMoney
             };
@@ -171,23 +164,10 @@ function MeltUserInfo(props: any) {
     const nameRef = useRef(null);
 
     const editSubmitHandler = (id: number) => {
-        let m: any = localStorage.getItem("melt-members");
-        if (m !== null) {
-            m = JSON.parse(m);
-            for (let i in m.list) {
-                if (m.list[i].id === id) {
-                    // @ts-ignore
-                    m.list[i].name = nameRef.current.value;
-                    localStorage.setItem("melt-members", JSON.stringify(m));
-                    closeModal();
-                    updateOwings(id);
-                    window.location.reload(false);
-                    break;
-                }
-            }
-        }
-
-
+        // @ts-ignore
+        props.editMember(id, nameRef.current.value);
+        closeEditModal();
+        updateOwings(id);
     };
 
     const {id, name, oGold, oMoney} = props.person;
@@ -217,10 +197,10 @@ function MeltUserInfo(props: any) {
                             </div>
                         </div>
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
-                        {/*    <div>*/}
-                        {/*        <div className="float-right">:شماره تماس</div>*/}
-                        {/*        <div className="float-right mr-2">{phone}</div>*/}
-                        {/*    </div>*/}
+                            {/*    <div>*/}
+                            {/*        <div className="float-right">:شماره تماس</div>*/}
+                            {/*        <div className="float-right mr-2">{phone}</div>*/}
+                            {/*    </div>*/}
 
                             <div>
                                 <div className="float-right">:بستانکار طلایی</div>
@@ -326,17 +306,18 @@ function MeltUserInfo(props: any) {
                         <Form.Group>
                             <label className="float-left  text-left">پول :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود"  ref={moneyInRef}/>
+                                   placeholder="ورود" ref={moneyInRef}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج'  ref={moneyOutRef}/>
+                                   placeholder='خروج' ref={moneyOutRef}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">قیمت هر گرم :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="قیمت هرگرم" ref={complexRef}/>
                             <label className="float-left  text-left">خروج طلا مرجوع به همکار :</label>
-                            <div className="float-right ml-4"><Toggle size="md" onChange={() => setToggle(() => !toggle)}
-                                                                 defaultChecked={toggle}/></div>
+                            <div className="float-right ml-4"><Toggle size="md"
+                                                                      onChange={() => setToggle(() => !toggle)}
+                                                                      defaultChecked={toggle}/></div>
                         </Form.Group>
                         {/*<Form.Group>*/}
                         {/*    */}

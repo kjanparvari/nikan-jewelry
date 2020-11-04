@@ -13,36 +13,6 @@ import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
 import {themeContext} from "../../App";
 
-const changeOMoney = (amount: number, id: number) => {
-    const m = localStorage.getItem("daily-members");
-    let mems: [];
-    if (m !== null){
-        mems = JSON.parse(m).list;
-        for (let i in mems) {
-            //@ts-ignore
-            if (parseInt(mems[i].id) === id){
-                //@ts-ignore
-                mems[i].oMoney += amount;
-            }
-        }
-    }
-};
-
-const changeOGold = (amount: number, id: number) => {
-    const m = localStorage.getItem("daily-members");
-    let mems: [];
-    if (m !== null){
-        mems = JSON.parse(m).list;
-        for (let i in mems) {
-            //@ts-ignore
-            if ((mems[i].id) === id){
-                //@ts-ignore
-                mems[i].oGold += amount;
-            }
-        }
-    }
-};
-
 const getSlides = (deals: any[], personId: number) => {
     console.log("deals:");
     console.log(deals);
@@ -81,7 +51,7 @@ function DailyContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <DailyUserInfo view={view} setView={setView} person={props.chosenPerson}/>
+            <DailyUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember} editMember={props.editMember}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

@@ -11,22 +11,7 @@ import {Form, Button} from 'semantic-ui-react';
 import {GrClose} from 'react-icons/gr';
 import {themeContext} from "../../App";
 
-const retrieveMembers = () => {
-    const mems = localStorage.getItem("daily-members");
-    if (mems === null) {
-        localStorage.setItem("daily-members", JSON.stringify({maxId: "0", list: []}));
-        return {maxId: "0", list: []};
-    } else {
-        if (JSON.stringify(JSON.parse(mems).list) === "[]") {
-            const maxId = JSON.parse(mems).maxId;
-            console.log("here");
-            return {maxId: maxId, list: []};
-        }
-        return JSON.parse(mems);
-    }
-};
-
-function DailySideBar(props: any) {
+function DailySideBar({choosePerson, members, setMembers}: any) {
     const {theme} = useContext(themeContext);
     let oTheme;
     if (theme === "light") oTheme = "dark";
@@ -34,8 +19,7 @@ function DailySideBar(props: any) {
     let searchFont;
     if (theme === "light") searchFont = "text-white"; else searchFont = "";
     const addMemberHandler = () => {
-        let {maxId, list} = retrieveMembers();
-        // if (oldMembers === undefined) oldMembers = [];
+        let {maxId, list} = members;
         // @ts-ignore
         const name = nameRef.current.value;
         // @ts-ignore
@@ -54,18 +38,18 @@ function DailySideBar(props: any) {
         localStorage.setItem("D:" + maxId, JSON.stringify({maxId: 0, list: []}));
         localStorage.setItem("daily-members", JSON.stringify({maxId: maxId, list: newMembers}));
         setMembers(() => {
-            return newMembers
+            return {maxId: maxId, list: newMembers}
         });
         // @ts-ignore
         closeModal();
     };
     const searchHandler = (event: any) => {
-        const oldMembers: [] = retrieveMembers().list;
+        const oldMembers: [] = members.list;
         const regex: string = event.target.value;
         if (regex === "") {
-            setMembers(() => oldMembers);
+            setShownMembers(() => oldMembers);
         } else {
-            setMembers(() => {
+            setShownMembers(() => {
                 return oldMembers.filter((member: any) => {
                     const name: string = member.name;
                     const id: string = member.id;
@@ -74,15 +58,17 @@ function DailySideBar(props: any) {
             });
         }
     };
-
-    const [members, setMembers] = useState(retrieveMembers().list);
+    useEffect(()=>{
+        setShownMembers(members.list);
+    }, [members]);
+    const [shownMembers, setShownMembers] = useState(members.list);
     const nameRef = useRef(null);
     const phoneRef = useRef(null);
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
-    const membersTiles = members.map((member: any) => {
-        return <MemberTile key={member.id} person={member} clickHandler={props.choosePerson}/>
+    const membersTiles = shownMembers.map((member: any) => {
+        return <MemberTile key={member.id} person={member} clickHandler={choosePerson}/>
     });
     console.log(localStorage.getItem("daily-members"));
     return (

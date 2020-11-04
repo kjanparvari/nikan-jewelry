@@ -47,12 +47,14 @@ const handleExit = () => {
 
 function Navbar(props: any) {
     const {theme} = useContext(themeContext);
-    const [locked, setLocked] = useState((localStorage.getItem("islocked") === "true"));
-    const [chosenPanel, setChosenPanel] = useState(props.chosenPanel);
+    const {locked, lockHandler} = props;
+    const {panel, setPanel} = props;
     const lock = () => {
         if (!locked && localStorage.getItem("pss") !== "") {
+            // @ts-ignore
+            localStorage.setItem("tmp", localStorage.getItem("last"));
             localStorage.setItem("islocked", "true");
-            window.location.reload(false);
+            lockHandler();
         }
     };
     let lockColor: string = "white";
@@ -61,12 +63,6 @@ function Navbar(props: any) {
     else
         lockColor = "black";
 
-    const navButtonHandler = (id: string) => {
-        setChosenPanel(id);
-        props.clickHandler((prevState: any) => {
-            return id;
-        });
-    };
     return (
         <React.Fragment>
             <a className="float-right bg-danger mr-3 mt-3 p-2 pt-0" style={{borderRadius: 10, fontSize: 25}}><BiExit style={{fontSize: 25}} onClick={handleExit}/></a>
@@ -90,31 +86,31 @@ function Navbar(props: any) {
                 <div className="collapse navbar-collapse justify-content-center mt-4" id="navbarNavAltMarkup">
                     <div className="navbar-nav ">
                         <Tilt className="Tilt mr-3" options={{max: 10, scale: 1.2}} style={{height: 60, width: 90}}>
-                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${chosenPanel === "setting" ? "border" : ""}`}
-                               style={{borderRadius: 10}} onClick={() => navButtonHandler("setting")}>تنظیمات</a>
+                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${panel === "setting" ? "border" : ""}`}
+                               style={{borderRadius: 10}} onClick={() => setPanel("setting")}>تنظیمات</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 100}}>
-                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${chosenPanel === "borrowed" ? "border" : ""}`}
-                               style={{borderRadius: 10}} onClick={() => navButtonHandler("borrowed")}>امانی بازار</a>
+                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${panel === "borrowed" ? "border" : ""}`}
+                               style={{borderRadius: 10}} onClick={() => setPanel("borrowed")}>امانی بازار</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 70}}>
-                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${chosenPanel === "melt" ? "border" : ""}`}
-                               style={{borderRadius: 10}} onClick={() => navButtonHandler("melt")}>آبشده</a>
+                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${panel === "melt" ? "border" : ""}`}
+                               style={{borderRadius: 10}} onClick={() => setPanel("melt")}>آبشده</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 150}}>
-                            <a className={`p-1 nav-link nav-buttons-fa pr-0 pl-0" aria-disabled="true" theme-${theme} ${chosenPanel === "daily" ? "border" : ""}`}
-                               style={{borderRadius: 10}} onClick={() => navButtonHandler("daily")}>خرید و
+                            <a className={`p-1 nav-link nav-buttons-fa pr-0 pl-0" aria-disabled="true" theme-${theme} ${panel === "daily" ? "border" : ""}`}
+                               style={{borderRadius: 10}} onClick={() => setPanel("daily")}>خرید و
                                 فروش
                                 روزانه
                             </a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 150}}>
-                            <a className={`p-1 nav-link active nav-buttons-fa Tilt-inner theme-${theme} ${chosenPanel === "home" ? "border" : ""}`}
-                               style={{borderRadius: 10}} onClick={() => navButtonHandler("home")}>صفحه
+                            <a className={`p-1 nav-link active nav-buttons-fa Tilt-inner theme-${theme} ${panel === "home" ? "border" : ""}`}
+                               style={{borderRadius: 10}} onClick={() => setPanel("home")}>صفحه
                                 اصلی <span
                                     className="sr-only">(current)</span></a>
                         </Tilt>
