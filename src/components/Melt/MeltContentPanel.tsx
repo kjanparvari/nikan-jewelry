@@ -54,7 +54,7 @@ const getSlides = (deals: any[], personId: number) => {
 };
 
 function MeltContentPanel(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     const [deals, setDeals] = useState([]);
     const [view, setView] = useState("table");
     useEffect(() => {

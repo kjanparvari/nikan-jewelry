@@ -28,7 +28,7 @@ const retrieveMembers = () => {
 };
 
 function MeltSideBar(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     let oTheme;
     if (theme === "light") oTheme = "dark";
     else oTheme = "light";

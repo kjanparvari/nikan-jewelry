@@ -8,7 +8,7 @@ import MeltContentPanel from "./MeltContentPanel";
 function MeltPanel({defaultPerson}: any) {
     localStorage.setItem("last", "melt");
     const [chosenPerson, setChosenPerson] = useState(defaultPerson);
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     return (
         <div className="theme-light">
             <MeltSideBar choosePerson={(person: any) => {

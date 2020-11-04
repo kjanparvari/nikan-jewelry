@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 // @ts-ignore
 import Tilt from "react-tilt/dist/tilt";
 import {CgMoreVerticalAlt} from "react-icons/cg";
@@ -9,33 +9,50 @@ import {Button, ControlLabel} from 'rsuite';
 
 function HomePanel(props: any) {
     localStorage.setItem("last", "home");
-    let p: any = localStorage.getItem("home");
-    if (p === null || p === "" || p === undefined) {
-        p = {
-            money: {
-                base: 0,
-                offset: 0
-            },
-            gold: {
-                base: 0,
-                offset: 0
-            }
-        };
-        localStorage.setItem("home", JSON.stringify(p));
-    } else p = JSON.parse(p);
+    const [homeValues, setHomeValues] = useState({money: {base: 0, offset: 0}, gold: {base: 0, offset: 0}});
+    let p: any;
+    useEffect(() => {
+            p = localStorage.getItem("home");
+            if (p === null || p === "" || p === undefined) {
+                p = {
+                    money: {
+                        base: 0,
+                        offset: 0
+                    },
+                    gold: {
+                        base: 0,
+                        offset: 0
+                    }
+                };
+                localStorage.setItem("home", JSON.stringify(p));
+            } else p = JSON.parse(p);
+            setHomeValues(() => p)
+        }
+        , []
+    );
+
+
     const moneyBaseRef = useRef(null);
     const goldBaseRef = useRef(null);
     const submitBase = (type: string) => {
-        if( type === "money"){
-            // @ts-ignore
-            p.money.base = moneyBaseRef.current.value;
-            localStorage.setItem("home", JSON.stringify(p));
-        } else if ( type === "gold" ){
-            // @ts-ignore
-            p.gold.base = goldBaseRef.current.value;
-            localStorage.setItem("home", JSON.stringify(p));
+        if (type === "money") {
+
+            setHomeValues(() => {
+                // @ts-ignore
+                homeValues.money.base = parseFloat(moneyBaseRef.current.value);
+                return {...homeValues}
+            });
+
+            localStorage.setItem("home", JSON.stringify(homeValues));
+        } else if (type === "gold") {
+            setHomeValues(() => {
+                // @ts-ignore
+                homeValues.gold.base = parseFloat(goldBaseRef.current.value);
+                return {...homeValues};
+            });
+            localStorage.setItem("home", JSON.stringify(homeValues));
         }
-        window.location.reload(false);
+        // window.location.reload(false);
     };
     return (
         <div>
@@ -61,7 +78,7 @@ function HomePanel(props: any) {
                                  marginLeft: "auto",
                                  marginRight: "auto",
                                  fontSize: 35
-                             }}>{(parseFloat(p.gold.base) + parseFloat(p.gold.offset)).toFixed(3)}</div>
+                             }}>{(homeValues.gold.base + homeValues.gold.offset).toFixed(3)}</div>
                         <Popup
                             trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}
@@ -90,7 +107,7 @@ function HomePanel(props: any) {
                                 <ControlLabel className="text-white float-left "
                                               style={{width: "20%"}}>مبنا</ControlLabel>
                                 <input type="number" ref={goldBaseRef} className="float-right form-control"
-                                       style={{width: "70%"}} defaultValue={p.gold.base}/>
+                                       style={{width: "70%"}} defaultValue={homeValues.gold.base}/>
                                 <br/>
                                 <br/>
                                 <Button className="btn-success" style={{paddingRight: "20px", paddingLeft: "20px"}}
@@ -116,7 +133,7 @@ function HomePanel(props: any) {
                                  marginLeft: "auto",
                                  marginRight: "auto",
                                  fontSize: 35
-                             }}>{parseFloat(p.money.base) + parseFloat(p.money.offset)}</div>
+                             }}>{homeValues.money.base + homeValues.money.offset}</div>
                         <Popup
                             trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}
@@ -145,7 +162,7 @@ function HomePanel(props: any) {
                                 <ControlLabel className="text-white float-left "
                                               style={{width: "20%"}}>مبنا</ControlLabel>
                                 <input type="number" ref={moneyBaseRef} className="float-right form-control"
-                                       style={{width: "70%"}} defaultValue={p.money.base}/>
+                                       style={{width: "70%"}} defaultValue={homeValues.money.base}/>
                                 <br/>
                                 <br/>
                                 <Button className="btn-success" style={{paddingRight: "20px", paddingLeft: "20px"}}

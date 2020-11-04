@@ -74,6 +74,10 @@ const BorrowedDealsTable = ({deals, personId}: any) => {
                     <HeaderCell>اجرت</HeaderCell>
                     <Cell dataKey="ojrat"/>
                 </Column>
+                <Column>
+                    <HeaderCell>درصد اجرت طلا</HeaderCell>
+                    <Cell dataKey="ojratProfit"/>
+                </Column>
 
                 <Column>
                     <HeaderCell>فروخته به</HeaderCell>

@@ -302,7 +302,7 @@ function DailyDealCard({deal, personId}: any) {
                                    placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}
                                    defaultValue={complex.fi}/><GrAdd
                             style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
+                            <input type="number" max={100} min={0} step="0.01" className="ml-1 mr-1 text-center"
                                    style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
                                    ref={profitRef} defaultValue={complex.profit}/><FaEquals
                             style={{marginTop: 10}}/>

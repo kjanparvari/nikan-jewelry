@@ -60,7 +60,7 @@ const updateOwings = (id: number) => {
 };
 
 function BorrowedUserInfo(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
         const {maxId, list} = JSON.parse(localStorage.getItem("borrowed-members") as string);
@@ -77,6 +77,7 @@ function BorrowedUserInfo(props: any) {
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
     const ojratRef = useRef(null);
+    const ojratProfitRef = useRef(null);
     const buyerNameRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
     const [soldDay, setSoldDay] = useState<DayValue>(null);
@@ -92,10 +93,12 @@ function BorrowedUserInfo(props: any) {
         // @ts-ignore
         const ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
+        const ojratProfit = parseFloat(ojratProfitRef.current.value);
+        // @ts-ignore
         const buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "B:" + props.person.id;
-        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut)|| isNaN(ojrat) || buyerName === "") {
+        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || isNaN(ojratProfit) || buyerName === "") {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -121,6 +124,7 @@ function BorrowedUserInfo(props: any) {
                 }
             }
             const maxId = (parseInt(p.maxId) + 1).toString();
+            const _left_gold = (goldIn * (1.0 + ojratProfit / 100)) - goldOut;
             const val = {
                 id: maxId,
                 date: selectedDay,
@@ -129,16 +133,17 @@ function BorrowedUserInfo(props: any) {
                 goldIn: goldIn,
                 goldOut: goldOut,
                 ojrat: ojrat,
+                ojratProfit: ojratProfit,
                 buyerName: buyerName,
-                leftGold: (goldIn - goldOut),
-                curOGold: _ogold + goldIn - goldOut
+                leftGold: _left_gold,
+                curOGold: _ogold + _left_gold
             };
             p.maxId = maxId;
             p.list.push(val);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
-            offset.changeGold(goldIn - goldOut);
+            offset.changeGold(_left_gold);
             offset.changeMoney(-1 * ojrat);
             updateOwings(id);
             closeModal();
@@ -319,7 +324,10 @@ function BorrowedUserInfo(props: any) {
                         <Form.Group className="m-auto">
                             <label className="float-left text-left">اجرت :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="اجرت" ref={ojratRef}/>
+                                   placeholder="پول" ref={ojratRef}/>
+                            <input type="number" step="0.01" min={0} max={100} className="ml-3 mr-3 text-center"
+                                   style={{width: "40%"}}
+                                   placeholder="درصد طلا" ref={ojratProfitRef}/>
                         </Form.Group>
                         <br/>
                         {/*<Form.Group>*/}

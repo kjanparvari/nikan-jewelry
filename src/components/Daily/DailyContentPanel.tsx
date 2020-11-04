@@ -35,7 +35,7 @@ const changeOGold = (amount: number, id: number) => {
         mems = JSON.parse(m).list;
         for (let i in mems) {
             //@ts-ignore
-            if (parseInt(mems[i].id) === id){
+            if ((mems[i].id) === id){
                 //@ts-ignore
                 mems[i].oGold += amount;
             }
@@ -55,7 +55,7 @@ const getSlides = (deals: any[], personId: number) => {
 };
 
 function DailyContentPanel(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     const [deals, setDeals] = useState([]);
     const [view, setView] = useState("table");
     useEffect(() => {

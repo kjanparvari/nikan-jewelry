@@ -47,7 +47,7 @@ const getBackup = () => {
 
 function SettingPanel(props: any) {
     localStorage.setItem("last", "setting");
-    const theme = useContext(themeContext);
+    const {theme, setTheme} = useContext(themeContext);
     let savedTheme = localStorage.getItem("theme");
     if (savedTheme === null || savedTheme === "" || savedTheme === undefined) {
         savedTheme = "dark";
@@ -91,7 +91,8 @@ function SettingPanel(props: any) {
         if (checked) savedTheme = "dark";
         else savedTheme = "light";
         localStorage.setItem("theme", savedTheme);
-        window.location.reload(false);
+        setTheme(() => savedTheme);
+        // window.location.reload(false);
     };
     let fileReader: any;
 

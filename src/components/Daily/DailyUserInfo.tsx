@@ -82,7 +82,7 @@ const computeOMoney = (): number => {
 };
 
 function DailyUserInfo(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
         const {maxId, list} = JSON.parse(localStorage.getItem("daily-members") as string);
@@ -517,7 +517,7 @@ function DailyUserInfo(props: any) {
                             <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
                                    placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}/><GrAdd
                             style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"
+                            <input type="number" max={100} min={0} step="0.01" className="ml-1 mr-1 text-center"
                                    style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
                                    ref={profitRef}/><FaEquals
                             style={{marginTop: 10}}/>

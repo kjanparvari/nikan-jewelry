@@ -46,7 +46,7 @@ const handleExit = () => {
 };
 
 function Navbar(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     const [locked, setLocked] = useState((localStorage.getItem("islocked") === "true"));
     const [chosenPanel, setChosenPanel] = useState(props.chosenPanel);
     const lock = () => {

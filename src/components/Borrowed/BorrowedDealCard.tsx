@@ -37,6 +37,7 @@ function BorrowedDealCard({deal, personId}: any) {
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
     const ojratRef = useRef(null);
+    const ojratProfitRef = useRef(null);
     const buyerNameRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
     const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
@@ -45,7 +46,7 @@ function BorrowedDealCard({deal, personId}: any) {
 
 
     const editDeal = () => {
-        offset.changeGold(goldOut - goldIn);
+        offset.changeGold(-1 * leftGold);
         offset.changeMoney(ojrat);
         // @ts-ignore
         const _pageNumber = parseInt(pageRef.current.value);
@@ -56,12 +57,14 @@ function BorrowedDealCard({deal, personId}: any) {
         // @ts-ignore
         const _ojrat = parseFloat(ojratRef.current.value);
         // @ts-ignore
+        const _ojratProfit = parseFloat(ojratProfitRef.current.value);
+        // @ts-ignore
         const _buyerName = buyerNameRef.current.value;
         if (soldDay === null){
             setSoldDay({year: 0, day: 0, month: 0});
         }
         const key = "B:" + personId;
-        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || buyerName === "") {
+        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || isNaN(_ojratProfit) || buyerName === "") {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -103,24 +106,26 @@ function BorrowedDealCard({deal, personId}: any) {
                     }
                 }
             }
+            const _left_gold = (_goldIn * (1.0 + _ojratProfit / 100)) - _goldOut;
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
                     p.list[i].date = selectedDay;
                     p.list[i].soldDate = soldDay;
                     p.list[i].ojrat = _ojrat;
+                    p.list[i].ojratProfit = _ojratProfit;
                     p.list[i].buyerName = _buyerName;
                     p.list[i].goldIn = _goldIn;
                     p.list[i].goldOut = _goldOut;
-                    p.list[i].leftGold = _goldIn - _goldOut;
-                    p.list[i].curOGold = _ogold - goldIn + _goldOut + _goldIn - _goldOut;
+                    p.list[i].leftGold = _left_gold;
+                    p.list[i].curOGold = _ogold - leftGold + _left_gold;
                     break;
                 }
             }
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
-            offset.changeGold(_goldIn - _goldOut);
+            offset.changeGold(_left_gold);
             offset.changeMoney(-1 * _ojrat);
             closeModal();
             updateOwings(personId);
@@ -135,7 +140,7 @@ function BorrowedDealCard({deal, personId}: any) {
         const newDeals = list.filter((deal: any) => {
             return deal.id !== dealId;
         });
-        offset.changeGold(goldOut - goldIn);
+        offset.changeGold(-1 * leftGold);
         offset.changeMoney(ojrat);
         localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
         updateOwings(personId);
@@ -242,6 +247,8 @@ function BorrowedDealCard({deal, personId}: any) {
                             <label className="float-left text-left" style={{color: "black"}}>اجرت :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="اجرت" ref={ojratRef} defaultValue={ojrat}/>
+                            <input type="number" step="0.01" min={0} max={100} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                   placeholder="درصد طلا" ref={ojratProfitRef}/>
                         </Form.Group>
                         <br/>
                         <Button type='submit'

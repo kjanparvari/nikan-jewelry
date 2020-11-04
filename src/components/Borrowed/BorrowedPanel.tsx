@@ -8,7 +8,7 @@ import Tilt from 'react-tilt/dist/tilt.js';
 function BorrowedPanel({defaultPerson}: any) {
     localStorage.setItem("last", "borrowed");
     const [chosenPerson, setChosenPerson] = useState(defaultPerson);
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     return (
         <div className="theme-light">
             <BorrowedSideBar choosePerson={(person: any) => {

@@ -8,9 +8,12 @@ import MeltPanel from "./components/Melt/MeltPanel";
 import LockPanel from "./components/LockPanel";
 import BorrowedPanel from "./components/Borrowed/BorrowedPanel";
 // @ts-ignore
-import { useBeforeunload } from 'react-beforeunload';
+import {useBeforeunload} from 'react-beforeunload';
 
-export const themeContext = React.createContext('dark');
+export const themeContext: any = React.createContext({
+    theme: 'dark', setTheme: () => {
+    }
+});
 
 const changeGoldOffset = (amount: number) => {
     const p = localStorage.getItem("home");
@@ -176,7 +179,7 @@ function App() {
         panel = <LockPanel/>;
     return (
         <div className={`App theme-${theme}`} style={{width: "100%"}}>
-            <themeContext.Provider value={theme}>
+            <themeContext.Provider value={{theme: theme, setTheme: setTheme}}>
                 <offsetContext.Provider value={offset}>
                     <Navbar chosenPanel={cp.panel} clickHandler={setChosenPanel}/>
                     <br/>

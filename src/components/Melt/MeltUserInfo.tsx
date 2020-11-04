@@ -61,7 +61,7 @@ const updateOwings = (id: number) => {
 };
 
 function MeltUserInfo(props: any) {
-    const theme = useContext(themeContext);
+    const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
     const deleteMemberHandler = (id: string) => {
         const {maxId, list} = JSON.parse(localStorage.getItem("melt-members") as string);
@@ -228,7 +228,7 @@ function MeltUserInfo(props: any) {
                             </div>
                             <div>
                                 <div className="float-right">:بستانکار پولی</div>
-                                <div className="float-right mr-2">{oMoney}</div>
+                                <div className="float-right mr-2">{parseInt(oMoney)}</div>
                             </div>
                         </div>
                     </div>
