@@ -133,6 +133,7 @@ function BorrowedUserInfo(props: any) {
             };
             p.maxId = maxId;
             p.list.push(val);
+            props.setDeals(() => p.list);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
@@ -140,9 +141,6 @@ function BorrowedUserInfo(props: any) {
             offset.changeMoney(-1 * ojrat);
             updateOwings(id);
             closeModal();
-            window.location.reload(false);
-            // console.log(JSON.stringify(val));
-            // localStorage.setItem(key, JSON.stringify(val));
         }
     };
     const closeModal = () => setOpen(false);
@@ -188,10 +186,6 @@ function BorrowedUserInfo(props: any) {
                             </div>
                         </div>
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
-                            {/*<div>*/}
-                            {/*    <div className="float-right">:بدهکار پولی</div>*/}
-                            {/*    <div className="float-right mr-2">{oMoney}</div>*/}
-                            {/*</div>*/}
                             <div>
                                 <div className="float-right">:بستانکار طلایی</div>
                                 <div className="float-right mr-2">{oGold.toFixed(3)}</div>
@@ -199,8 +193,6 @@ function BorrowedUserInfo(props: any) {
                         </div>
                     </div>
                     <div style={{marginTop: "-1", marginBottom: "auto"}}>
-                        {/*<button className="btn btn-danger btn-sm float-left mt-4 ml-4" style={{fontSize: 13}}>حذف عضو*/}
-                        {/*</button>*/}
 
                         <Popup
                             trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
@@ -235,8 +227,6 @@ function BorrowedUserInfo(props: any) {
                                 </button>
                             </div>
                         </Popup>
-                        {/*<button className="btn btn-primary btn-sm float-left mt-4" style={{fontSize: 13}}>افزودن معامله*/}
-                        {/*</button>*/}
                     </div>
                 </div>
             </Tilt>
@@ -259,18 +249,12 @@ function BorrowedUserInfo(props: any) {
                 className=""
             >
                 <div className="container">
-                    {/*<a className="float-right" onClick={closeModal} style={{width: "10%"}}>*/}
-                    {/*    X*/}
-                    {/*</a>*/}
                     <a className="float-right"><GrClose onClick={closeModal}/></a>
                     <br/>
                     <br/>
                     <Form>
                         <Form.Group>
                             <label className="float-left text-center" style={{width: "10%"}}>تاریخ :</label>
-                            {/*<input className="float-left ml-3 mr-3 text-center" style={{width: "12%"}} placeholder="سال"/>*/}
-                            {/*<input className=" mr-3 text-center" style={{width: "12%"}} placeholder='ماه'/>*/}
-                            {/*<input type="date" className=" text-center" style={{width: "35%"}} placeholder='روز'/>*/}
                             <DatePicker
                                 value={selectedDay}
                                 onChange={setSelectedDay}
@@ -310,29 +294,6 @@ function BorrowedUserInfo(props: any) {
                                    placeholder="درصد طلا" ref={ojratProfitRef}/>
                         </Form.Group>
                         <br/>
-                        {/*<Form.Group>*/}
-                        {/*    <label className="float-left  text-left">پول :</label>*/}
-                        {/*    <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}*/}
-                        {/*           placeholder="ورود" ref={moneyInRef}/>*/}
-                        {/*    <input type="number" min={0} className=" text-center" style={{width: "40%"}}*/}
-                        {/*           placeholder='خروج' ref={moneyOutRef}/>*/}
-                        {/*</Form.Group>*/}
-                        {/*<Form.Group>*/}
-                        {/*    <label className="float-left  text-left">قیمت هر گرم :</label>*/}
-                        {/*    <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}*/}
-                        {/*           placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}/><GrAdd*/}
-                        {/*    style={{marginTop: 10}}/>*/}
-                        {/*    <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}*/}
-                        {/*           placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}/><GrAdd*/}
-                        {/*    style={{marginTop: 10}}/>*/}
-                        {/*    <input type="number" max={100} min={0} className="ml-1 mr-1 text-center"*/}
-                        {/*           style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'*/}
-                        {/*           ref={profitRef}/><FaEquals*/}
-                        {/*    style={{marginTop: 10}}/>*/}
-                        {/*    <input className="ml-1 mr-1 text-center" style={{width: "17%"}} value={0}*/}
-                        {/*           readOnly={true}*/}
-                        {/*           ref={complexRef}/>*/}
-                        {/*</Form.Group>*/}
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={addDeal}>Submit</Button>

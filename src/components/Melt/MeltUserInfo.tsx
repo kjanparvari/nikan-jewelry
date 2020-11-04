@@ -143,6 +143,7 @@ function MeltUserInfo(props: any) {
             };
             p.maxId = maxId;
             p.list.push(val);
+            props.setDeals(() => p.list);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
@@ -150,9 +151,6 @@ function MeltUserInfo(props: any) {
             offset.changeMoney(moneyIn - moneyOut);
             closeModal();
             updateOwings(id);
-            window.location.reload(false);
-            // console.log(JSON.stringify(val));
-            // localStorage.setItem(key, JSON.stringify(val));
         }
     };
     const closeModal = () => setOpen(false);

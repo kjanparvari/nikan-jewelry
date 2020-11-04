@@ -181,6 +181,7 @@ function DailyUserInfo(props: any) {
             };
             p.maxId = maxId;
             p.list.push(val);
+            props.setDeals(() => p.list);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
@@ -188,7 +189,6 @@ function DailyUserInfo(props: any) {
             offset.changeMoney(moneyIn - moneyOut);
             updateOwings(id);
             closeModal();
-            window.location.reload(false);
         }
     };
     const closeModal = () => setOpen(false);
@@ -285,7 +285,7 @@ function DailyUserInfo(props: any) {
                             <div>
                                 <div className="float-right">:بدهکار پولی</div>
                                 <div
-                                    className="float-right mr-2">{(oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0))}</div>
+                                    className="float-right mr-2">{parseInt((oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toString())}</div>
                             </div>
                             <br/>
                             <div>

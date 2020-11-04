@@ -42,7 +42,7 @@ function MeltContentPanel(props: any) {
     let result: any;
     switch (view) {
         case "card":
-            result = <MeltCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
+            result = <MeltCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
             result = <MeltDealsTable deals={deals} personId={props.chosenPerson.id}/>;
@@ -50,7 +50,8 @@ function MeltContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <MeltUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember} editMember={props.editMember}/>
+            <MeltUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember}
+                          editMember={props.editMember} setDeals={setDeals}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "100%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

@@ -43,7 +43,7 @@ function DailyContentPanel(props: any) {
     let result: any;
     switch (view) {
         case "card":
-            result = <DailyCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
+            result = <DailyCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
             result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id}/>;
@@ -51,7 +51,8 @@ function DailyContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <DailyUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember} editMember={props.editMember}/>
+            <DailyUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember}
+                           editMember={props.editMember} setDeals={setDeals}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

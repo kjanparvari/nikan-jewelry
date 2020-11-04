@@ -45,7 +45,7 @@ function BorrowedContentPanel(props: any) {
     let result: any;
     switch (view) {
         case "card":
-            result = <BorrowedCarousel slides={getSlides(deals,props.chosenPerson.id)}/>;
+            result = <BorrowedCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
             result = <BorrowedDealsTable deals={deals} personId={props.chosenPerson.id}/>;
@@ -53,7 +53,8 @@ function BorrowedContentPanel(props: any) {
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
-            <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember} editMember={props.editMember}/>
+            <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson}
+                              deleteMember={props.deleteMember} editMember={props.editMember} setDeals={setDeals}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {deals && deals.length === 0 ? <div/> : result}
