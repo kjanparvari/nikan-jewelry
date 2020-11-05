@@ -29,10 +29,10 @@ const updateOwings = (id: number) => {
     }
 };
 
-function BorrowedDealCard({deal, personId}: any) {
+function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
-    const {id, goldIn, goldOut, pageNumber, buyerName, ojrat, leftGold, curOGold} = deal;
+    const {id, goldIn, goldOut, pageNumber, buyerName, ojrat, leftGold, curOGold, ojratProfit} = deal;
     const pageRef = useRef(null);
     const goldInRef = useRef(null);
     const goldOutRef = useRef(null);
@@ -77,23 +77,6 @@ function BorrowedDealCard({deal, personId}: any) {
                 console.log("here");
                 p = JSON.parse(p);
             }
-            // const maxId = (parseInt(p.maxId) + 1).toString();
-            // const val = {
-            //     id: maxId,
-            //     date: selectedDay,
-            //     pageNumber: pageNumber,
-            //     moneyIn: moneyIn,
-            //     moneyOut: moneyOut,
-            //     goldIn: goldIn,
-            //     goldOut: goldOut,
-            //     complex: {
-            //         ojrat: ojrat,
-            //         fi: fi,
-            //         profit: profit
-            //     }
-            // };
-            // p.maxId = maxId;
-            // p.list.push(val);
 
             const _m = localStorage.getItem("borrowed-members");
             let _ogold;
@@ -122,6 +105,7 @@ function BorrowedDealCard({deal, personId}: any) {
                     break;
                 }
             }
+            setDeals(p.list);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
@@ -129,9 +113,7 @@ function BorrowedDealCard({deal, personId}: any) {
             offset.changeMoney(-1 * _ojrat);
             closeModal();
             updateOwings(personId);
-            window.location.reload(false);
-            // console.log(JSON.stringify(val));
-            // localStorage.setItem(key, JSON.stringify(val));
+            handler();
         }
     };
     const deleteDealHandler = (memberId: number, dealId: number) => {
@@ -142,9 +124,10 @@ function BorrowedDealCard({deal, personId}: any) {
         });
         offset.changeGold(-1 * leftGold);
         offset.changeMoney(ojrat);
+        setDeals(newDeals);
         localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
         updateOwings(personId);
-        window.location.reload(false);
+        handler();
     };
 
     const [open, setOpen] = useState(false);
@@ -182,6 +165,10 @@ function BorrowedDealCard({deal, personId}: any) {
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">: اجرت</div>
                     <div className="float-left w-50">{ojrat}</div>
+                </div>
+                <div className="w-100 p-3 pb-4">
+                    <div className="float-right text-right w-50">: درصد اجرت طلا</div>
+                    <div className="float-left w-50">{ojratProfit}</div>
                 </div>
 
 
@@ -248,7 +235,7 @@ function BorrowedDealCard({deal, personId}: any) {
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="اجرت" ref={ojratRef} defaultValue={ojrat}/>
                             <input type="number" step="0.01" min={0} max={100} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="درصد طلا" ref={ojratProfitRef}/>
+                                   placeholder="درصد طلا" ref={ojratProfitRef} defaultValue={ojratProfit}/>
                         </Form.Group>
                         <br/>
                         <Button type='submit'

@@ -33,7 +33,7 @@ const updateOwings = (id: number) => {
     }
 };
 
-function BorrowedDealCard({deal, personId}: any) {
+function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
     const offset = useContext(offsetContext);
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
@@ -114,6 +114,7 @@ function BorrowedDealCard({deal, personId}: any) {
                     break;
                 }
             }
+            setDeals(p.list);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
@@ -121,7 +122,7 @@ function BorrowedDealCard({deal, personId}: any) {
             offset.changeGold(_goldIn - _goldOut);
             offset.changeMoney(_moneyIn - _moneyOut);
             updateOwings(personId);
-            window.location.reload(false);
+            handler();
         }
     };
     const deleteDealHandler = (memberId: number, dealId: number) => {
@@ -130,11 +131,12 @@ function BorrowedDealCard({deal, personId}: any) {
         const newDeals = list.filter((deal: any) => {
             return deal.id !== dealId;
         });
+        setDeals(newDeals);
         localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
         offset.changeGold(goldOut - goldIn);
         offset.changeMoney(moneyOut - moneyIn);
         updateOwings(personId);
-        window.location.reload(false);
+        handler();
     };
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);

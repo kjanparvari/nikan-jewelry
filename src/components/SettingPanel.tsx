@@ -134,19 +134,10 @@ function SettingPanel(props: any) {
                 <div className="float-left font-bn" style={{fontSize: 25}}>فایل پشتیبان</div>
                 <button className="btn btn-success float-right pr-4 pl-4" onClick={getBackup}>ذخیره</button>
                 <input type="file" id="file" className="btn btn-warning" accept=".json" onChange={event => handleFileChosen(event)}/>
-                {/*<button className="btn btn-warning float-right" onClick={getBackup}>بارگذاری</button>*/}
-                {/*<FilePicker*/}
-                {/*    extensions={['json']}*/}
-                {/*    onChange={(file: File) => {*/}
-                {/*        console.log(file);*/}
-                {/*        const data = file.slice(0, 1000, "string");*/}
-                {/*        console.log(data.text());*/}
-                {/*    }}*/}
-                {/*    onError={(errMsg: any) => {*/}
-                {/*    }}*/}
-                {/*>*/}
-                {/*    <button className="btn btn-warning float-right">بارگذاری</button>*/}
-                {/*</FilePicker>*/}
+
+            </div>
+            <div className="fixed-bottom mb-5">
+                Developed by KJSoft®. All Rights Reserved!
             </div>
             <Popup
                 open={open}

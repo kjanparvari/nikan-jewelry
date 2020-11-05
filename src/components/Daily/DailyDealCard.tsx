@@ -31,7 +31,7 @@ const updateOwings = (id: number) => {
     }
 };
 
-function DailyDealCard({deal, personId}: any) {
+function DailyDealCard({deal, personId, setDeals, handler}: any) {
     const {year, month, day} = deal.date;
     const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex, leftGold, curOGold} = deal;
     const pageRef = useRef(null);
@@ -96,23 +96,6 @@ function DailyDealCard({deal, personId}: any) {
                 console.log("here");
                 p = JSON.parse(p);
             }
-            // const maxId = (parseInt(p.maxId) + 1).toString();
-            // const val = {
-            //     id: maxId,
-            //     date: selectedDay,
-            //     pageNumber: pageNumber,
-            //     moneyIn: moneyIn,
-            //     moneyOut: moneyOut,
-            //     goldIn: goldIn,
-            //     goldOut: goldOut,
-            //     complex: {
-            //         ojrat: ojrat,
-            //         fi: fi,
-            //         profit: profit
-            //     }
-            // };
-            // p.maxId = maxId;
-            // p.list.push(val);
             const _m = localStorage.getItem("daily-members");
             let _ogold;
             if (_m !== null && _m !== undefined && _m !== "") {
@@ -138,7 +121,6 @@ function DailyDealCard({deal, personId}: any) {
                         fi: _fi,
                         profit: _profit
                     };
-                    // p.list[i].leftMoney = (_goldOut - _goldIn) * ((_ojrat + _fi) * (1.0 + _profit / 100)) - (_moneyIn - _moneyOut);
                     p.list[i].leftGold = _leftGold;
                     p.list[i].curOGold = _ogold - leftGold + _leftGold;
                     break;
@@ -146,16 +128,13 @@ function DailyDealCard({deal, personId}: any) {
             }
             offset.changeGold(_goldIn - _goldOut);
             offset.changeMoney(_moneyIn - _moneyOut);
+            setDeals(p.list);
             p = JSON.stringify(p);
             console.log(p);
             localStorage.setItem(key, p);
-            // offset.changeGold(goldIn - goldOut);
-            // offset.changeMoney(moneyIn - moneyOut);
             closeModal();
             updateOwings(personId);
-            window.location.reload(false);
-            // console.log(JSON.stringify(val));
-            // localStorage.setItem(key, JSON.stringify(val));
+            handler();
         }
     };
     const deleteDealHandler = (memberId: number, dealId: number) => {
@@ -164,11 +143,12 @@ function DailyDealCard({deal, personId}: any) {
         const newDeals = list.filter((deal: any) => {
             return deal.id !== dealId;
         });
+        setDeals(newDeals);
         localStorage.setItem(key, JSON.stringify({maxId: maxId, list: newDeals}));
         offset.changeGold(goldOut - goldIn);
         offset.changeMoney(moneyOut - moneyIn);
         updateOwings(personId);
-        window.location.reload(false);
+        handler();
     };
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);

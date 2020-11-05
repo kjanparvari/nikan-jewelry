@@ -12,16 +12,6 @@ import MeltUserInfo from "./MeltUserInfo";
 import MeltCarousel from "./MeltCarousel";
 import MeltDealsTable from "./MeltDealsTable";
 
-const getSlides = (deals: any[], personId: number) => {
-    console.log("deals:");
-    console.log(deals);
-    const newSlides: any[] = [];
-    deals.forEach((deal: any) => {
-        const slide = <MeltDealCard key={deal.id} deal={deal} personId={personId}/>;
-        newSlides.push(slide);
-    });
-    return newSlides;
-};
 
 function MeltContentPanel(props: any) {
     const {theme} = useContext(themeContext);
@@ -39,13 +29,27 @@ function MeltContentPanel(props: any) {
         else
             setDeals(() => JSON.parse(p).list);
     }, [props.chosenPerson.id]);
+
+    const getSlides = (deals: any[], personId: number) => {
+        console.log("deals:");
+        console.log(deals);
+        const newSlides: any[] = [];
+        deals.forEach((deal: any) => {
+            const slide = <MeltDealCard key={deal.id} deal={deal} personId={personId} setDeals={setDeals}
+                                        handler={() => {
+                                        }}/>;
+            newSlides.push(slide);
+        });
+        return newSlides;
+    };
+
     let result: any;
     switch (view) {
         case "card":
             result = <MeltCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
-            result = <MeltDealsTable deals={deals} personId={props.chosenPerson.id}/>;
+            result = <MeltDealsTable deals={deals} personId={props.chosenPerson.id} setDeals={setDeals}/>;
             break;
     }
     return (

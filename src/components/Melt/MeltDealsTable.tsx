@@ -9,10 +9,13 @@ import {Button, Form} from "semantic-ui-react";
 import MeltDealCard from "./MeltDealCard";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const MeltDealsTable = ({deals, personId}: any) => {
+const MeltDealsTable = ({deals, personId, setDeals}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
+    const deleteHandler = () => {
+        closeModal();
+    };
     const [chosenDeal, setChosenDeal] = useState(null);
     return (
         <div>
@@ -103,24 +106,6 @@ const MeltDealsTable = ({deals, personId}: any) => {
                     <HeaderCell>بستانکار پول</HeaderCell>
                     <Cell dataKey="curOMoney"/>
                 </Column>
-
-                {/*<Column width={200}>*/}
-                {/*    <HeaderCell>Action</HeaderCell>*/}
-
-                {/*    <Cell>*/}
-                {/*        {(rowData: any) => {*/}
-                {/*            function handleAction() {*/}
-                {/*                alert(`id:${rowData.id}`);*/}
-                {/*            }*/}
-                {/*            return (*/}
-                {/*                <div className="pt-0 mt-0">*/}
-                {/*                    <a className="btn btn-primary btn-sm" onClick={handleAction}> ویرایش </a>*/}
-                {/*                    <a className="btn btn-danger btn-sm" onClick={handleAction}> حذف </a>*/}
-                {/*                </div>*/}
-                {/*            );*/}
-                {/*        }}*/}
-                {/*    </Cell>*/}
-                {/*</Column>*/}
             </Table>
             <Popup
                 open={open}
@@ -132,7 +117,7 @@ const MeltDealsTable = ({deals, personId}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <MeltDealCard deal={chosenDeal} personId={personId}/>
+                    <MeltDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} handler={deleteHandler}/>
                 </div>
             </Popup>
         </div>

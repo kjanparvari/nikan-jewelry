@@ -7,13 +7,15 @@ import Popup from "reactjs-popup";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import BorrowedDealCard from "./BorrowedDealCard";
-import BorrowedPanel from "./BorrowedPanel";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const BorrowedDealsTable = ({deals, personId}: any) => {
+const BorrowedDealsTable = ({deals, personId, setDeals}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
+    const deleteHandler = () => {
+        closeModal();
+    };
     const [chosenDeal, setChosenDeal] = useState(null);
     return (
         <div>
@@ -95,24 +97,6 @@ const BorrowedDealsTable = ({deals, personId}: any) => {
                     <Cell dataKey="curOGold"/>
                 </Column>
 
-
-                {/*<Column width={200}>*/}
-                {/*    <HeaderCell>Action</HeaderCell>*/}
-
-                {/*    <Cell>*/}
-                {/*        {(rowData: any) => {*/}
-                {/*            function handleAction() {*/}
-                {/*                alert(`id:${rowData.id}`);*/}
-                {/*            }*/}
-                {/*            return (*/}
-                {/*                <div className="pt-0 mt-0">*/}
-                {/*                    <a className="btn btn-primary btn-sm" onClick={handleAction}> ویرایش </a>*/}
-                {/*                    <a className="btn btn-danger btn-sm" onClick={handleAction}> حذف </a>*/}
-                {/*                </div>*/}
-                {/*            );*/}
-                {/*        }}*/}
-                {/*    </Cell>*/}
-                {/*</Column>*/}
             </Table>
             <Popup
                 open={open}
@@ -124,7 +108,7 @@ const BorrowedDealsTable = ({deals, personId}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <BorrowedDealCard deal={chosenDeal} personId={personId}/>
+                    <BorrowedDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} handler={deleteHandler}/>
                 </div>
             </Popup>
         </div>

@@ -13,16 +13,6 @@ import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
 import {themeContext} from "../../App";
 
-const getSlides = (deals: any[], personId: number) => {
-    console.log("deals:");
-    console.log(deals);
-    const newSlides: any[] = [];
-    deals.forEach((deal: any) => {
-        const slide = <DailyDealCard key={deal.id} deal={deal} personId={personId}/>;
-        newSlides.push(slide);
-    });
-    return newSlides;
-};
 
 function DailyContentPanel(props: any) {
     const {theme} = useContext(themeContext);
@@ -40,13 +30,27 @@ function DailyContentPanel(props: any) {
         else
             setDeals(() => JSON.parse(p).list);
     }, [props.chosenPerson.id]);
+
+    const getSlides = (deals: any[], personId: number) => {
+        console.log("deals:");
+        console.log(deals);
+        const newSlides: any[] = [];
+        deals.forEach((deal: any) => {
+            const slide = <DailyDealCard key={deal.id} deal={deal} personId={personId} setDeals={setDeals}
+                                         handler={() => {
+                                         }}/>;
+            newSlides.push(slide);
+        });
+        return newSlides;
+    };
+
     let result: any;
     switch (view) {
         case "card":
             result = <DailyCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
-            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id}/>;
+            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id} setDeals={setDeals}/>;
             break;
     }
     return (

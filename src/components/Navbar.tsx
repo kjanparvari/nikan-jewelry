@@ -40,9 +40,10 @@ const getBackup = () => {
 const handleExit = () => {
     if (localStorage.getItem("pss") !== "")
         localStorage.setItem("islocked", "true");
-    getBackup();
+    window.close();
+    // getBackup();
     // setTimeout(window.close, 4000);
-    setTimeout(()=>{window.close();}, 5000);
+    // setTimeout(()=>{window.close();}, 5000);
 };
 
 function Navbar(props: any) {
@@ -65,7 +66,10 @@ function Navbar(props: any) {
 
     return (
         <React.Fragment>
-            <a className="float-right bg-danger mr-3 mt-3 p-2 pt-0" style={{borderRadius: 10, fontSize: 25}}><BiExit style={{fontSize: 25}} onClick={handleExit}/></a>
+            <Tilt className="Tilt float-right bg-danger ml-3 mr-3 mt-3 p-2 pt-0" options={{max: 10, scale: 1.1}} style={{borderRadius: 10, fontSize: 25}}>
+                <a className="Tilt-inner" ><BiExit style={{fontSize: 25}} onClick={handleExit}/></a>
+            </Tilt>
+
             <nav className={`navbar navbar-expand-lg navbar-${theme} text-white theme-${theme}`}
                  style={{boxShadow: "none"}}>
                 <Tilt className="Tilt" options={{max: 10, scale: 1.05}} style={{height: 80, width: 70}}>
