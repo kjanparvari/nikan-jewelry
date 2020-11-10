@@ -7,9 +7,10 @@ import Popup from "reactjs-popup";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import DailyDealCard from "./DailyDealCard";
+import DailyUserInfo from "./DailyUserInfo";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const DailyDealsTable = ({deals, personId, setDeals}: any) => {
+const DailyDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -119,7 +120,7 @@ const DailyDealsTable = ({deals, personId, setDeals}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <DailyDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} handler={deleteHandler}/>
+                    <DailyDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} handler={deleteHandler}  editOwings={editOwings}/>
                 </div>
             </Popup>
         </div>

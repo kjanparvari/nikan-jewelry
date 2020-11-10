@@ -37,7 +37,8 @@ function BorrowedContentPanel(props: any) {
         console.log(deals);
         const newSlides: any[] = [];
         deals.forEach((deal: any) => {
-            const slide = <BorrowedDealCard key={deal.id} deal={deal} personId={personId} setDeals={setDeals}
+            const slide = <BorrowedDealCard key={deal.id} deal={deal} personId={personId} editOwings={props.editOwings}
+                                            setDeals={setDeals}
                                             handler={() => {
                                             }}/>;
             newSlides.push(slide);
@@ -51,13 +52,15 @@ function BorrowedContentPanel(props: any) {
             result = <BorrowedCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
-            result = <BorrowedDealsTable deals={deals} personId={props.chosenPerson.id}  setDeals={setDeals}/>;
+            result = <BorrowedDealsTable deals={deals} personId={props.chosenPerson.id} editOwings={props.editOwings}
+                                         setDeals={setDeals}/>;
             break;
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
             <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson}
-                              deleteMember={props.deleteMember} editMember={props.editMember} setDeals={setDeals}/>
+                              deleteMember={props.deleteMember} editOwings={props.editOwings}
+                              editMember={props.editMember} setDeals={setDeals}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {deals && deals.length === 0 ? <div/> : result}

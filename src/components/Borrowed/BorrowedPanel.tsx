@@ -57,6 +57,12 @@ function BorrowedPanel({defaultPerson}: any) {
         }
 
     };
+    const editOwings = (ogold: number) => {
+        setChosenPerson((prevState: any) => {
+            prevState.oGold = ogold;
+            return prevState
+        });
+    };
 
     return (
         <div className="theme-light">
@@ -66,6 +72,7 @@ function BorrowedPanel({defaultPerson}: any) {
             {/*<div className="text-white" style={{fontSize: 25}}>{updateVal}</div>*/}
             {chosenPerson !== null ? <BorrowedContentPanel
                     chosenPerson={chosenPerson}
+                    editOwings={editOwings}
                     deleteMember={(id: string) => deleteMember(id)}
                     editMember={(id: number, name: string) => editMember(id, name)}/>
                 : <div/>}

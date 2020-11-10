@@ -9,31 +9,7 @@ import {offsetContext} from "../../App";
 import {Toggle} from "rsuite";
 
 
-const updateOwings = (id: number) => {
-    let om = 0, og = 0;
-    const d = localStorage.getItem("M:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals) {
-        om += deals[i].leftMoney;
-        og += deals[i].leftGold;
-    }
-    const m = localStorage.getItem("melt-members");
-    if (m !== null && m !== undefined && m !== "") {
-        let mems = JSON.parse(m);
-        for (let j in mems.list) {
-            if (mems.list[j].id === id) {
-                mems.list[j].oGold = og;
-                mems.list[j].oMoney = om;
-                break;
-            }
-        }
-        localStorage.setItem("melt-members", JSON.stringify(mems));
-    }
-};
-
-function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
+function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const offset = useContext(offsetContext);
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
@@ -48,7 +24,30 @@ function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
     const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
     const [toggle, setToggle] = useState(deal.toggle);
-
+    const updateOwings = (id: number) => {
+        let om = 0, og = 0;
+        const d = localStorage.getItem("M:" + id.toString());
+        if (d === null || d === undefined || d === "")
+            return;
+        const deals: any[] = JSON.parse(d).list;
+        for (let i in deals) {
+            om += deals[i].leftMoney;
+            og += deals[i].leftGold;
+        }
+        const m = localStorage.getItem("melt-members");
+        if (m !== null && m !== undefined && m !== "") {
+            let mems = JSON.parse(m);
+            for (let j in mems.list) {
+                if (mems.list[j].id === id) {
+                    mems.list[j].oGold = og;
+                    mems.list[j].oMoney = om;
+                    break;
+                }
+            }
+            localStorage.setItem("melt-members", JSON.stringify(mems));
+            editOwings(og, om);
+        }
+    };
     const editDeal = () => {
         offset.changeGold(goldOut - goldIn);
         offset.changeMoney(moneyOut - moneyIn);
@@ -86,7 +85,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
             if (_m !== null && _m !== undefined && _m !== "") {
                 let _mems = JSON.parse(_m);
                 for (let j in _mems.list) {
-                    if (_mems.list[j].id === id) {
+                    if (_mems.list[j].id === personId) {
                         _ogold = _mems.list[j].oGold;
                         _omoney = _mems.list[j].oMoney;
                         break;

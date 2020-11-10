@@ -37,27 +37,7 @@ const changeView = (view: string, setView: any) => {
     else if (view === "table")
         setView(() => "card");
 };
-const updateOwings = (id: number) => {
-    let og = 0;
-    const d = localStorage.getItem("B:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals) {
-        og += deals[i].leftGold;
-    }
-    const m = localStorage.getItem("borrowed-members");
-    if (m !== null && m !== undefined && m !== "") {
-        let mems = JSON.parse(m);
-        for (let j in mems.list) {
-            if (mems.list[j].id === id) {
-                mems.list[j].oGold = og;
-                break;
-            }
-        }
-        localStorage.setItem("borrowed-members", JSON.stringify(mems));
-    }
-};
+
 
 function BorrowedUserInfo(props: any) {
     const {theme} = useContext(themeContext);
@@ -76,6 +56,28 @@ function BorrowedUserInfo(props: any) {
     const [soldDay, setSoldDay] = useState<DayValue>(null);
 
     const [open, setOpen] = useState(false);
+    const updateOwings = (id: number) => {
+        let og = 0;
+        const d = localStorage.getItem("B:" + id.toString());
+        if (d === null || d === undefined || d === "")
+            return;
+        const deals: any[] = JSON.parse(d).list;
+        for (let i in deals) {
+            og += deals[i].leftGold;
+        }
+        const m = localStorage.getItem("borrowed-members");
+        if (m !== null && m !== undefined && m !== "") {
+            let mems = JSON.parse(m);
+            for (let j in mems.list) {
+                if (mems.list[j].id === id) {
+                    mems.list[j].oGold = og;
+                    break;
+                }
+            }
+            localStorage.setItem("borrowed-members", JSON.stringify(mems));
+            props.editOwings(og);
+        }
+    };
     const addDeal = () => {
         // @ts-ignore
         const pageNumber = parseInt(pageRef.current.value);

@@ -9,7 +9,7 @@ import {Button, Form} from "semantic-ui-react";
 import BorrowedDealCard from "./BorrowedDealCard";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const BorrowedDealsTable = ({deals, personId, setDeals}: any) => {
+const BorrowedDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -108,7 +108,8 @@ const BorrowedDealsTable = ({deals, personId, setDeals}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <BorrowedDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} handler={deleteHandler}/>
+                    <BorrowedDealCard deal={chosenDeal} personId={personId} editOwings={editOwings} setDeals={setDeals}
+                                      handler={deleteHandler}/>
                 </div>
             </Popup>
         </div>

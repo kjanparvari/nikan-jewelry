@@ -7,29 +7,7 @@ import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
 
-const updateOwings = (id: number) => {
-    let og = 0;
-    const d = localStorage.getItem("B:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals) {
-        og += deals[i].leftGold;
-    }
-    const m = localStorage.getItem("borrowed-members");
-    if (m !== null && m !== undefined && m !== "") {
-        let mems = JSON.parse(m);
-        for (let j in mems.list) {
-            if (mems.list[j].id === id) {
-                mems.list[j].oGold = og;
-                break;
-            }
-        }
-        localStorage.setItem("borrowed-members", JSON.stringify(mems));
-    }
-};
-
-function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
+function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
     const {id, goldIn, goldOut, pageNumber, buyerName, ojrat, leftGold, curOGold, ojratProfit} = deal;
@@ -44,7 +22,28 @@ function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
 
     const offset = useContext(offsetContext);
 
-
+    const updateOwings = (id: number) => {
+        let og = 0;
+        const d = localStorage.getItem("B:" + id.toString());
+        if (d === null || d === undefined || d === "")
+            return;
+        const deals: any[] = JSON.parse(d).list;
+        for (let i in deals) {
+            og += deals[i].leftGold;
+        }
+        const m = localStorage.getItem("borrowed-members");
+        if (m !== null && m !== undefined && m !== "") {
+            let mems = JSON.parse(m);
+            for (let j in mems.list) {
+                if (mems.list[j].id === id) {
+                    mems.list[j].oGold = og;
+                    break;
+                }
+            }
+            localStorage.setItem("borrowed-members", JSON.stringify(mems));
+            editOwings(og);
+        }
+    };
     const editDeal = () => {
         offset.changeGold(-1 * leftGold);
         offset.changeMoney(ojrat);
@@ -60,7 +59,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
         const _ojratProfit = parseFloat(ojratProfitRef.current.value);
         // @ts-ignore
         const _buyerName = buyerNameRef.current.value;
-        if (soldDay === null){
+        if (soldDay === null) {
             setSoldDay({year: 0, day: 0, month: 0});
         }
         const key = "B:" + personId;
@@ -214,7 +213,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" step="0.001"ref={goldInRef} defaultValue={goldIn}/>
+                                   placeholder="ورود" step="0.001" ref={goldInRef} defaultValue={goldIn}/>
                             <input type="number" min={0} className=" text-center" style={{width: "40%"}}
                                    placeholder='خروج' step="0.001" ref={goldOutRef} defaultValue={goldOut}/>
                         </Form.Group>
@@ -234,7 +233,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler}: any) {
                             <label className="float-left text-left" style={{color: "black"}}>اجرت :</label>
                             <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                    placeholder="اجرت" ref={ojratRef} defaultValue={ojrat}/>
-                            <input type="number" step="0.01" min={0} max={100} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                            <input type="number" step="0.01" min={0} max={100} className="ml-3 mr-3 text-center"
+                                   style={{width: "40%"}}
                                    placeholder="درصد طلا" ref={ojratProfitRef} defaultValue={ojratProfit}/>
                         </Form.Group>
                         <br/>

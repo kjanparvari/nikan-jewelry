@@ -53,6 +53,14 @@ function MeltPanel({defaultPerson}: any) {
         }
     };
 
+    const editOwings = (ogold: number, omoney: number) => {
+        setChosenPerson((prevState: any) => {
+            prevState.oGold = ogold;
+            prevState.oMoney = omoney;
+            return prevState
+        });
+    };
+
     return (
         <div className="theme-light">
             <MeltSideBar choosePerson={(person: any) => {
@@ -60,6 +68,7 @@ function MeltPanel({defaultPerson}: any) {
             }} members={members} setMembers={setMembers}/>
             {/*<div className="text-white" style={{fontSize: 25}}>{updateVal}</div>*/}
             {chosenPerson !== null ? <MeltContentPanel
+                    editOwings={editOwings}
                     chosenPerson={chosenPerson}
                     deleteMember={(id: string) => deleteMember(id)}
                     editMember={(id: number, name: string) => editMember(id, name)}/>

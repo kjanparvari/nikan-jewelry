@@ -36,7 +36,8 @@ function DailyContentPanel(props: any) {
         console.log(deals);
         const newSlides: any[] = [];
         deals.forEach((deal: any) => {
-            const slide = <DailyDealCard key={deal.id} deal={deal} personId={personId} setDeals={setDeals}
+            const slide = <DailyDealCard key={deal.id} deal={deal} personId={personId} editOwings={props.editOwings}
+                                         setDeals={setDeals}
                                          handler={() => {
                                          }}/>;
             newSlides.push(slide);
@@ -50,13 +51,14 @@ function DailyContentPanel(props: any) {
             result = <DailyCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
-            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id} setDeals={setDeals}/>;
+            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id} setDeals={setDeals}
+                                      editOwings={props.editOwings}/>;
             break;
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
             <DailyUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember}
-                           editMember={props.editMember} setDeals={setDeals}/>
+                           editMember={props.editMember} editOwings={props.editOwings} setDeals={setDeals}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

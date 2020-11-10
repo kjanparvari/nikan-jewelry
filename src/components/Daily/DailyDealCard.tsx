@@ -8,30 +8,7 @@ import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
 
 
-const updateOwings = (id: number) => {
-    let og = 0;
-    const d = localStorage.getItem("D:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals) {
-        // om += deals[i].leftMoney;
-        og += deals[i].leftGold;
-    }
-    const m = localStorage.getItem("daily-members");
-    if (m !== null && m !== undefined && m !== "") {
-        let mems = JSON.parse(m);
-        for (let j in mems.list) {
-            if (mems.list[j].id === id) {
-                mems.list[j].oGold = og;
-                break;
-            }
-        }
-        localStorage.setItem("daily-members", JSON.stringify(mems));
-    }
-};
-
-function DailyDealCard({deal, personId, setDeals, handler}: any) {
+function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const {year, month, day} = deal.date;
     const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex, leftGold, curOGold} = deal;
     const pageRef = useRef(null);
@@ -46,6 +23,29 @@ function DailyDealCard({deal, personId, setDeals, handler}: any) {
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
 
     const offset = useContext(offsetContext);
+    const updateOwings = (id: number) => {
+        let og = 0;
+        const d = localStorage.getItem("D:" + id.toString());
+        if (d === null || d === undefined || d === "")
+            return;
+        const deals: any[] = JSON.parse(d).list;
+        for (let i in deals) {
+            // om += deals[i].leftMoney;
+            og += deals[i].leftGold;
+        }
+        const m = localStorage.getItem("daily-members");
+        if (m !== null && m !== undefined && m !== "") {
+            let mems = JSON.parse(m);
+            for (let j in mems.list) {
+                if (mems.list[j].id === id) {
+                    mems.list[j].oGold = og;
+                    break;
+                }
+            }
+            localStorage.setItem("daily-members", JSON.stringify(mems));
+            editOwings(og);
+        }
+    };
 
     const updateComplexLabel = () => {
         let result: number = 0;
@@ -148,6 +148,7 @@ function DailyDealCard({deal, personId, setDeals, handler}: any) {
         offset.changeGold(goldOut - goldIn);
         offset.changeMoney(moneyOut - moneyIn);
         updateOwings(personId);
+
         handler();
     };
     const [open, setOpen] = useState(false);

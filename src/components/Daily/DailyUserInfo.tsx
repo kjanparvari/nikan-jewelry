@@ -54,28 +54,6 @@ const changeView = (view: string, setView: any) => {
         setView(() => "card");
 };
 
-const updateOwings = (id: number) => {
-    let og = 0;
-    const d = localStorage.getItem("D:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals) {
-        og += deals[i].leftGold;
-    }
-    const m = localStorage.getItem("daily-members");
-    if (m !== null && m !== undefined && m !== "") {
-        let mems = JSON.parse(m);
-        for (let j in mems.list) {
-            if (mems.list[j].id === id) {
-                mems.list[j].oGold = og;
-                break;
-            }
-        }
-        localStorage.setItem("daily-members", JSON.stringify(mems));
-    }
-};
-
 const computeOMoney = (): number => {
     return 0;
 };
@@ -83,6 +61,28 @@ const computeOMoney = (): number => {
 function DailyUserInfo(props: any) {
     const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
+    const updateOwings = (id: number) => {
+        let og = 0;
+        const d = localStorage.getItem("D:" + id.toString());
+        if (d === null || d === undefined || d === "")
+            return;
+        const deals: any[] = JSON.parse(d).list;
+        for (let i in deals) {
+            og += deals[i].leftGold;
+        }
+        const m = localStorage.getItem("daily-members");
+        if (m !== null && m !== undefined && m !== "") {
+            let mems = JSON.parse(m);
+            for (let j in mems.list) {
+                if (mems.list[j].id === id) {
+                    mems.list[j].oGold = og;
+                    break;
+                }
+            }
+            localStorage.setItem("daily-members", JSON.stringify(mems));
+            props.editOwings(og);
+        }
+    };
     const deleteMemberHandler = (id: string) => {
         props.deleteMember(id);
         updateOwings(parseInt(id));

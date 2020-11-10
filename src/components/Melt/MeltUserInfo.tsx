@@ -36,33 +36,34 @@ const changeView = (view: string, setView: any) => {
     else if (view === "table")
         setView(() => "card");
 };
-const updateOwings = (id: number) => {
-    let om = 0, og = 0;
-    const d = localStorage.getItem("M:" + id.toString());
-    if (d === null || d === undefined || d === "")
-        return;
-    const deals: any[] = JSON.parse(d).list;
-    for (let i in deals) {
-        og += deals[i].leftGold;
-        om += deals[i].leftMoney;
-    }
-    const m = localStorage.getItem("melt-members");
-    if (m !== null && m !== undefined && m !== "") {
-        let mems = JSON.parse(m);
-        for (let j in mems.list) {
-            if (mems.list[j].id === id) {
-                mems.list[j].oGold = og;
-                mems.list[j].oMoney = om;
-                break;
-            }
-        }
-        localStorage.setItem("melt-members", JSON.stringify(mems));
-    }
-};
 
 function MeltUserInfo(props: any) {
     const {theme} = useContext(themeContext);
     const offset = useContext(offsetContext);
+    const updateOwings = (id: number) => {
+        let om = 0, og = 0;
+        const d = localStorage.getItem("M:" + id.toString());
+        if (d === null || d === undefined || d === "")
+            return;
+        const deals: any[] = JSON.parse(d).list;
+        for (let i in deals) {
+            og += deals[i].leftGold;
+            om += deals[i].leftMoney;
+        }
+        const m = localStorage.getItem("melt-members");
+        if (m !== null && m !== undefined && m !== "") {
+            let mems = JSON.parse(m);
+            for (let j in mems.list) {
+                if (mems.list[j].id === id) {
+                    mems.list[j].oGold = og;
+                    mems.list[j].oMoney = om;
+                    break;
+                }
+            }
+            localStorage.setItem("melt-members", JSON.stringify(mems));
+            props.editOwings(og, om);
+        }
+    };
     const deleteMemberHandler = (id: string) => {
         props.deleteMember(id);
         updateOwings(parseInt(id));

@@ -39,7 +39,7 @@ function DailyPanel({defaultPerson}: any) {
         setMembers({maxId: maxId, list: newMembers});
     };
 
-    const editMember = (id: number , name: string, phone: string) => {
+    const editMember = (id: number, name: string, phone: string) => {
         let m: any = localStorage.getItem("daily-members");
         if (m !== null) {
             m = JSON.parse(m);
@@ -56,7 +56,13 @@ function DailyPanel({defaultPerson}: any) {
                 }
             }
         }
+    };
 
+    const editOwings = (ogold: number) => {
+        setChosenPerson((prevState: any) => {
+            prevState.oGold = ogold;
+            return prevState
+        });
     };
 
     return (
@@ -67,6 +73,7 @@ function DailyPanel({defaultPerson}: any) {
             {/*<div className="text-white" style={{fontSize: 25}}>{updateVal}</div>*/}
             {chosenPerson !== null ? <DailyContentPanel
                     chosenPerson={chosenPerson}
+                    editOwings={editOwings}
                     deleteMember={(id: string) => deleteMember(id)}
                     editMember={(id: number, name: string, phone: string) => editMember(id, name, phone)}
                 />
