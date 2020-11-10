@@ -53,6 +53,7 @@
     "react-scripts": "3.4.3",
     "react-sidebar": "^3.0.2",
     "react-tilt": "^0.1.4",
+    "react-to-print": "^2.11.0",
     "react-transition-group": "^4.4.1",
     "reactjs-popup": "^1.5.0",
     "rsuite": "^4.8.0",

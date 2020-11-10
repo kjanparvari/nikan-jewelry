@@ -41,9 +41,6 @@ const handleExit = () => {
     if (localStorage.getItem("pss") !== "")
         localStorage.setItem("islocked", "true");
     window.close();
-    // getBackup();
-    // setTimeout(window.close, 4000);
-    // setTimeout(()=>{window.close();}, 5000);
 };
 
 function Navbar(props: any) {

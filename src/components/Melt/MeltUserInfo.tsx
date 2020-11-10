@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {FaUser} from "react-icons/fa";
 // @ts-ignore
 import Tilt from "react-tilt/dist/tilt";
@@ -13,6 +13,15 @@ import {themeContext} from "../../App";
 import {offsetContext} from "../../App";
 import {Toggle} from "rsuite";
 
+let
+    persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
+    arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g],
+    fixNumbers = function (str: string) {
+        for (let i = 0; i < 10; i++) {
+            str = str.replace(persianNumbers[i], i.toString()).replace(arabicNumbers[i], i.toString());
+        }
+        return str;
+    };
 const getName = (id: number) => {
     const m = localStorage.getItem("melt-members");
     let mems: [] = [];
@@ -169,6 +178,19 @@ function MeltUserInfo(props: any) {
         updateOwings(id);
     };
 
+    useEffect(() => {
+        if (toggle) {
+            const today = new Date().toLocaleDateString("fa");
+            const _a = today.split("/");
+            setSoldDay({
+                year: parseInt(fixNumbers(_a[0])),
+                month: parseInt(fixNumbers(_a[1])),
+                day: parseInt(fixNumbers(_a[2]))
+            });
+        } else {
+            setSoldDay(null);
+        }
+    }, [toggle]);
     const {id, name, oGold, oMoney} = props.person;
     // @ts-ignore
     return (
@@ -324,7 +346,7 @@ function MeltUserInfo(props: any) {
                         <Form.Group>
                             <label className="float-left  text-left">فروخته شده به :</label>
                             <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="فروخته شده به" ref={buyerNameRef}/>
+                                   placeholder="فروخته شده به" disabled={toggle} defaultValue=" " ref={buyerNameRef}/>
                             <DatePicker
                                 value={soldDay}
                                 onChange={setSoldDay}

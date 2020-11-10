@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {BsFillInfoCircleFill} from "react-icons/bs";
 import Popup from "reactjs-popup";
 import {GrAdd, GrClose} from "react-icons/gr";
@@ -8,6 +8,15 @@ import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
 import {Toggle} from "rsuite";
 
+let
+    persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
+    arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g],
+    fixNumbers = function (str: string) {
+        for (let i = 0; i < 10; i++) {
+            str = str.replace(persianNumbers[i], i.toString()).replace(arabicNumbers[i], i.toString());
+        }
+        return str;
+    };
 
 function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const offset = useContext(offsetContext);
@@ -140,6 +149,19 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
+    useEffect(() => {
+        if (toggle) {
+            const today = new Date().toLocaleDateString("fa");
+            const _a = today.split("/");
+            setSoldDay({
+                year: parseInt(fixNumbers(_a[0])),
+                month: parseInt(fixNumbers(_a[1])),
+                day: parseInt(fixNumbers(_a[2]))
+            });
+        } else {
+            setSoldDay(null);
+        }
+    }, [toggle]);
     return (
         <div className="bg-light mt-0 justify-content-center"
              style={{borderRadius: 15, width: 300, height: 400, marginLeft: "auto", marginRight: "auto"}}>
@@ -248,7 +270,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>فروخته شده به :</label>
                             <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="فروخته شده به" ref={buyerNameRef} defaultValue={buyerName}/>
+                                   placeholder="فروخته شده به" ref={buyerNameRef} disabled={toggle} defaultValue={buyerName}/>
                             <DatePicker
                                 value={soldDay}
                                 onChange={setSoldDay}
