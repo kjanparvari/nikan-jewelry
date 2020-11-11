@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useReducer, useState} from 'react';
+import React, {useContext, useEffect, useReducer, useRef, useState} from 'react';
 // @ts-ignore
 import {Carousel} from '3d-react-carousal';
 import {brotliCompress} from "zlib";
@@ -12,12 +12,18 @@ import DailyCarousel from "./DailyCarousel";
 import DailyDealsCalender from "./DailyDealsCalender";
 import DailyDealsTable from "./DailyDealsTable";
 import {themeContext} from "../../App";
+import ReactToPrint, {useReactToPrint} from 'react-to-print';
 
 
 function DailyContentPanel(props: any) {
     const {theme} = useContext(themeContext);
     const [deals, setDeals] = useState([]);
     const [view, setView] = useState("table");
+    const [autoHeight, setAutoHeight] = useState(false);
+    const printContentRef = useRef(null);
+    const handlePrint = useReactToPrint({
+        content: () => printContentRef.current
+    });
     useEffect(() => {
         const key = "D:" + props.chosenPerson.id;
         localStorage.setItem("last", key);
@@ -51,14 +57,17 @@ function DailyContentPanel(props: any) {
             result = <DailyCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
-            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id} setDeals={setDeals}
+            result = <DailyDealsTable deals={deals} personId={props.chosenPerson.id}
+                                      setDeals={setDeals} printContentRef={printContentRef}
+                                      autoHeight={autoHeight}
                                       editOwings={props.editOwings}/>;
             break;
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
             <DailyUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember}
-                           editMember={props.editMember} editOwings={props.editOwings} setDeals={setDeals}/>
+                           editMember={props.editMember} editOwings={props.editOwings} setDeals={setDeals}
+                           handlePrint={handlePrint} setAutoHeight={setAutoHeight}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

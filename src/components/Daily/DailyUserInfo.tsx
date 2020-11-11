@@ -4,14 +4,17 @@ import {FaUser} from "react-icons/fa";
 import Tilt from "react-tilt/dist/tilt";
 import {CgMoreVerticalAlt} from 'react-icons/cg';
 import {GrAdd, GrClose} from 'react-icons/gr';
+import {BsArrowsExpand} from 'react-icons/bs';
 import {HiViewGrid} from 'react-icons/hi';
 import {FaEquals} from 'react-icons/fa';
+import {AiFillPrinter} from 'react-icons/ai';
 import Popup from 'reactjs-popup';
 import {Button, Form} from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
 import {themeContext} from "../../App";
 import {offsetContext} from "../../App";
+import ReactToPrint from 'react-to-print';
 
 const getName = (id: number) => {
     const m = localStorage.getItem("daily-members");
@@ -301,8 +304,8 @@ function DailyUserInfo(props: any) {
                         {/*</button>*/}
 
                         <Popup
-                            trigger={<a className="float-left mt-4 ml-2"><CgMoreVerticalAlt
-                                style={{fontSize: 40}}/></a>}
+                            trigger={<a className="float-left ml-2"><CgMoreVerticalAlt
+                                style={{fontSize: 40, marginTop: "70%"}}/></a>}
                             position="right top"
                             on="hover"
                             closeOnDocumentClick={true}
@@ -351,7 +354,7 @@ function DailyUserInfo(props: any) {
                                 <label className="float-left text-dark" style={{width: "50px"}}>فی :</label>
                                 <input type="number" className="float-right form-control form-control-sm"
                                        ref={currentFiRef} defaultValue={currentComplex.fi}
-                                       onChange={changeCurrentComplex}  min={0}
+                                       onChange={changeCurrentComplex} min={0}
                                        style={{width: "150px"}}/>
                             </div>
                             <br/>
@@ -370,8 +373,7 @@ function DailyUserInfo(props: any) {
                     </div>
                 </div>
             </Tilt>
-            <div className="float-right mt-2"
-                 style={{borderRadius: 10, width: 60, height: "12vh", marginRight: "0.3%"}}>
+            <div className="float-right mt-3 mr-2" >
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2" onClick={openModal}
                    style={{borderRadius: 7, fontSize: 20}}><GrAdd/></a>
                 <br/>
@@ -380,6 +382,20 @@ function DailyUserInfo(props: any) {
                    style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
                    onClick={() => changeView(props.view, props.setView)}><HiViewGrid
                     style={{margin: "auto"}}/></a>
+            </div>
+            <div className="float-right mt-3 mr-3"
+                 >
+                <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
+                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
+                   onClick={props.handlePrint}><AiFillPrinter
+                    style={{margin: "auto"}}/></a>
+                <br/>
+                <br/>
+                <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
+                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
+                   onClick={() => props.setAutoHeight((prev: boolean) => !prev)}><BsArrowsExpand
+                    style={{margin: "auto"}}/></a>
+
             </div>
             <Popup
                 open={open}

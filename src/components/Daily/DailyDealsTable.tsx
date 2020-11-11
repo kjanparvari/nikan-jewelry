@@ -10,7 +10,7 @@ import DailyDealCard from "./DailyDealCard";
 import DailyUserInfo from "./DailyUserInfo";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const DailyDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
+const DailyDealsTable = ({deals, personId, setDeals, editOwings, printContentRef, autoHeight}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -21,9 +21,10 @@ const DailyDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
     return (
         <div>
             <Table
+                ref={printContentRef}
                 style={{borderRadius: 10, color: "black"}}
                 height={440}
-                // autoHeight
+                autoHeight = {autoHeight}
                 data={deals}
                 defaultExpandAllRows
                 // loading

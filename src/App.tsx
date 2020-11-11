@@ -130,11 +130,16 @@ const initialize = () => {
     localStorage.setItem("islocked", "false");
     localStorage.setItem("registerd", "false");
     localStorage.setItem("init", "true");
-
+    localStorage.setItem("xd", "true");
 };
+
 
 function App() {
     const init = localStorage.getItem("init");
+    const xd = localStorage.getItem("xd");
+    if (xd === null || xd === undefined || xd === "" || xd === "false") {
+        localStorage.removeItem("init");
+    }
     if (init === null || init === undefined || init === "" || init === "false") {
         initialize();
     }
@@ -169,11 +174,11 @@ function App() {
         <div className={`App theme-${theme}`} style={{width: "100%"}}>
             <themeContext.Provider value={{theme: theme, setTheme: setTheme}}>
                 <offsetContext.Provider value={offset}>
-                        <Navbar panel={chosenPanel} setPanel={setChosenPanel} locked={isLocked === "true"}
-                                lockHandler={() => setLock("true")}/>
-                        <br/>
-                        <br/>
-                        {panel}
+                    <Navbar panel={chosenPanel} setPanel={setChosenPanel} locked={isLocked === "true"}
+                            lockHandler={() => setLock("true")}/>
+                    <br/>
+                    <br/>
+                    {panel}
                 </offsetContext.Provider>
             </themeContext.Provider>
         </div>

@@ -9,7 +9,7 @@ import {Button, Form} from "semantic-ui-react";
 import MeltDealCard from "./MeltDealCard";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const MeltDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
+const MeltDealsTable = ({deals, personId, setDeals, editOwings, printContentRef, autoHeight}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -20,9 +20,10 @@ const MeltDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
     return (
         <div>
             <Table
+                ref={printContentRef}
                 style={{borderRadius: 10, color: "black"}}
                 height={450}
-                // autoHeight
+                autoHeight={autoHeight}
                 data={deals}
                 defaultExpandAllRows
                 // loading
@@ -117,7 +118,8 @@ const MeltDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
                 <div className="">
                     <a className="float-right mr-1"><GrClose onClick={closeModal}/></a>
                     <br/>
-                    <MeltDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} editOwings={editOwings} handler={deleteHandler}/>
+                    <MeltDealCard deal={chosenDeal} personId={personId} setDeals={setDeals} editOwings={editOwings}
+                                  handler={deleteHandler}/>
                 </div>
             </Popup>
         </div>

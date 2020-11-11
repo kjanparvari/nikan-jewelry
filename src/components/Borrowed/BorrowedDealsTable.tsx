@@ -9,7 +9,7 @@ import {Button, Form} from "semantic-ui-react";
 import BorrowedDealCard from "./BorrowedDealCard";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
-const BorrowedDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
+const BorrowedDealsTable = ({deals, personId, setDeals, editOwings, printContentRef, autoHeight}: any) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
     const openModal = () => setOpen(true);
@@ -20,9 +20,10 @@ const BorrowedDealsTable = ({deals, personId, setDeals, editOwings}: any) => {
     return (
         <div>
             <Table
+                ref={printContentRef}
                 style={{borderRadius: 10, color: "black"}}
                 height={450}
-                // autoHeight
+                autoHeight = {autoHeight}
                 data={deals}
                 defaultExpandAllRows
                 // loading

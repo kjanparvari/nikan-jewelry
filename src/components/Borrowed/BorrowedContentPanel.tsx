@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useReducer, useState} from 'react';
+import React, {useContext, useEffect, useReducer, useRef, useState} from 'react';
 // @ts-ignore
 import {Carousel} from '3d-react-carousal';
 import {brotliCompress} from "zlib";
@@ -13,12 +13,20 @@ import BorrowedCarousel from "./BorrowedCarousel";
 import DailyDealCard from "../Daily/DailyDealCard";
 import BorrowedDealCard from "./BorrowedDealCard";
 import MeltUserInfo from "../Melt/MeltUserInfo";
+import {useReactToPrint} from "react-to-print";
+import DailyDealsTable from "../Daily/DailyDealsTable";
+import DailyUserInfo from "../Daily/DailyUserInfo";
 
 
 function BorrowedContentPanel(props: any) {
     const {theme} = useContext(themeContext);
     const [deals, setDeals] = useState([]);
     const [view, setView] = useState("table");
+    const [autoHeight, setAutoHeight] = useState(false);
+    const printContentRef = useRef(null);
+    const handlePrint = useReactToPrint({
+        content: () => printContentRef.current
+    });
     useEffect(() => {
         const key = "B:" + props.chosenPerson.id;
         localStorage.setItem("last", key);
@@ -52,15 +60,18 @@ function BorrowedContentPanel(props: any) {
             result = <BorrowedCarousel slides={getSlides(deals, props.chosenPerson.id)}/>;
             break;
         case "table":
-            result = <BorrowedDealsTable deals={deals} personId={props.chosenPerson.id} editOwings={props.editOwings}
-                                         setDeals={setDeals}/>;
+            result = <BorrowedDealsTable deals={deals} personId={props.chosenPerson.id}
+                                         editOwings={props.editOwings}
+                                         setDeals={setDeals} printContentRef={printContentRef}
+                                         autoHeight={autoHeight}/>;
             break;
     }
     return (
         <div className="float-right mr-1" style={{width: "75%"}}>
             <BorrowedUserInfo view={view} setView={setView} person={props.chosenPerson}
                               deleteMember={props.deleteMember} editOwings={props.editOwings}
-                              editMember={props.editMember} setDeals={setDeals}/>
+                              editMember={props.editMember} setDeals={setDeals} handlePrint={handlePrint}
+                              setAutoHeight={setAutoHeight}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {deals && deals.length === 0 ? <div/> : result}
