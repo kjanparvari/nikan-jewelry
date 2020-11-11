@@ -23,8 +23,14 @@ function MeltContentPanel(props: any) {
     const [autoHeight, setAutoHeight] = useState(false);
     const printContentRef = useRef(null);
     const handlePrint = useReactToPrint({
-        content: () => printContentRef.current
+        content: () => printContentRef.current,
+        onAfterPrint: () => setAutoHeight(false)
     });
+    useEffect(() => {
+        if (autoHeight)
+            if (handlePrint)
+                handlePrint()
+    }, [autoHeight]);
     useEffect(() => {
         const key = "M:" + props.chosenPerson.id;
         localStorage.setItem("last", key);
@@ -67,7 +73,7 @@ function MeltContentPanel(props: any) {
         <div className="float-right mr-1" style={{width: "75%"}}>
             <MeltUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember}
                           editMember={props.editMember} setDeals={setDeals} editOwings={props.editOwings}
-                          handlePrint={handlePrint} setAutoHeight={setAutoHeight}/>
+                          setAutoHeight={setAutoHeight}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "100%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

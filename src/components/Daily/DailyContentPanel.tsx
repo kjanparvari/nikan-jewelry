@@ -22,8 +22,15 @@ function DailyContentPanel(props: any) {
     const [autoHeight, setAutoHeight] = useState(false);
     const printContentRef = useRef(null);
     const handlePrint = useReactToPrint({
-        content: () => printContentRef.current
+        content: () => printContentRef.current,
+        onAfterPrint: () => setAutoHeight(false)
     });
+    useEffect(() => {
+        if (autoHeight)
+            if (handlePrint) {
+                handlePrint();
+            }
+    }, [autoHeight]);
     useEffect(() => {
         const key = "D:" + props.chosenPerson.id;
         localStorage.setItem("last", key);
@@ -67,7 +74,7 @@ function DailyContentPanel(props: any) {
         <div className="float-right mr-1" style={{width: "75%"}}>
             <DailyUserInfo view={view} setView={setView} person={props.chosenPerson} deleteMember={props.deleteMember}
                            editMember={props.editMember} editOwings={props.editOwings} setDeals={setDeals}
-                           handlePrint={handlePrint} setAutoHeight={setAutoHeight}/>
+                           setAutoHeight={setAutoHeight}/>
             <div className={`container theme-${theme} float-right rounded mr-3`} style={{width: "90%"}}>
                 <br/>
                 {/*<DailyDealCard deal={sampleDeal}/>*/}

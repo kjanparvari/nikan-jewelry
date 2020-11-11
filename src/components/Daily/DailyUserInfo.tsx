@@ -373,7 +373,7 @@ function DailyUserInfo(props: any) {
                     </div>
                 </div>
             </Tilt>
-            <div className="float-right mt-3 mr-2" >
+            <div className="float-right mt-3 mr-2">
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2" onClick={openModal}
                    style={{borderRadius: 7, fontSize: 20}}><GrAdd/></a>
                 <br/>
@@ -384,16 +384,10 @@ function DailyUserInfo(props: any) {
                     style={{margin: "auto"}}/></a>
             </div>
             <div className="float-right mt-3 mr-3"
-                 >
+            >
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
                    style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
-                   onClick={props.handlePrint}><AiFillPrinter
-                    style={{margin: "auto"}}/></a>
-                <br/>
-                <br/>
-                <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
-                   style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
-                   onClick={() => props.setAutoHeight((prev: boolean) => !prev)}><BsArrowsExpand
+                   onClick={() => props.setAutoHeight(true)}><AiFillPrinter
                     style={{margin: "auto"}}/></a>
 
             </div>
