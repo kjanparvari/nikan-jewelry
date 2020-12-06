@@ -130,16 +130,11 @@ const initialize = () => {
     localStorage.setItem("islocked", "false");
     localStorage.setItem("registerd", "false");
     localStorage.setItem("init", "true");
-    localStorage.setItem("xd", "true");
 };
 
 
 function App() {
     const init = localStorage.getItem("init");
-    const xd = localStorage.getItem("xd");
-    if (xd === null || xd === undefined || xd === "" || xd === "false") {
-        localStorage.removeItem("init");
-    }
     if (init === null || init === undefined || init === "" || init === "false") {
         initialize();
     }

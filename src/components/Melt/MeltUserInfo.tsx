@@ -14,7 +14,9 @@ import {offsetContext} from "../../App";
 import {Toggle} from "rsuite";
 import {AiFillPrinter} from "react-icons/ai";
 import {BsArrowsExpand} from "react-icons/bs";
+import NumberFormat from "react-number-format";
 
+const SEPARATOR = "  ";
 let
     persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
     arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g],
@@ -79,12 +81,12 @@ function MeltUserInfo(props: any) {
         props.deleteMember(id);
         updateOwings(parseInt(id));
     };
-    const pageRef = useRef(null);
-    const moneyInRef = useRef(null);
-    const moneyOutRef = useRef(null);
-    const goldInRef = useRef(null);
-    const goldOutRef = useRef(null);
-    const complexRef = useRef(null);
+    let pageRef: any;
+    let moneyInRef: any;
+    let moneyOutRef: any;
+    let goldInRef: any;
+    let goldOutRef: any;
+    let complexRef: any;
     const [open, setOpen] = useState(false);
     const buyerNameRef = useRef(null);
     const [soldDay, setSoldDay] = useState<DayValue>(null);
@@ -92,17 +94,17 @@ function MeltUserInfo(props: any) {
     const [toggle, setToggle] = useState(false);
     const addDeal = () => {
         // @ts-ignore
-        const pageNumber = parseInt(pageRef.current.value);
+        const pageNumber = parseInt(pageRef.value.replace(/\s/g, ""));
         // @ts-ignore
-        const moneyIn = parseFloat(moneyInRef.current.value);
+        const moneyIn = parseFloat(moneyInRef.value.replace(/\s/g, ""));
         // @ts-ignore
-        const moneyOut = parseFloat(moneyOutRef.current.value);
+        const moneyOut = parseFloat(moneyOutRef.value.replace(/\s/g, ""));
         // @ts-ignore
-        const goldIn = parseFloat(goldInRef.current.value);
+        const goldIn = parseFloat(goldInRef.value.replace(/\s/g, ""));
         // @ts-ignore
-        const goldOut = parseFloat(goldOutRef.current.value);
+        const goldOut = parseFloat(goldOutRef.value.replace(/\s/g, ""));
         // @ts-ignore
-        const complex = parseFloat(complexRef.current.value);
+        const complex = parseFloat(complexRef.value).replace(/\s/g, "");
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
@@ -287,7 +289,7 @@ function MeltUserInfo(props: any) {
                    onClick={() => changeView(props.view, props.setView)}><HiViewGrid
                     style={{margin: "auto"}}/></a>
             </div>
-            <div className="float-right mt-3 mr-3"
+            <div className="float-right mt-3 mr-2"
             >
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
                    style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
@@ -323,15 +325,18 @@ function MeltUserInfo(props: any) {
                                 locale={"fa"}
                             />
                             <label className="float-left text-left" style={{marginLeft: 100}}>شماره صفحه :</label>
-                            <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
-                                   placeholder="شماره صفحه" ref={pageRef}/>
+                            <NumberFormat min={0} className=" text-center ml-3" style={{width: "150px"}}
+                                          placeholder="شماره صفحه" thousandSeparator={SEPARATOR}
+                                          decimalSeparator={"."} getInputRef={(el: any) => pageRef = el}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">طلا :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" step="0.001" ref={goldInRef}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' step="0.001" ref={goldOutRef}/>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="ورود" step="0.001" thousandSeparator={SEPARATOR}
+                                          decimalSeparator={"."} getInputRef={(el: any) => goldInRef = el}/>
+                            <NumberFormat min={0} className=" text-center" style={{width: "40%"}}
+                                          placeholder='خروج' step="0.001" thousandSeparator={SEPARATOR}
+                                          decimalSeparator={"."} getInputRef={(el: any) => goldOutRef = el}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">پول :</label>

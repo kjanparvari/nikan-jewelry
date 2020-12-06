@@ -244,7 +244,7 @@ function BorrowedUserInfo(props: any) {
                    onClick={() => changeView(props.view, props.setView)}><HiViewGrid
                     style={{margin: "auto"}}/></a>
             </div>
-            <div className="float-right mt-3 mr-3"
+            <div className="float-right mt-3 mr-2"
             >
                 <a className="btn-light rounded-circle p-1 pr-2 pl-2 pb-2 "
                    style={{borderRadius: 7, fontSize: 20, marginTop: "30px"}}
