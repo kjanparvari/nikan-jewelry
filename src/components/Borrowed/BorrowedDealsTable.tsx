@@ -7,6 +7,8 @@ import Popup from "reactjs-popup";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import BorrowedDealCard from "./BorrowedDealCard";
+import NumberFormat from "react-number-format";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
 const BorrowedDealsTable = ({deals, personId, setDeals, editOwings, printContentRef, autoHeight}: any) => {
@@ -23,7 +25,7 @@ const BorrowedDealsTable = ({deals, personId, setDeals, editOwings, printContent
                 ref={printContentRef}
                 style={{borderRadius: 10, color: "black"}}
                 height={450}
-                autoHeight = {autoHeight}
+                autoHeight={autoHeight}
                 data={deals}
                 defaultExpandAllRows
                 // loading
@@ -60,26 +62,76 @@ const BorrowedDealsTable = ({deals, personId, setDeals, editOwings, printContent
 
                 <Column sortable>
                     <HeaderCell>شماره صفحه</HeaderCell>
-                    <Cell dataKey="pageNumber"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {pageNumber} = rowData;
+                                return <NumberFormat value={pageNumber}
+                                                     displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>;
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>ورود طلا</HeaderCell>
-                    <Cell dataKey="goldIn"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {goldIn} = rowData;
+                                return <NumberFormat value={goldIn}
+                                                     displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>;
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>خروج طلا</HeaderCell>
-                    <Cell dataKey="goldOut"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {goldOut} = rowData;
+                                return <NumberFormat value={goldOut}
+                                                     displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>;
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>اجرت</HeaderCell>
-                    <Cell dataKey="ojrat"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {ojrat} = rowData;
+                                return <NumberFormat value={ojrat}
+                                                     displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>;
+                            }
+                        }
+                    </Cell>
                 </Column>
                 <Column>
                     <HeaderCell>درصد اجرت طلا</HeaderCell>
-                    <Cell dataKey="ojratProfit"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {ojratProfit} = rowData;
+                                return <NumberFormat value={ojratProfit}
+                                                     displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>;
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
@@ -95,7 +147,17 @@ const BorrowedDealsTable = ({deals, personId, setDeals, editOwings, printContent
                 </Column>
                 <Column>
                     <HeaderCell>بستانکار طلا</HeaderCell>
-                    <Cell dataKey="curOGold"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {curOGold} = rowData;
+                                return <NumberFormat value={curOGold.toFixed(3)}
+                                                     displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>;
+                            }
+                        }
+                    </Cell>
                 </Column>
 
             </Table>

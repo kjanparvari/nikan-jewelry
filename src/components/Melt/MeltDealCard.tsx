@@ -100,7 +100,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                 }
             }
             const _leftMoney = toggle ? (_moneyOut) - ((_goldIn - _goldOut) * _complex) : (_moneyOut) - ((_goldIn) * _complex);
-            const _leftGold = toggle ? (_moneyOut) / (_complex) - (_goldIn - _goldOut) : (_moneyOut) / (_complex) - (_goldIn - _goldOut);
+            const _leftGold = toggle ? (_moneyOut) / (_complex) - (_goldIn - _goldOut) : (_moneyOut) / (_complex) - (_goldIn );
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -254,7 +254,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                                           }}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left">طلا :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
                             <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                           placeholder="ورود" step="0.001" decimalSeparator={DECIMAL_SEPARATOR}
                                           thousandSeparator={THOUSAND_SEPARATOR}
@@ -271,7 +271,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                                           }}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left">پول :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>پول :</label>
                             <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                           placeholder="ورود" decimalSeparator={DECIMAL_SEPARATOR}
                                           thousandSeparator={THOUSAND_SEPARATOR}
@@ -288,7 +288,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                                           }}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left">قیمت هر گرم :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
                             <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
                                           placeholder="قیمت هرگرم" decimalSeparator={DECIMAL_SEPARATOR}
                                           thousandSeparator={THOUSAND_SEPARATOR}
@@ -296,7 +296,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                                           onValueChange={({floatValue, formattedValue, value}) => {
                                               setComplexInput(() => floatValue === undefined ? 0 : floatValue);
                                           }}/>
-                            <label className="float-left  text-left">خروج طلا مرجوع به همکار :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>خروج طلا مرجوع به همکار :</label>
                             <div className="float-right ml-4"><Toggle size="md"
                                                                       onChange={() => setToggle(() => !toggle)}
                                                                       defaultChecked={toggle}/></div>

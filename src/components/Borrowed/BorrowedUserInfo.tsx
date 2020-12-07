@@ -11,10 +11,11 @@ import {Button, Form} from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker, {DayValue} from 'react-modern-calendar-datepicker';
 import {serialize} from "v8";
-import {themeContext} from "../../App";
+import {DECIMAL_SEPARATOR, themeContext, THOUSAND_SEPARATOR} from "../../App";
 import {offsetContext} from "../../App";
 import {AiFillPrinter} from "react-icons/ai";
 import {BsArrowsExpand} from "react-icons/bs";
+import NumberFormat from "react-number-format";
 
 const getName = (id: number) => {
     const m = localStorage.getItem("borrowed-members");
@@ -48,11 +49,18 @@ function BorrowedUserInfo(props: any) {
         props.deleteMember(id);
         updateOwings(parseInt(id));
     };
-    const pageRef = useRef(null);
-    const goldInRef = useRef(null);
-    const goldOutRef = useRef(null);
-    const ojratRef = useRef(null);
-    const ojratProfitRef = useRef(null);
+    const [pageInput, setPageInput] = useState<number>(-1);
+    const [goldInInput, setGoldInInput] = useState<number>(-1);
+    const [goldOutInput, setGoldOutInput] = useState<number>(-1);
+    const [ojratInput, setOjratInput] = useState<number>(-1);
+    const [ojratProfitInput, setOjratProfitInput] = useState<number>(-1);
+    const initInputs = () => {
+        setPageInput(-1);
+        setGoldInInput(-1);
+        setGoldOutInput(-1);
+        setOjratInput(-1);
+        setOjratProfitInput(-1);
+    };
     const buyerNameRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
     const [soldDay, setSoldDay] = useState<DayValue>(null);
@@ -81,16 +89,11 @@ function BorrowedUserInfo(props: any) {
         }
     };
     const addDeal = () => {
-        // @ts-ignore
-        const pageNumber = parseInt(pageRef.current.value);
-        // @ts-ignore
-        const goldIn = parseFloat(goldInRef.current.value);
-        // @ts-ignore
-        const goldOut = parseFloat(goldOutRef.current.value);
-        // @ts-ignore
-        const ojrat = parseFloat(ojratRef.current.value);
-        // @ts-ignore
-        const ojratProfit = parseFloat(ojratProfitRef.current.value);
+        const pageNumber = pageInput;
+        const goldIn = goldInInput;
+        const goldOut = goldOutInput;
+        const ojrat = ojratInput;
+        const ojratProfit = ojratProfitInput;
         // @ts-ignore
         const buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
@@ -147,7 +150,10 @@ function BorrowedUserInfo(props: any) {
             closeModal();
         }
     };
-    const closeModal = () => setOpen(false);
+    const closeModal = () => {
+        initInputs();
+        setOpen(false)
+    };
     const openModal = () => setOpen(true);
 
     const [openEdit, setOpenEdit] = useState(false);
@@ -192,7 +198,10 @@ function BorrowedUserInfo(props: any) {
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
                             <div>
                                 <div className="float-right">:بستانکار طلایی</div>
-                                <div className="float-right mr-2">{oGold.toFixed(3)}</div>
+                                <div className="float-right mr-2">{<NumberFormat value={oGold.toFixed(3)}
+                                                                                 thousandSeparator={THOUSAND_SEPARATOR}
+                                                                                 decimalSeparator={DECIMAL_SEPARATOR}
+                                                                                 displayType={"text"}/>}</div>
                             </div>
                         </div>
                     </div>
@@ -274,15 +283,31 @@ function BorrowedUserInfo(props: any) {
                                 locale={"fa"}
                             />
                             <label className="float-left text-left" style={{marginLeft: 100}}>شماره صفحه :</label>
-                            <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
-                                   placeholder="شماره صفحه" ref={pageRef}/>
+                            <NumberFormat min={0} className=" text-center ml-3" style={{width: "150px"}}
+                                          placeholder="شماره صفحه" value={pageInput === -1 ? "" : pageInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setPageInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                                          thousandSeparator={THOUSAND_SEPARATOR} decimalSeparator={DECIMAL_SEPARATOR}
+                            />
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">طلا :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" step="0.001" ref={goldInRef}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' step="0.001" ref={goldOutRef}/>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="ورود" step="0.001" value={goldInInput === -1 ? "" : goldInInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setGoldInInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                                          thousandSeparator={THOUSAND_SEPARATOR} decimalSeparator={DECIMAL_SEPARATOR}
+                            />
+                            <NumberFormat min={0} className=" text-center" style={{width: "40%"}}
+                                          placeholder='خروج' step="0.001"
+                                          value={goldOutInput === -1 ? "" : goldOutInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setGoldOutInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                                          thousandSeparator={THOUSAND_SEPARATOR} decimalSeparator={DECIMAL_SEPARATOR}
+                            />
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left">فروخته شده به :</label>
@@ -298,11 +323,21 @@ function BorrowedUserInfo(props: any) {
                         </Form.Group>
                         <Form.Group className="m-auto">
                             <label className="float-left text-left">اجرت :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="پول" ref={ojratRef}/>
-                            <input type="number" step="0.01" min={0} max={100} className="ml-3 mr-3 text-center"
-                                   style={{width: "40%"}}
-                                   placeholder="درصد طلا" ref={ojratProfitRef}/>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="پول" value={ojratInput === -1 ? "" : ojratInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setOjratInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                                          thousandSeparator={THOUSAND_SEPARATOR} decimalSeparator={DECIMAL_SEPARATOR}
+                            />
+                            <NumberFormat step="0.01" min={0} max={100} className="ml-3 mr-3 text-center"
+                                          style={{width: "40%"}}
+                                          placeholder="درصد طلا" value={ojratProfitInput === -1 ? "" : ojratProfitInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setOjratProfitInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                                          thousandSeparator={THOUSAND_SEPARATOR} decimalSeparator={DECIMAL_SEPARATOR}
+                            />
                         </Form.Group>
                         <br/>
                         <Button type='submit'
