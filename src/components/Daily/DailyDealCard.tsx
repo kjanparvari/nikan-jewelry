@@ -155,24 +155,34 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                 borderTopRightRadius: 15
             }}>{year}/{month}/{day}</div>
             <div className="mt-3" style={{color: "black"}}>
-                شماره صفحه : {pageNumber}
+                شماره صفحه :
+                <NumberFormat value={pageNumber} decimalSeparator={DECIMAL_SEPARATOR}
+                              thousandSeparator={THOUSAND_SEPARATOR} displayType="text"/>
             </div>
             <div className=" m-4 badge-light" style={{height: 220, borderRadius: 10}}>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right  w-50 " style={{}}>:ورود پول</div>
-                    <div className="float-left w-50">{moneyIn}</div>
+                    <div className="float-left w-50"><NumberFormat value={moneyIn} decimalSeparator={DECIMAL_SEPARATOR}
+                                                                   thousandSeparator={THOUSAND_SEPARATOR}
+                                                                   displayType="text"/></div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج پول</div>
-                    <div className="float-left w-50">{moneyOut}</div>
+                    <div className="float-left w-50"><NumberFormat value={moneyOut} decimalSeparator={DECIMAL_SEPARATOR}
+                                                                   thousandSeparator={THOUSAND_SEPARATOR}
+                                                                   displayType="text"/></div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود طلا</div>
-                    <div className="float-left w-50">{goldIn}</div>
+                    <div className="float-left w-50"><NumberFormat value={goldIn} decimalSeparator={DECIMAL_SEPARATOR}
+                                                                   thousandSeparator={THOUSAND_SEPARATOR}
+                                                                   displayType="text"/></div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج طلا</div>
-                    <div className="float-left w-50">{goldOut}</div>
+                    <div className="float-left w-50"><NumberFormat value={goldOut} decimalSeparator={DECIMAL_SEPARATOR}
+                                                                   thousandSeparator={THOUSAND_SEPARATOR}
+                                                                   displayType="text"/></div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     {/*<div className="float-right text-right" style={{width: "50%"}}>:قیمت مرکب طلا</div>*/}
@@ -208,8 +218,10 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                             <label className="text-white" htmlFor="">درصد سود: %{complex.profit}</label>
                         </div>
                     </Popup>
-                    <div
-                        className="float-right w-50">{((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(3)}</div>
+                    <NumberFormat className="float-right w-50"
+                                  value={((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(0)}
+                                  decimalSeparator={DECIMAL_SEPARATOR}
+                                  thousandSeparator={THOUSAND_SEPARATOR} displayType="text"/>
                 </div>
 
             </div>
