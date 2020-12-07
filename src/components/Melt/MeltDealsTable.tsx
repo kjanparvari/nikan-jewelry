@@ -7,6 +7,8 @@ import Popup from "reactjs-popup";
 import {GrClose} from "react-icons/gr";
 import {Button, Form} from "semantic-ui-react";
 import MeltDealCard from "./MeltDealCard";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
+import NumberFormat from "react-number-format";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
 const MeltDealsTable = ({deals, personId, setDeals, editOwings, printContentRef, autoHeight}: any) => {
@@ -60,33 +62,85 @@ const MeltDealsTable = ({deals, personId, setDeals, editOwings, printContentRef,
 
                 <Column sortable>
                     <HeaderCell>شماره صفحه</HeaderCell>
-                    <Cell dataKey="pageNumber"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {pageNumber} = rowData;
+                                return <NumberFormat value={pageNumber} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>ورود طلا</HeaderCell>
-                    <Cell dataKey="goldIn"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {goldIn} = rowData;
+                                return <NumberFormat value={goldIn} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>خروج طلا</HeaderCell>
-                    <Cell dataKey="goldOut"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {goldOut} = rowData;
+                                return <NumberFormat value={goldOut} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>ورود پول</HeaderCell>
-                    <Cell dataKey="moneyIn"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {moneyIn} = rowData;
+                                return <NumberFormat value={moneyIn} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
 
                 <Column>
                     <HeaderCell>خروح پول</HeaderCell>
-                    {/*<Cell dataKey="moneyOut"/>*/}
-                    <Cell dataKey="moneyOut"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {moneyOut} = rowData;
+                                return <NumberFormat value={moneyOut} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
                 <Column>
                     <HeaderCell>قیمت هرگرم</HeaderCell>
-                    {/*<Cell dataKey="moneyOut"/>*/}
-                    <Cell dataKey="complex"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {complex} = rowData;
+                                return <NumberFormat value={complex} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
                 <Column>
                     <HeaderCell>فروخته به</HeaderCell>
@@ -101,11 +155,29 @@ const MeltDealsTable = ({deals, personId, setDeals, editOwings, printContentRef,
                 </Column>
                 <Column>
                     <HeaderCell>بستانکار طلا</HeaderCell>
-                    <Cell dataKey="curOGold"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {curOGold} = rowData;
+                                return <NumberFormat value={curOGold.toFixed(3)} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
                 <Column>
                     <HeaderCell>بستانکار پول</HeaderCell>
-                    <Cell dataKey="curOMoney"/>
+                    <Cell>
+                        {
+                            (rowData: any, rowIndex: number) => {
+                                const {curOMoney} = rowData;
+                                return <NumberFormat value={curOMoney} displayType="text"
+                                                     decimalSeparator={DECIMAL_SEPARATOR}
+                                                     thousandSeparator={THOUSAND_SEPARATOR}/>
+                            }
+                        }
+                    </Cell>
                 </Column>
             </Table>
             <Popup

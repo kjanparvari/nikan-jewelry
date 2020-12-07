@@ -13,6 +13,9 @@ export const themeContext: any = React.createContext({
     }
 });
 
+export const THOUSAND_SEPARATOR = " ";
+export const DECIMAL_SEPARATOR = ".";
+
 const changeGoldOffset = (amount: number) => {
     const p = localStorage.getItem("home");
     if (p !== null && p !== undefined && p !== "") {

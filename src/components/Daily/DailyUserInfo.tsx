@@ -16,9 +16,7 @@ import {themeContext} from "../../App";
 import {offsetContext} from "../../App";
 import ReactToPrint from 'react-to-print';
 import NumberFormat from "react-number-format";
-
-const DECIMAL_SEPARATOR = ".";
-const THOUSAND_SEPARATOR = " ";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
 
 const getName = (id: number) => {
     const m = localStorage.getItem("daily-members");
@@ -104,6 +102,18 @@ function DailyUserInfo(props: any) {
     const [profitInput, setProfitInput] = useState<number>(-1);
     const [complexInput, setComplexInput] = useState<number>(-1);
 
+    const initInputs = () => {
+        setPageInput(-1);
+        setMoneyInInput(-1);
+        setMoneyOutInput(-1);
+        setGoldInInput(-1);
+        setGoldOutInput(-1);
+        setOjratInput(-1);
+        setFiInput(-1);
+        setProfitInput(-1);
+        setComplexInput(-1);
+    };
+
     const [currentComplexInput, setCurrentComplexInput] = useState<number>(-1);
     const [currentOjratInput, setCurrentOjratInput] = useState<number>(0);
     const [currentFiInput, setCurrentFiInput] = useState<number>(0);
@@ -175,7 +185,10 @@ function DailyUserInfo(props: any) {
             closeModal();
         }
     };
-    const closeModal = () => setOpen(false);
+    const closeModal = () => {
+        initInputs();
+        setOpen(false)
+    };
     const openModal = () => setOpen(true);
 
     const [openEdit, setOpenEdit] = useState(false);

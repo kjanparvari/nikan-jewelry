@@ -7,9 +7,7 @@ import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
 import NumberFormat from "react-number-format";
-
-const DECIMAL_SEPARATOR = ".";
-const THOUSAND_SEPARATOR = " ";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
 
 function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const {year, month, day} = deal.date;
@@ -84,7 +82,6 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                     list: []
                 }
             } else {
-                console.log("here");
                 p = JSON.parse(p);
             }
             const _m = localStorage.getItem("daily-members");
@@ -98,6 +95,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                     }
                 }
             }
+
             const _leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
             for (let i in p.list) {
                 if (p.list[i].id === id) {
@@ -117,6 +115,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                     break;
                 }
             }
+
             offset.changeGold(_goldIn - _goldOut);
             offset.changeMoney(_moneyIn - _moneyOut);
             setDeals(p.list);
@@ -338,7 +337,6 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                                           value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
                         </Form.Group>
                         <Button type='submit'
-                            // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
                                 onClick={editDeal}>Submit</Button>
                     </Form>
                 </div>

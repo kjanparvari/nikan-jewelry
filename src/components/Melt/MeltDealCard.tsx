@@ -7,6 +7,8 @@ import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
 import {Toggle} from "rsuite";
+import NumberFormat from "react-number-format";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
 
 let
     persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
@@ -23,13 +25,13 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
     const {id, goldIn, goldOut, moneyIn, moneyOut, complex, pageNumber, buyerName} = deal;
-    const pageRef = useRef(null);
-    const goldInRef = useRef(null);
-    const goldOutRef = useRef(null);
+    const [pageInput, setPageInput] = useState<number>(pageNumber);
+    const [moneyInInput, setMoneyInInput] = useState<number>(moneyIn);
+    const [moneyOutInput, setMoneyOutInput] = useState<number>(moneyOut);
+    const [goldInInput, setGoldInInput] = useState<number>(goldIn);
+    const [goldOutInput, setGoldOutInput] = useState<number>(goldOut);
+    const [complexInput, setComplexInput] = useState<number>(complex);
     const buyerNameRef = useRef(null);
-    const moneyInRef = useRef(null);
-    const moneyOutRef = useRef(null);
-    const complexRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
     const [soldDay, setSoldDay] = useState<DayValue>(deal.soldDate);
     const [toggle, setToggle] = useState(deal.toggle);
@@ -43,6 +45,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
             om += deals[i].leftMoney;
             og += deals[i].leftGold;
         }
+        console.log("og");
+        console.log(og);
         const m = localStorage.getItem("melt-members");
         if (m !== null && m !== undefined && m !== "") {
             let mems = JSON.parse(m);
@@ -60,18 +64,12 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
     const editDeal = () => {
         offset.changeGold(goldOut - goldIn);
         offset.changeMoney(moneyOut - moneyIn);
-        // @ts-ignore
-        const _pageNumber = parseInt(pageRef.current.value);
-        // @ts-ignore
-        const _goldIn = parseFloat(goldInRef.current.value);
-        // @ts-ignore
-        const _goldOut = parseFloat(goldOutRef.current.value);
-        // @ts-ignore
-        const _moneyIn = parseFloat(moneyInRef.current.value);
-        // @ts-ignore
-        const _moneyOut = parseFloat(moneyOutRef.current.value);
-        // @ts-ignore
-        const _complex = parseFloat(complexRef.current.value);
+        const _pageNumber = pageInput;
+        const _goldIn = goldInInput;
+        const _goldOut = goldOutInput;
+        const _moneyIn = moneyInInput;
+        const _moneyOut = moneyOutInput;
+        const _complex = complexInput;
         // @ts-ignore
         const _buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
@@ -101,8 +99,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                     }
                 }
             }
-            const _leftMoney = toggle ? (moneyOut) - ((goldIn - goldOut) * complex) : (moneyOut) - ((goldIn) * complex);
-            const _leftGold = toggle ? (moneyOut) / (complex) - (goldIn - goldOut) : (moneyOut) / (complex) - (goldIn - goldOut);
+            const _leftMoney = toggle ? (_moneyOut) - ((_goldIn - _goldOut) * _complex) : (_moneyOut) - ((_goldIn) * _complex);
+            const _leftGold = toggle ? (_moneyOut) / (_complex) - (_goldIn - _goldOut) : (_moneyOut) / (_complex) - (_goldIn - _goldOut);
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -159,7 +157,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                 day: parseInt(fixNumbers(_a[2]))
             });
         } else {
-            setSoldDay(null);
+            setSoldDay(prevState => prevState);
         }
     }, [toggle]);
     return (
@@ -172,7 +170,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                 borderTopRightRadius: 15
             }}>{year}/{month}/{day}</div>
             <div className="mt-3" style={{color: "black"}}>
-                شماره صفحه : {pageNumber}
+                شماره صفحه : {<NumberFormat value={pageNumber} thousandSeparator={THOUSAND_SEPARATOR}
+                                            decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}
             </div>
             <div className=" m-4 badge-light" style={{height: 255, borderRadius: 10}}>
                 <div className="w-100 p-3 pb-4">
@@ -185,23 +184,28 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود طلا</div>
-                    <div className="float-left w-50">{goldIn}</div>
+                    <div className="float-left w-50">{<NumberFormat value={goldIn} thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج طلا</div>
-                    <div className="float-left w-50">{goldOut}</div>
+                    <div className="float-left w-50">{<NumberFormat value={goldOut} thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود پول</div>
-                    <div className="float-left w-50">{moneyIn}</div>
+                    <div className="float-left w-50">{<NumberFormat value={moneyIn} thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج پول</div>
-                    <div className="float-left w-50">{moneyOut}</div>
+                    <div className="float-left w-50">{<NumberFormat value={moneyOut} thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:قیمت هر گرم</div>
-                    <div className="float-left w-50">{complex}</div>
+                    <div className="float-left w-50">{<NumberFormat value={complex} thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
                 </div>
 
 
@@ -241,27 +245,57 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                             />
                             <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه
                                 :</label>
-                            <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
-                                   placeholder="شماره صفحه" ref={pageRef} defaultValue={pageNumber}/>
+                            <NumberFormat min={0} className=" text-center ml-3" style={{width: "150px"}}
+                                          placeholder="شماره صفحه" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={pageInput === -1 ? "" : pageInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setPageInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" step="0.001" ref={goldInRef} defaultValue={goldIn}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' step="0.001" ref={goldOutRef} defaultValue={goldOut}/>
+                            <label className="float-left  text-left">طلا :</label>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="ورود" step="0.001" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={goldInInput === -1 ? "" : goldInInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setGoldInInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
+                            <NumberFormat min={0} className=" text-center" style={{width: "40%"}}
+                                          placeholder='خروج' step="0.001" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={goldOutInput === -1 ? "" : goldOutInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setGoldOutInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>پول :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={moneyInRef} defaultValue={moneyIn}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={moneyOutRef} defaultValue={moneyOut}/>
+                            <label className="float-left  text-left">پول :</label>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="ورود" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={moneyInInput === -1 ? "" : moneyInInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setMoneyInInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
+                            <NumberFormat min={0} className=" text-center" style={{width: "40%"}}
+                                          placeholder='خروج' decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={moneyOutInput === -1 ? "" : moneyOutInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setMoneyOutInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="قیمت هرگرم" ref={complexRef} defaultValue={complex}/>
+                            <label className="float-left  text-left">قیمت هر گرم :</label>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="قیمت هرگرم" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={complexInput === -1 ? "" : complexInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setComplexInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
                             <label className="float-left  text-left">خروج طلا مرجوع به همکار :</label>
                             <div className="float-right ml-4"><Toggle size="md"
                                                                       onChange={() => setToggle(() => !toggle)}
@@ -270,7 +304,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>فروخته شده به :</label>
                             <input type="text" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="فروخته شده به" ref={buyerNameRef} disabled={toggle} defaultValue={buyerName}/>
+                                   placeholder="فروخته شده به" ref={buyerNameRef} disabled={toggle}
+                                   defaultValue={buyerName}/>
                             <DatePicker
                                 value={soldDay}
                                 onChange={setSoldDay}

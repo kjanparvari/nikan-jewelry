@@ -9,9 +9,7 @@ import {Button, Form} from "semantic-ui-react";
 import DailyDealCard from "./DailyDealCard";
 import DailyUserInfo from "./DailyUserInfo";
 import NumberFormat from "react-number-format";
-
-const DECIMAL_SEPARATOR = ".";
-const THOUSAND_SEPARATOR = " ";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
 
 const {Column, HeaderCell, Cell, Pagination} = Table;
 const DailyDealsTable = ({deals, personId, setDeals, editOwings, printContentRef, autoHeight}: any) => {
