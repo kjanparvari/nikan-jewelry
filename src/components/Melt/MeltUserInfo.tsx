@@ -94,7 +94,11 @@ function MeltUserInfo(props: any) {
         setGoldInInput(-1);
         setGoldOutInput(-1);
         setComplexInput(-1);
+        setSelectedDay(null);
+        setSoldDay(null);
+        setError("");
     };
+    const [error, setError] = useState<string>("");
     const [open, setOpen] = useState(false);
     const buyerNameRef = useRef(null);
     const [soldDay, setSoldDay] = useState<DayValue>(null);
@@ -111,9 +115,39 @@ function MeltUserInfo(props: any) {
         const buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "M:" + props.person.id;
-        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(moneyOut) || isNaN(moneyIn) || isNaN(goldIn) || isNaN(goldOut) || isNaN(complex) || buyerName === "") {
+        if (selectedDay === null) {
+            setError("روز انتخاب نشده است");
             return;
-        } else {
+        } else if (pageNumber === -1) {
+            setError("شماره صفحه وارد نشده است");
+            return;
+        } else if (goldIn === -1) {
+            setError("ورود طلا وارد نشده است");
+            return;
+        } else if (goldOut === -1) {
+            setError("خروج طلا وارد نشده است");
+            return;
+        } else if (moneyIn === -1) {
+            setError("ورود پول وارد نشده است");
+            return;
+        } else if (moneyOut === -1) {
+            setError("خروج پول وارد نشده است");
+            return;
+        } else if (!toggle) {
+            if (soldDay === null){
+                setError("روز فروش به مشتری وارد نشده است");
+                return;
+            } else if (buyerName === ""){
+                setError("نام مشتری وارد نشده است");
+                return;
+            }
+        } else if (complex === -1) {
+            setError("قیمت مرکب وارد نشده است");
+            return;
+        } else if (complex === 0) {
+            setError("قیمت مرکب نمی تواند صفر باشد");
+            return;
+        }else {
             let p: any = localStorage.getItem(key);
             if (p === null || p === "" || p === undefined) {
                 p = {
@@ -323,6 +357,14 @@ function MeltUserInfo(props: any) {
                     <br/>
                     <br/>
                     <Form>
+                        <Form.Group>
+                            {error !== "" ?
+                                <div className="w-100 badge-danger pb-2 pt-2" style={{borderRadius: 10}}>
+                                    <div>{error}</div>
+                                </div>
+                                : <div/>
+                            }
+                        </Form.Group>
                         <Form.Group>
                             <label className="float-left text-center" style={{width: "10%"}}>تاریخ :</label>
                             {/*<input className="float-left ml-3 mr-3 text-center" style={{width: "12%"}} placeholder="سال"/>*/}

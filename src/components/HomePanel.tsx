@@ -4,55 +4,34 @@ import Tilt from "react-tilt/dist/tilt";
 import {CgMoreVerticalAlt} from "react-icons/cg";
 import Popup from "reactjs-popup";
 import {Button, ControlLabel} from 'rsuite';
+import NumberFormat from "react-number-format";
+import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../App";
 
 // import 'rsuite/dist/styles/rsuite-default.css'
 
 function HomePanel(props: any) {
     localStorage.setItem("last", "home");
-    const [homeValues, setHomeValues] = useState({money: {base: 0, offset: 0}, gold: {base: 0, offset: 0}});
-    let p: any;
+    const [homeValues, setHomeValues] = useState(JSON.parse(localStorage.getItem("home") as string));
+    const [moneyBaseInput, setMoneyBaseInput] = useState<number>(homeValues.money.base);
+    const [goldBaseInput, setGoldBaseInput] = useState<number>(homeValues.gold.base);
     useEffect(() => {
-            p = localStorage.getItem("home");
-            if (p === null || p === "" || p === undefined) {
-                p = {
-                    money: {
-                        base: 0,
-                        offset: 0
-                    },
-                    gold: {
-                        base: 0,
-                        offset: 0
-                    }
-                };
-                localStorage.setItem("home", JSON.stringify(p));
-            } else p = JSON.parse(p);
-            setHomeValues(() => p)
-        }
-        , []
-    );
+        setHomeValues(() => {
+            homeValues.money.base = moneyBaseInput;
+            return {...homeValues}
+        });
+    }, [moneyBaseInput]);
 
+    useEffect(() => {
+        setHomeValues(() => {
+            homeValues.gold.base = goldBaseInput;
+            return {...homeValues};
+        });
+    }, [goldBaseInput]);
 
-    const moneyBaseRef = useRef(null);
-    const goldBaseRef = useRef(null);
-    const submitBase = (type: string) => {
-        if (type === "money") {
+    useEffect(() => {
+        localStorage.setItem("home", JSON.stringify(homeValues));
+    }, [homeValues]);
 
-            setHomeValues(() => {
-                // @ts-ignore
-                homeValues.money.base = parseFloat(moneyBaseRef.current.value);
-                return {...homeValues}
-            });
-
-            localStorage.setItem("home", JSON.stringify(homeValues));
-        } else if (type === "gold") {
-            setHomeValues(() => {
-                // @ts-ignore
-                homeValues.gold.base = parseFloat(goldBaseRef.current.value);
-                return {...homeValues};
-            });
-            localStorage.setItem("home", JSON.stringify(homeValues));
-        }
-    };
     return (
         <div>
             <div className="w-75" style={{borderRadius: 10, marginRight: "auto", marginLeft: "auto"}}>
@@ -72,12 +51,19 @@ function HomePanel(props: any) {
                         </div>
                         <br/>
                         <br/>
-                        <div className="mt-3 bold w-100"
-                             style={{
-                                 marginLeft: "auto",
-                                 marginRight: "auto",
-                                 fontSize: 35
-                             }}>{(homeValues.gold.base + homeValues.gold.offset).toFixed(3)}</div>
+                        <NumberFormat className="mt-3 bold w-100"
+                                      style={{
+                                          marginLeft: "auto",
+                                          marginRight: "auto",
+                                          fontSize: 35
+                                      }}
+                                      value={(homeValues.gold.base + homeValues.gold.offset).toFixed(3)}
+                                      displayType={"text"}
+                                      decimalSeparator={DECIMAL_SEPARATOR}
+                                      thousandSeparator={THOUSAND_SEPARATOR}
+                        />
+                        <br/>
+                        <br/>
                         <Popup
                             trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}
@@ -97,7 +83,7 @@ function HomePanel(props: any) {
                             }}
                             arrow={false}
                         >
-                            <div className="mr-3" style={{
+                            <div className="mr-3 mt-2" style={{
                                 margin: "auto",
                                 padding: 5,
                                 paddingBottom: 10
@@ -105,12 +91,16 @@ function HomePanel(props: any) {
 
                                 <ControlLabel className="text-white float-left "
                                               style={{width: "20%"}}>مبنا</ControlLabel>
-                                <input type="number" ref={goldBaseRef} className="float-right form-control"
-                                       style={{width: "70%"}} defaultValue={homeValues.gold.base}/>
+                                <NumberFormat value={goldBaseInput}
+                                              className="float-right form-control"
+                                              decimalSeparator={DECIMAL_SEPARATOR}
+                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                              onValueChange={({floatValue, formattedValue, value}) => {
+                                                  setGoldBaseInput(() => floatValue === undefined ? 0 : floatValue);
+                                              }}
+                                              style={{width: "70%"}}/>
                                 <br/>
                                 <br/>
-                                <Button className="btn-success" style={{paddingRight: "20px", paddingLeft: "20px"}}
-                                        onClick={() => submitBase("gold")}>ثبت</Button>
                             </div>
                         </Popup>
                         <br/>
@@ -127,12 +117,19 @@ function HomePanel(props: any) {
                         </div>
                         <br/>
                         <br/>
-                        <div className="mt-3 bold w-100"
-                             style={{
-                                 marginLeft: "auto",
-                                 marginRight: "auto",
-                                 fontSize: 35
-                             }}>{homeValues.money.base + homeValues.money.offset}</div>
+                        <NumberFormat className="mt-3 bold w-100"
+                                      style={{
+                                          marginLeft: "auto",
+                                          marginRight: "auto",
+                                          fontSize: 35
+                                      }}
+                                      value={(homeValues.money.base + homeValues.money.offset).toFixed(0)}
+                                      displayType={"text"}
+                                      decimalSeparator={DECIMAL_SEPARATOR}
+                                      thousandSeparator={THOUSAND_SEPARATOR}
+                        />
+                        <br/>
+                        <br/>
                         <Popup
                             trigger={<a className="float-left mt-3 ml-2"><CgMoreVerticalAlt
                                 style={{fontSize: 35}}/></a>}
@@ -152,7 +149,7 @@ function HomePanel(props: any) {
                             }}
                             arrow={false}
                         >
-                            <div className="mr-3" style={{
+                            <div className="mr-3 mt-2" style={{
                                 margin: "auto",
                                 padding: 5,
                                 paddingBottom: 10
@@ -160,12 +157,16 @@ function HomePanel(props: any) {
 
                                 <ControlLabel className="text-white float-left "
                                               style={{width: "20%"}}>مبنا</ControlLabel>
-                                <input type="number" ref={moneyBaseRef} className="float-right form-control"
-                                       style={{width: "70%"}} defaultValue={homeValues.money.base}/>
+                                <NumberFormat value={moneyBaseInput}
+                                              decimalSeparator={DECIMAL_SEPARATOR}
+                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                              onValueChange={({floatValue, formattedValue, value}) => {
+                                                  setMoneyBaseInput(() => floatValue === undefined ? 0 : floatValue);
+                                              }}
+                                              className="float-right form-control"
+                                              style={{width: "70%"}}/>
                                 <br/>
                                 <br/>
-                                <Button className="btn-success" style={{paddingRight: "20px", paddingLeft: "20px"}}
-                                        onClick={() => submitBase("money")}>ثبت</Button>
                             </div>
                         </Popup>
                         <br/>

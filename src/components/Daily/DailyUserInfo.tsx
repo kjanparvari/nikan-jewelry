@@ -112,8 +112,10 @@ function DailyUserInfo(props: any) {
         setFiInput(-1);
         setProfitInput(-1);
         setComplexInput(-1);
+        setSelectedDay(null);
+        setError("");
     };
-
+    const [error, setError] = useState<string>("");
     const [currentComplexInput, setCurrentComplexInput] = useState<number>(-1);
     const [currentOjratInput, setCurrentOjratInput] = useState<number>(0);
     const [currentFiInput, setCurrentFiInput] = useState<number>(0);
@@ -131,8 +133,35 @@ function DailyUserInfo(props: any) {
         const fi = fiInput;
         const profit = profitInput;
         const key = "D:" + props.person.id;
-        if (selectedDay === null || isNaN(pageNumber) || isNaN(moneyIn) || isNaN(moneyOut) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || isNaN(fi) || isNaN(profit)) {
-            // alert("همه ی بخش ها پر نشده اند !");
+        if (selectedDay === null) {
+            setError("روز انتخاب نشده است");
+            return;
+        } else if (pageNumber === -1) {
+            setError("شماره صفحه وارد نشده است");
+            return;
+        } else if (goldIn === -1) {
+            setError("ورود طلا وارد نشده است");
+            return;
+        } else if (goldOut === -1) {
+            setError("خروج طلا وارد نشده است");
+            return;
+        } else if (moneyIn === -1) {
+            setError("ورود پول وارد نشده است");
+            return;
+        } else if (moneyOut === -1) {
+            setError("خروج پول وارد نشده است");
+            return;
+        } else if (ojrat === -1) {
+            setError("اجرت وارد نشده است");
+            return;
+        } else if (fi === -1) {
+            setError("فی وارد نشده است");
+            return;
+        } else if (profit === -1) {
+            setError("درصد سود وارد نشده است");
+            return;
+        } else if (complexInput === 0) {
+            setError("قیمت مرکب نمی تواند صفر باشد");
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -440,6 +469,15 @@ function DailyUserInfo(props: any) {
                     <br/>
                     <Form>
                         <Form.Group>
+                            {error !== "" ?
+                                <div className="w-100 badge-danger pb-2 pt-2" style={{borderRadius: 10}}>
+                                    <div>{error}</div>
+                                </div>
+                                : <div/>
+                            }
+                        </Form.Group>
+
+                        <Form.Group>
                             <label className="float-left text-center" style={{width: "10%"}}>تاریخ :</label>
                             {/*<input className="float-left ml-3 mr-3 text-center" style={{width: "12%"}} placeholder="سال"/>*/}
                             {/*<input className=" mr-3 text-center" style={{width: "12%"}} placeholder='ماه'/>*/}
@@ -527,6 +565,7 @@ function DailyUserInfo(props: any) {
                                           }}/><FaEquals
                             style={{marginTop: 10}}/>
                             <NumberFormat className="ml-1 mr-1 text-center" style={{width: "17%"}}
+                                          decimalSeparator={DECIMAL_SEPARATOR} thousandSeparator={THOUSAND_SEPARATOR}
                                           readOnly={true} placeholder={"قیمت مرکب"}
                                           value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
                         </Form.Group>

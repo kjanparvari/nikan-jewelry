@@ -60,7 +60,11 @@ function BorrowedUserInfo(props: any) {
         setGoldOutInput(-1);
         setOjratInput(-1);
         setOjratProfitInput(-1);
+        setSoldDay(null);
+        setSelectedDay(null);
+        setError("");
     };
+    const [error, setError] = useState<string>("");
     const buyerNameRef = useRef(null);
     const [selectedDay, setSelectedDay] = useState<DayValue>(null);
     const [soldDay, setSoldDay] = useState<DayValue>(null);
@@ -98,7 +102,29 @@ function BorrowedUserInfo(props: any) {
         const buyerName = buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "B:" + props.person.id;
-        if (selectedDay === null || soldDay === null || isNaN(pageNumber) || isNaN(goldIn) || isNaN(goldOut) || isNaN(ojrat) || isNaN(ojratProfit) || buyerName === "") {
+        if (selectedDay === null) {
+            setError("روز انتخاب نشده است");
+            return;
+        } else if (pageNumber === -1) {
+            setError("شماره صفحه وارد نشده است");
+            return;
+        } else if (goldIn === -1) {
+            setError("ورود طلا وارد نشده است");
+            return;
+        } else if (goldOut === -1) {
+            setError("خروج طلا وارد نشده است");
+            return;
+        } else if (buyerName === "") {
+            setError("نام مشتری وارد نشده است");
+            return;
+        } else if (soldDay === null) {
+            setError("روز فروش به مشتری وارد نشده است");
+            return;
+        } else if (ojrat === -1) {
+            setError("اجرت وارد نشده است");
+            return;
+        } else if (ojratProfit === -1) {
+            setError("درصد اجرت وارد نشده است");
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -273,6 +299,14 @@ function BorrowedUserInfo(props: any) {
                     <br/>
                     <br/>
                     <Form>
+                        <Form.Group>
+                            {error !== "" ?
+                                <div className="w-100 badge-danger pb-2 pt-2" style={{borderRadius: 10}}>
+                                    <div>{error}</div>
+                                </div>
+                                : <div/>
+                            }
+                        </Form.Group>
                         <Form.Group>
                             <label className="float-left text-center" style={{width: "10%"}}>تاریخ :</label>
                             <DatePicker

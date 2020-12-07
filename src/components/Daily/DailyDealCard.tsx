@@ -333,7 +333,8 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                                           }}/><FaEquals
                             style={{marginTop: 10}}/>
                             <NumberFormat className="ml-1 mr-1 text-center" style={{width: "17%"}}
-                                          readOnly={true}
+                                          decimalSeparator={DECIMAL_SEPARATOR} thousandSeparator={THOUSAND_SEPARATOR}
+                                          readOnly={true} placeholder={"قیمت مرکب"}
                                           value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
                         </Form.Group>
                         <Button type='submit'
