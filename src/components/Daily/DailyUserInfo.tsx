@@ -103,6 +103,7 @@ function DailyUserInfo(props: any) {
     const [fiInput, setFiInput] = useState<number>(-1);
     const [profitInput, setProfitInput] = useState<number>(-1);
     const [complexInput, setComplexInput] = useState<number>(-1);
+
     const [currentComplexInput, setCurrentComplexInput] = useState<number>(-1);
     const [currentOjratInput, setCurrentOjratInput] = useState<number>(0);
     const [currentFiInput, setCurrentFiInput] = useState<number>(0);
@@ -268,20 +269,30 @@ function DailyUserInfo(props: any) {
                         <div className="float-right" style={{marginTop: "auto", marginBottom: "auto", marginRight: 50}}>
                             <div>
                                 <div className="float-right">: قیمت مرکب فعلی</div>
-                                <div
-                                    className="float-right mr-2">{((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(0)}</div>
+                                <NumberFormat
+                                    className="float-right mr-2"
+                                    value={((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(0)}
+                                    displayType="text" decimalSeparator={DECIMAL_SEPARATOR}
+                                    thousandSeparator={THOUSAND_SEPARATOR}
+                                />
                             </div>
                             <br/>
 
                             <div>
                                 <div className="float-right">:بستانکار طلایی</div>
-                                <div className="float-right mr-2">{oGold.toFixed(3)}</div>
+                                <NumberFormat className="float-right mr-2"
+                                              displayType="text" decimalSeparator={DECIMAL_SEPARATOR}
+                                              thousandSeparator={THOUSAND_SEPARATOR} value={oGold.toFixed(3)}/>
                             </div>
                             <br/>
                             <div>
                                 <div className="float-right">:بدهکار پولی</div>
-                                <div
-                                    className="float-right mr-2">{parseInt((oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toString())}</div>
+                                <NumberFormat decimalSeparator={DECIMAL_SEPARATOR}
+                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                              className="float-right mr-2"
+                                              displayType="text"
+                                              value={parseInt((oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toString())}
+                                />
                             </div>
                             <br/>
                             <div>

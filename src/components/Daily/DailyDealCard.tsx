@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {BsFillInfoCircleFill} from "react-icons/bs";
 import Popup from "reactjs-popup";
 import {GrAdd, GrClose} from "react-icons/gr";
@@ -6,20 +6,23 @@ import {Button, Form} from "semantic-ui-react";
 import DatePicker, {DayValue} from "react-modern-calendar-datepicker";
 import {FaEquals} from "react-icons/fa";
 import {offsetContext} from "../../App";
+import NumberFormat from "react-number-format";
 
+const DECIMAL_SEPARATOR = ".";
+const THOUSAND_SEPARATOR = " ";
 
 function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const {year, month, day} = deal.date;
     const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex, leftGold, curOGold} = deal;
-    const pageRef = useRef(null);
-    const moneyInRef = useRef(null);
-    const moneyOutRef = useRef(null);
-    const goldInRef = useRef(null);
-    const goldOutRef = useRef(null);
-    const ojratRef = useRef(null);
-    const fiRef = useRef(null);
-    const profitRef = useRef(null);
-    const complexRef = useRef(null);
+    const [pageInput, setPageInput] = useState<number>(pageNumber);
+    const [moneyInInput, setMoneyInInput] = useState<number>(moneyIn);
+    const [moneyOutInput, setMoneyOutInput] = useState<number>(moneyOut);
+    const [goldInInput, setGoldInInput] = useState<number>(goldIn);
+    const [goldOutInput, setGoldOutInput] = useState<number>(goldOut);
+    const [ojratInput, setOjratInput] = useState<number>(complex.ojrat);
+    const [fiInput, setFiInput] = useState<number>(complex.fi);
+    const [profitInput, setProfitInput] = useState<number>(complex.profit);
+    const [complexInput, setComplexInput] = useState<number>();
     const [selectedDay, setSelectedDay] = useState<DayValue>(deal.date);
 
     const offset = useContext(offsetContext);
@@ -46,42 +49,30 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
             editOwings(og);
         }
     };
+    useEffect(() => {
+            let result: number = 0;
+            let ojrat: number = ojratInput;
+            let fi: number = fiInput;
+            let profit: number = 1.0 + profitInput / 100;
 
-    const updateComplexLabel = () => {
-        let result: number = 0;
-        // @ts-ignore
-        let ojrat: number = parseFloat(ojratRef.current.value);
-        // @ts-ignore
-        let fi: number = parseFloat(fiRef.current.value);
-        // @ts-ignore
-        let profit: number = 1.0 + parseFloat(profitRef.current.value) / 100;
-
-        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
-            result = 0;
-        else
-            result = (ojrat + fi) * profit;
-        // @ts-ignore
-        complexRef.current.value = result;
-    };
+            if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
+                result = 0;
+            else
+                result = (ojrat + fi) * profit;
+            setComplexInput(result);
+        }, [ojratInput, fiInput, profitInput]
+    );
     const editDeal = () => {
         offset.changeGold(goldOut - goldIn);
         offset.changeMoney(moneyOut - moneyIn);
-        // @ts-ignore
-        const _pageNumber = parseInt(pageRef.current.value);
-        // @ts-ignore
-        const _moneyIn = parseFloat(moneyInRef.current.value);
-        // @ts-ignore
-        const _moneyOut = parseFloat(moneyOutRef.current.value);
-        // @ts-ignore
-        const _goldIn = parseFloat(goldInRef.current.value);
-        // @ts-ignore
-        const _goldOut = parseFloat(goldOutRef.current.value);
-        // @ts-ignore
-        const _ojrat = parseFloat(ojratRef.current.value);
-        // @ts-ignore
-        const _fi = parseFloat(fiRef.current.value);
-        // @ts-ignore
-        const _profit = parseFloat(profitRef.current.value);
+        const _pageNumber = pageInput;
+        const _moneyIn = moneyInInput;
+        const _moneyOut = moneyOutInput;
+        const _goldIn = goldInInput;
+        const _goldOut = goldOutInput;
+        const _ojrat = ojratInput;
+        const _fi = fiInput;
+        const _profit = profitInput;
         const key = "D:" + personId;
         if (selectedDay === null || isNaN(_pageNumber) || isNaN(_moneyIn) || isNaN(_moneyOut) || isNaN(_goldIn) || isNaN(_goldOut) || isNaN(_ojrat) || isNaN(_fi) || isNaN(_profit)) {
             return;
@@ -256,41 +247,83 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                             />
                             <label className="float-left text-left" style={{marginLeft: 100, color: "black"}}>شماره صفحه
                                 :</label>
-                            <input type="number" min={0} className=" text-center ml-3" style={{width: "150px"}}
-                                   placeholder="شماره صفحه" ref={pageRef} defaultValue={pageNumber}/>
+                            <NumberFormat min={0} className=" text-center ml-3" style={{width: "150px"}}
+                                          placeholder="شماره صفحه" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={pageInput === -1 ? "" : pageInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setPageInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                            />
                         </Form.Group>
                         <Form.Group>
-                            <label className="float-left  text-left" style={{color: "black"}}>طلا :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" step="0.001" ref={goldInRef} defaultValue={goldIn}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' step="0.001" ref={goldOutRef} defaultValue={goldOut}/>
+                            <label className="float-left text-left" style={{color: "black"}}>طلا :</label>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="ورود" step="0.001" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={goldInInput === -1 ? "" : goldInInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setGoldInInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                            />
+                            <NumberFormat min={0} className=" text-center" style={{width: "40%"}}
+                                          placeholder='خروج' step="0.001" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={goldOutInput === -1 ? "" : goldOutInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setGoldOutInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}
+                            />
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>پول :</label>
-                            <input type="number" min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
-                                   placeholder="ورود" ref={moneyInRef} defaultValue={moneyIn}/>
-                            <input type="number" min={0} className=" text-center" style={{width: "40%"}}
-                                   placeholder='خروج' ref={moneyOutRef} defaultValue={moneyOut}/>
+                            <NumberFormat min={0} className="ml-3 mr-3 text-center" style={{width: "40%"}}
+                                          placeholder="ورود" decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={moneyInInput === -1 ? "" : moneyInInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setMoneyInInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
+                            <NumberFormat min={0} className=" text-center" style={{width: "40%"}}
+                                          placeholder='خروج' decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={moneyOutInput === -1 ? "" : moneyOutInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setMoneyOutInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
                         </Form.Group>
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
-                            <input type="number" min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder="اجرت" onChange={updateComplexLabel} ref={ojratRef}
-                                   defaultValue={complex.ojrat}/><GrAdd
+                            <NumberFormat min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
+                                          placeholder="اجرت"
+                                          decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={ojratInput === -1 ? "" : ojratInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setOjratInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/><GrAdd
                             style={{marginTop: 10}}/>
-                            <input type="number" min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
-                                   placeholder='فی تابلو' onChange={updateComplexLabel} ref={fiRef}
-                                   defaultValue={complex.fi}/><GrAdd
+                            <NumberFormat min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
+                                          placeholder='فی تابلو'
+                                          decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={fiInput === -1 ? "" : fiInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setFiInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/><GrAdd
                             style={{marginTop: 10}}/>
-                            <input type="number" max={100} min={0} step="0.01" className="ml-1 mr-1 text-center"
-                                   style={{width: "15%"}} onChange={updateComplexLabel} placeholder='درصد سود'
-                                   ref={profitRef} defaultValue={complex.profit}/><FaEquals
+                            <NumberFormat max={100} min={0} step="0.01" className="ml-1 mr-1 text-center"
+                                          style={{width: "15%"}} placeholder='درصد سود'
+                                          decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={profitInput === -1 ? "" : profitInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setProfitInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/><FaEquals
                             style={{marginTop: 10}}/>
-                            <input className="ml-1 mr-1 text-center" style={{width: "17%"}}
-                                   readOnly={true}
-                                   ref={complexRef}
-                                   defaultValue={(complex.ojrat + complex.fi) * (1.0 + complex.profit / 100)}/>
+                            <NumberFormat className="ml-1 mr-1 text-center" style={{width: "17%"}}
+                                          readOnly={true}
+                                          value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
                         </Form.Group>
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>
