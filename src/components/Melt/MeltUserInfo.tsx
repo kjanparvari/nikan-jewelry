@@ -112,7 +112,7 @@ function MeltUserInfo(props: any) {
         const goldOut = goldOutInput;
         const complex = complexInput;
         //@ts-ignore
-        const buyerName = buyerNameRef.current.value;
+        const buyerName = (toggle && buyerNameRef.current.value === "") ? " " : buyerNameRef.current.value;
         const _s: any = soldDay === null ? {year: 0, month: 0, day: 0} : soldDay;
         const key = "M:" + props.person.id;
         if (selectedDay === null) {
@@ -133,21 +133,19 @@ function MeltUserInfo(props: any) {
         } else if (moneyOut === -1) {
             setError("خروج پول وارد نشده است");
             return;
-        } else if (!toggle) {
-            if (soldDay === null){
-                setError("روز فروش به مشتری وارد نشده است");
-                return;
-            } else if (buyerName === ""){
-                setError("نام مشتری وارد نشده است");
-                return;
-            }
+        } else if (!toggle && soldDay === null) {
+            setError("روز فروش به مشتری وارد نشده است");
+            return;
+        } else if (!toggle && buyerName === "") {
+            setError("نام مشتری وارد نشده است");
+            return;
         } else if (complex === -1) {
             setError("قیمت مرکب وارد نشده است");
             return;
         } else if (complex === 0) {
             setError("قیمت مرکب نمی تواند صفر باشد");
             return;
-        }else {
+        } else {
             let p: any = localStorage.getItem(key);
             if (p === null || p === "" || p === undefined) {
                 p = {
@@ -155,7 +153,6 @@ function MeltUserInfo(props: any) {
                     list: []
                 }
             } else {
-                console.log("here");
                 p = JSON.parse(p);
             }
             const _m = localStorage.getItem("melt-members");

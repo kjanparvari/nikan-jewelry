@@ -96,7 +96,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                     p.list[i].goldIn = _goldIn;
                     p.list[i].goldOut = _goldOut;
                     p.list[i].leftGold = _left_gold;
-                    p.list[i].curOGold = _ogold - leftGold + _left_gold;
+                    p.list[i].curOGold = curOGold - leftGold + _left_gold;
                     break;
                 }
             }

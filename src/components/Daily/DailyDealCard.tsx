@@ -111,7 +111,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                         profit: _profit
                     };
                     p.list[i].leftGold = _leftGold;
-                    p.list[i].curOGold = _ogold - leftGold + _leftGold;
+                    p.list[i].curOGold = curOGold - leftGold + _leftGold;
                     break;
                 }
             }

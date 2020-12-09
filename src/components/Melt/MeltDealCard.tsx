@@ -24,7 +24,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
     const offset = useContext(offsetContext);
     const {year, month, day} = deal.date;
     const {year: syear, month: smonth, day: sday} = deal.soldDate;
-    const {id, goldIn, goldOut, moneyIn, moneyOut, complex, pageNumber, buyerName} = deal;
+    const {id, goldIn, goldOut, moneyIn, moneyOut, complex, pageNumber, buyerName, leftGold, leftMoney, curOGold, curOMoney} = deal;
     const [pageInput, setPageInput] = useState<number>(pageNumber);
     const [moneyInInput, setMoneyInInput] = useState<number>(moneyIn);
     const [moneyOutInput, setMoneyOutInput] = useState<number>(moneyOut);
@@ -100,7 +100,7 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                 }
             }
             const _leftMoney = toggle ? (_moneyOut) - ((_goldIn - _goldOut) * _complex) : (_moneyOut) - ((_goldIn) * _complex);
-            const _leftGold = toggle ? (_moneyOut) / (_complex) - (_goldIn - _goldOut) : (_moneyOut) / (_complex) - (_goldIn );
+            const _leftGold = toggle ? (_moneyOut) / (_complex) - (_goldIn - _goldOut) : (_moneyOut) / (_complex) - (_goldIn);
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -115,8 +115,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                     p.list[i].complex = _complex;
                     p.list[i].leftGold = _leftGold;
                     p.list[i].leftMoney = _leftMoney;
-                    p.list[i].curOGold = _ogold + _leftGold;
-                    p.list[i].curOMoney = _omoney + _leftMoney;
+                    p.list[i].curOGold = curOGold - leftGold + _leftGold;
+                    p.list[i].curOMoney = curOGold - leftMoney + _leftMoney;
                     break;
                 }
             }
@@ -184,28 +184,38 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود طلا</div>
-                    <div className="float-left w-50">{<NumberFormat value={goldIn} thousandSeparator={THOUSAND_SEPARATOR}
-                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
+                    <div className="float-left w-50">{<NumberFormat value={goldIn}
+                                                                    thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR}
+                                                                    displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج طلا</div>
-                    <div className="float-left w-50">{<NumberFormat value={goldOut} thousandSeparator={THOUSAND_SEPARATOR}
-                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
+                    <div className="float-left w-50">{<NumberFormat value={goldOut}
+                                                                    thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR}
+                                                                    displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:ورود پول</div>
-                    <div className="float-left w-50">{<NumberFormat value={moneyIn} thousandSeparator={THOUSAND_SEPARATOR}
-                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
+                    <div className="float-left w-50">{<NumberFormat value={moneyIn}
+                                                                    thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR}
+                                                                    displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج پول</div>
-                    <div className="float-left w-50">{<NumberFormat value={moneyOut} thousandSeparator={THOUSAND_SEPARATOR}
-                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
+                    <div className="float-left w-50">{<NumberFormat value={moneyOut}
+                                                                    thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR}
+                                                                    displayType="text"/>}</div>
                 </div>
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:قیمت هر گرم</div>
-                    <div className="float-left w-50">{<NumberFormat value={complex} thousandSeparator={THOUSAND_SEPARATOR}
-                                                                    decimalSeparator={DECIMAL_SEPARATOR} displayType="text"/>}</div>
+                    <div className="float-left w-50">{<NumberFormat value={complex}
+                                                                    thousandSeparator={THOUSAND_SEPARATOR}
+                                                                    decimalSeparator={DECIMAL_SEPARATOR}
+                                                                    displayType="text"/>}</div>
                 </div>
 
 
@@ -296,7 +306,8 @@ function BorrowedDealCard({deal, personId, setDeals, handler, editOwings}: any) 
                                           onValueChange={({floatValue, formattedValue, value}) => {
                                               setComplexInput(() => floatValue === undefined ? 0 : floatValue);
                                           }}/>
-                            <label className="float-left  text-left" style={{color: "black"}}>خروج طلا مرجوع به همکار :</label>
+                            <label className="float-left  text-left" style={{color: "black"}}>خروج طلا مرجوع به همکار
+                                :</label>
                             <div className="float-right ml-4"><Toggle size="md"
                                                                       onChange={() => setToggle(() => !toggle)}
                                                                       defaultChecked={toggle}/></div>

@@ -70,7 +70,7 @@ function HomePanel(props: any) {
                             position="right top"
                             on="hover"
                             closeOnDocumentClick={true}
-                            mouseLeaveDelay={200}
+                            mouseLeaveDelay={2000}
                             mouseEnterDelay={0}
                             contentStyle={{
                                 padding: "2px",
@@ -136,7 +136,7 @@ function HomePanel(props: any) {
                             position="right top"
                             on="hover"
                             closeOnDocumentClick={true}
-                            mouseLeaveDelay={200}
+                            mouseLeaveDelay={2000}
                             mouseEnterDelay={0}
                             contentStyle={{
                                 padding: "2px",
