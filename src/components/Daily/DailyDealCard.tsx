@@ -11,13 +11,14 @@ import {DECIMAL_SEPARATOR, THOUSAND_SEPARATOR} from "../../App";
 
 function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const {year, month, day} = deal.date;
-    const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex, leftGold, curOGold} = deal;
+    const {id, goldIn, goldOut, moneyIn, moneyOut, pageNumber, complex, leftGold, curOGold, ojratProfit} = deal;
     const [pageInput, setPageInput] = useState<number>(pageNumber);
     const [moneyInInput, setMoneyInInput] = useState<number>(moneyIn);
     const [moneyOutInput, setMoneyOutInput] = useState<number>(moneyOut);
     const [goldInInput, setGoldInInput] = useState<number>(goldIn);
     const [goldOutInput, setGoldOutInput] = useState<number>(goldOut);
     const [ojratInput, setOjratInput] = useState<number>(complex.ojrat);
+    const [ojratProfitInput, setOjratProfitInput] = useState<number>(ojratProfit);
     const [fiInput, setFiInput] = useState<number>(complex.fi);
     const [profitInput, setProfitInput] = useState<number>(complex.profit);
     const [complexInput, setComplexInput] = useState<number>();
@@ -69,6 +70,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
         const _goldIn = goldInInput;
         const _goldOut = goldOutInput;
         const _ojrat = ojratInput;
+        const _ojratProfit = ojratProfit;
         const _fi = fiInput;
         const _profit = profitInput;
         const key = "D:" + personId;
@@ -96,7 +98,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                 }
             }
 
-            const _leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
+            const _leftGold = ((_goldOut * (1.0 + (_ojratProfit / 100.0))) - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -110,6 +112,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                         fi: _fi,
                         profit: _profit
                     };
+                    p.list[i].ojratProfit = _ojratProfit;
                     p.list[i].leftGold = _leftGold;
                     p.list[i].curOGold = curOGold - leftGold + _leftGold;
                     break;
@@ -180,6 +183,12 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                 <div className="w-100 p-3 pb-4">
                     <div className="float-right text-right w-50">:خروج طلا</div>
                     <div className="float-left w-50"><NumberFormat value={goldOut} decimalSeparator={DECIMAL_SEPARATOR}
+                                                                   thousandSeparator={THOUSAND_SEPARATOR}
+                                                                   displayType="text"/></div>
+                </div>
+                <div className="w-100 p-3 pb-4">
+                    <div className="float-right text-right w-50"> : درصد اجرت</div>
+                    <div className="float-left w-50"><NumberFormat value={ojratProfit} decimalSeparator={DECIMAL_SEPARATOR}
                                                                    thousandSeparator={THOUSAND_SEPARATOR}
                                                                    displayType="text"/></div>
                 </div>
@@ -336,6 +345,16 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                                           decimalSeparator={DECIMAL_SEPARATOR} thousandSeparator={THOUSAND_SEPARATOR}
                                           readOnly={true} placeholder={"قیمت مرکب"}
                                           value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <label className="float-left  text-left" style={{color: "black"}}>درصد اجرت :</label>
+                            <NumberFormat min={0} className="ml-4 text-center" style={{width: "40%"}}
+                                          placeholder='درصد اجرت' decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={ojratProfitInput === -1 ? "" : ojratProfitInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setOjratProfitInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/>
                         </Form.Group>
                         <Button type='submit'
                                 onClick={editDeal}>Submit</Button>
