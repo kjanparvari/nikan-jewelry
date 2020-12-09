@@ -98,7 +98,6 @@ function DailyUserInfo(props: any) {
     const [goldInInput, setGoldInInput] = useState<number>(-1);
     const [goldOutInput, setGoldOutInput] = useState<number>(-1);
     const [ojratInput, setOjratInput] = useState<number>(-1);
-    const [ojratProfitInput, setOjratProfitInput] = useState<number>(-1);
     const [fiInput, setFiInput] = useState<number>(-1);
     const [profitInput, setProfitInput] = useState<number>(-1);
     const [complexInput, setComplexInput] = useState<number>(-1);
@@ -110,7 +109,6 @@ function DailyUserInfo(props: any) {
         setGoldInInput(-1);
         setGoldOutInput(-1);
         setOjratInput(-1);
-        setOjratProfitInput(-1);
         setFiInput(-1);
         setProfitInput(-1);
         setComplexInput(-1);
@@ -132,7 +130,6 @@ function DailyUserInfo(props: any) {
         const goldIn = goldInInput;
         const goldOut = goldOutInput;
         const ojrat = ojratInput;
-        const ojratProfit = ojratProfitInput;
         const fi = fiInput;
         const profit = profitInput;
         const key = "D:" + props.person.id;
@@ -156,9 +153,6 @@ function DailyUserInfo(props: any) {
             return;
         } else if (ojrat === -1) {
             setError("اجرت وارد نشده است");
-            return;
-        } else if (ojratProfit === -1) {
-            setError("درصد اجرت وارد نشده است");
             return;
         } else if (fi === -1) {
             setError("فی وارد نشده است");
@@ -190,7 +184,7 @@ function DailyUserInfo(props: any) {
                     }
                 }
             }
-            const _leftGold = ((goldOut * (1.0 + (ojratProfit / 100.0))) - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100));
+            const _leftGold = (goldOut - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100));
             const maxId = (parseInt(p.maxId) + 1).toString();
             const val = {
                 id: maxId,
@@ -200,7 +194,6 @@ function DailyUserInfo(props: any) {
                 moneyOut: moneyOut,
                 goldIn: goldIn,
                 goldOut: goldOut,
-                ojratProfit: ojratProfit,
                 complex: {
                     ojrat: ojrat,
                     fi: fi,
@@ -575,16 +568,6 @@ function DailyUserInfo(props: any) {
                                           decimalSeparator={DECIMAL_SEPARATOR} thousandSeparator={THOUSAND_SEPARATOR}
                                           readOnly={true} placeholder={"قیمت مرکب"}
                                           value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <label className="float-left  text-left">درصد اجرت :</label>
-                            <NumberFormat min={0} className="ml-4 text-center" style={{width: "40%"}}
-                                          placeholder='درصد اجرت' decimalSeparator={DECIMAL_SEPARATOR}
-                                          thousandSeparator={THOUSAND_SEPARATOR}
-                                          value={ojratProfitInput === -1 ? "" : ojratProfitInput}
-                                          onValueChange={({floatValue, formattedValue, value}) => {
-                                              setOjratProfitInput(() => floatValue === undefined ? 0 : floatValue);
-                                          }}/>
                         </Form.Group>
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>

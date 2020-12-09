@@ -126,16 +126,6 @@ const DailyDealsTable = ({deals, personId, setDeals, editOwings, printContentRef
                         }
                     </Cell>
                 </Column>
-                <Column>
-                    <HeaderCell>درصد اجرت</HeaderCell>
-                    <Cell>{(rowData: any, rowIndex: number) => {
-                        const {ojratProfit} = rowData;
-                        return <NumberFormat value={ojratProfit}
-                                             displayType="text"
-                                             decimalSeparator={DECIMAL_SEPARATOR}
-                                             thousandSeparator={THOUSAND_SEPARATOR}/>;
-                    }}</Cell>
-                </Column>
 
                 <Column>
                     <HeaderCell>قیمت مرکب</HeaderCell>
