@@ -6,7 +6,6 @@ import Tilt from 'react-tilt/dist/tilt.js';
 import '../styles/themes.css'
 import {BsFillLockFill, BsFillUnlockFill} from "react-icons/bs";
 import {BiExit} from "react-icons/all";
-import {saveAs} from "@progress/kendo-file-saver";
 
 const allStorage = () => {
     let archive: any = {}; // Notice change here
@@ -101,11 +100,14 @@ function Navbar(props: any) {
                                style={{borderRadius: 10}} onClick={() => setPanel("melt")}>آبشده</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
+                              style={{marginLeft: 50, height: 40, width: 70}}>
+                            <a className={`p-1 nav-link nav-buttons-fa theme-${theme} ${panel === "inplace" ? "border" : ""}`}
+                               style={{borderRadius: 10}} onClick={() => setPanel("inplace")}>روزانه</a>
+                        </Tilt>
+                        <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 150}}>
                             <a className={`p-1 nav-link nav-buttons-fa pr-0 pl-0" aria-disabled="true" theme-${theme} ${panel === "daily" ? "border" : ""}`}
-                               style={{borderRadius: 10}} onClick={() => setPanel("daily")}>خرید و
-                                فروش
-                                روزانه
+                               style={{borderRadius: 10}} onClick={() => setPanel("daily")}>قسطی
                             </a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}

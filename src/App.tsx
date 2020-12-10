@@ -7,6 +7,7 @@ import SettingPanel from "./components/SettingPanel";
 import MeltPanel from "./components/Melt/MeltPanel";
 import LockPanel from "./components/LockPanel";
 import BorrowedPanel from "./components/Borrowed/BorrowedPanel";
+import InplacePanel from "./components/Inplace/InplacePanel";
 
 export const themeContext: any = React.createContext({
     theme: 'dark', setTheme: () => {
@@ -49,6 +50,8 @@ const getPanel = (chosenPanel: string) => {
         return <SettingPanel/>;
     else if (chosenPanel === "daily")
         return <DailyPanel defaultPerson={null}/>;
+    else if (chosenPanel === "inplace")
+        return <InplacePanel defaultPerson={null}/>;
     else if (chosenPanel === "melt")
         return <MeltPanel defaultPerson={null}/>;
     else if (chosenPanel === "borrowed")
@@ -78,6 +81,21 @@ const getPanel = (chosenPanel: string) => {
             // @ts-ignore
             id = parseInt(chosenPanel.split(":")[1]);
             const m = localStorage.getItem("melt-members");
+            if (m !== null) {
+                mems = JSON.parse(m).list;
+                mems.forEach((p, i) => {
+                    // @ts-ignore
+                    if (parseInt(p.id) === id)
+                        person = p;
+
+                });
+                return <MeltPanel defaultPerson={person}/>
+            }
+
+        } else if (c === "I") {
+            // @ts-ignore
+            id = parseInt(chosenPanel.split(":")[1]);
+            const m = localStorage.getItem("inplace-members");
             if (m !== null) {
                 mems = JSON.parse(m).list;
                 mems.forEach((p, i) => {
@@ -125,6 +143,7 @@ const initialize = () => {
     localStorage.setItem("home", JSON.stringify(home));
     localStorage.setItem("theme", "dark");
     localStorage.setItem("daily-members", JSON.stringify({maxId: "0", list: []}));
+    localStorage.setItem("inplace-members", JSON.stringify({maxId: "0", list: []}));
     localStorage.setItem("melt-members", JSON.stringify({maxId: "0", list: []}));
     localStorage.setItem("owing-members", JSON.stringify({maxId: "0", list: []}));
     // localStorage.setItem("registered", "false");
