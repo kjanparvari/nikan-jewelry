@@ -167,7 +167,7 @@ function InplaceUserInfo(props: any) {
 
     return (
         <React.Fragment>
-            <Tilt className="Tilt container Tilt-inner bg-warning rounded-pill float-right mr-3 pt-2 pb-2"
+            <Tilt className="Tilt container Tilt-inner bg-success rounded-pill float-right mr-3 pt-1 pb-2"
                   options={{max: 2, scale: 1.02}}
                   style={{
                       // height: "15vh",
@@ -178,7 +178,7 @@ function InplaceUserInfo(props: any) {
                       minHeight: "100px",
                       maxHeight: "125px"
                   }}>
-                <div className="bg-danger" style={{marginTop: "0.5%"}}>
+                <div className="bg-danger" style={{marginTop: "0%"}}>
                     <div className="float-right ">
                         <FaUser className="float-right"
                                 style={{fontSize: 60, marginTop: "4%"}}/>
@@ -201,9 +201,7 @@ function InplaceUserInfo(props: any) {
 
                         </div>
                     </div>
-                    <div style={{marginTop: "-1", marginBottom: "auto"}}>
-                        {/*<button className="btn btn-danger btn-sm float-left mt-4 ml-4" style={{fontSize: 13}}>حذف عضو*/}
-                        {/*</button>*/}
+                    <div style={{marginTop: "", marginBottom: ""}}>
 
                         <Popup
                             trigger={<a className="float-left ml-2"><CgMoreVerticalAlt
@@ -244,11 +242,6 @@ function InplaceUserInfo(props: any) {
                             // width: "95%",
                             // margin: "auto",
                         }}>
-
-                            <br/>
-                            <br/>
-
-
                         </div>
                     </div>
                 </div>

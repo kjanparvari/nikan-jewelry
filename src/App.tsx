@@ -104,7 +104,7 @@ const getPanel = (chosenPanel: string) => {
                         person = p;
 
                 });
-                return <MeltPanel defaultPerson={person}/>
+                return <InplacePanel defaultPerson={person}/>
             }
 
         } else if (c === "B") {
