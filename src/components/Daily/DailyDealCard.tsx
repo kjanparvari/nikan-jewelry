@@ -18,6 +18,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     const [goldInInput, setGoldInInput] = useState<number>(goldIn);
     const [goldOutInput, setGoldOutInput] = useState<number>(goldOut);
     const [ojratInput, setOjratInput] = useState<number>(complex.ojrat);
+    const [ojratProfitInput, setOjratProfitInput] = useState<number>(complex.ojratProfit === undefined ? 0 : complex.ojratProfit);
     const [fiInput, setFiInput] = useState<number>(complex.fi);
     const [profitInput, setProfitInput] = useState<number>(complex.profit);
     const [complexInput, setComplexInput] = useState<number>();
@@ -50,15 +51,16 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
     useEffect(() => {
             let result: number = 0;
             let ojrat: number = ojratInput;
+            let ojratProfit: number = 1.0 + ojratProfitInput / 100.0;
             let fi: number = fiInput;
             let profit: number = 1.0 + profitInput / 100;
 
-            if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
+            if (isNaN(ojrat) || isNaN(fi) || isNaN(profit) || isNaN(ojratProfit))
                 result = 0;
             else
-                result = (ojrat + fi) * profit;
+                result = (ojrat + fi) * profit * ojratProfit;
             setComplexInput(result);
-        }, [ojratInput, fiInput, profitInput]
+        }, [ojratInput, fiInput, profitInput, ojratProfitInput]
     );
     const editDeal = () => {
         offset.changeGold(goldOut - goldIn);
@@ -69,10 +71,11 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
         const _goldIn = goldInInput;
         const _goldOut = goldOutInput;
         const _ojrat = ojratInput;
+        const _ojratProfit = ojratProfitInput;
         const _fi = fiInput;
         const _profit = profitInput;
         const key = "D:" + personId;
-        if (selectedDay === null || isNaN(_pageNumber) || isNaN(_moneyIn) || isNaN(_moneyOut) || isNaN(_goldIn) || isNaN(_goldOut) || isNaN(_ojrat) || isNaN(_fi) || isNaN(_profit)) {
+        if (selectedDay === null || isNaN(_pageNumber) || isNaN(_moneyIn) || isNaN(_moneyOut) || isNaN(_goldIn) || isNaN(_goldOut) || isNaN(_ojratProfit) || isNaN(_ojrat) || isNaN(_fi) || isNaN(_profit)) {
             return;
         } else {
             let p: any = localStorage.getItem(key);
@@ -96,7 +99,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                 }
             }
 
-            const _leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100));
+            const _leftGold = (_goldOut - _goldIn) - (_moneyIn - _moneyOut) / ((_ojrat + _fi) * (1.0 + _profit / 100) * (1.0 + _ojratProfit));
             for (let i in p.list) {
                 if (p.list[i].id === id) {
                     p.list[i].pageNumber = _pageNumber;
@@ -107,6 +110,7 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                     p.list[i].goldOut = _goldOut;
                     p.list[i].complex = {
                         ojrat: _ojrat,
+                        ojratProfit: _ojratProfit,
                         fi: _fi,
                         profit: _profit
                     };
@@ -212,13 +216,15 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                             width: "95%",
                             margin: "auto"
                         }}>
-                            <label className="text-white" htmlFor="">اجرت: {complex.ojrat}</label>
+                            <label className="text-white" htmlFor="">اجرت پولی: {complex.ojrat}</label>
+                            <label className="text-white" htmlFor="">اجرت
+                                درصدی: %{complex.ojratProfit === undefined ? 0 : complex.ojratProfit}</label>
                             <label className="text-white" htmlFor="">فی: {complex.fi}</label>
                             <label className="text-white" htmlFor="">درصد سود: %{complex.profit}</label>
                         </div>
                     </Popup>
                     <NumberFormat className="float-right w-50"
-                                  value={((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100)).toFixed(0)}
+                                  value={((complex.ojrat + complex.fi) * (1.0 + (complex.profit) / 100) * (complex.ojratProfit === undefined ? 0 : (1.0 + complex.ojratProfit / 100))).toFixed(0)}
                                   decimalSeparator={DECIMAL_SEPARATOR}
                                   thousandSeparator={THOUSAND_SEPARATOR} displayType="text"/>
                 </div>
@@ -306,14 +312,23 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                         <Form.Group>
                             <label className="float-left  text-left" style={{color: "black"}}>قیمت هر گرم :</label>
                             <NumberFormat min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
-                                          placeholder="اجرت"
+                                placeholder="اجرت پولی"
+                                decimalSeparator={DECIMAL_SEPARATOR}
+                                thousandSeparator={THOUSAND_SEPARATOR}
+                                value={ojratInput === -1 ? "" : ojratInput}
+                                onValueChange={({floatValue, formattedValue, value}) => {
+                                setOjratInput(() => floatValue === undefined ? 0 : floatValue);
+                            }}/><GrAdd
+                                style={{marginTop: 10}}/>
+                            <NumberFormat min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
+                                          placeholder="اجرت درصدی"
                                           decimalSeparator={DECIMAL_SEPARATOR}
                                           thousandSeparator={THOUSAND_SEPARATOR}
-                                          value={ojratInput === -1 ? "" : ojratInput}
+                                          value={ojratProfitInput === -1 ? "" : ojratProfitInput}
                                           onValueChange={({floatValue, formattedValue, value}) => {
-                                              setOjratInput(() => floatValue === undefined ? 0 : floatValue);
+                                              setOjratProfitInput(() => floatValue === undefined ? 0 : floatValue);
                                           }}/><GrAdd
-                            style={{marginTop: 10}}/>
+                                style={{marginTop: 10}}/>
                             <NumberFormat min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
                                           placeholder='فی تابلو'
                                           decimalSeparator={DECIMAL_SEPARATOR}
@@ -332,10 +347,13 @@ function DailyDealCard({deal, personId, setDeals, handler, editOwings}: any) {
                                               setProfitInput(() => floatValue === undefined ? 0 : floatValue);
                                           }}/><FaEquals
                             style={{marginTop: 10}}/>
+                        </Form.Group>
+                        <Form.Group className="justify-content-center">
+                            <FaEquals style={{marginTop: 10}}/>
                             <NumberFormat className="ml-1 mr-1 text-center" style={{width: "17%"}}
                                           decimalSeparator={DECIMAL_SEPARATOR} thousandSeparator={THOUSAND_SEPARATOR}
                                           readOnly={true} placeholder={"قیمت مرکب"}
-                                          value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
+                                          value={(fiInput < 0 || profitInput < 0 || ojratInput < 0 || ojratProfitInput < 0) ? "" : complexInput}/>
                         </Form.Group>
                         <Button type='submit'
                                 onClick={editDeal}>Submit</Button>

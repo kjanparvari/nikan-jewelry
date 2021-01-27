@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Table} from 'rsuite';
 import 'rsuite/dist/styles/rsuite-default.css';
 import {CgMoreVertical, CgMoreVerticalAlt} from 'react-icons/cg';
@@ -19,6 +19,77 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
         closeModal();
     };
     const [chosenDeal, setChosenDeal] = useState(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [sortColumn, setSortColumn] = useState<any>();
+    const [sortType, setSortType] = useState<any>();
+    const [data, setData] = useState([...deals]);
+    useEffect(() => {
+        setTimeout(()=>{
+            printContentRef.current.scrollTop(Number.MAX_SAFE_INTEGER);
+        }, 50);
+    }, [data.length]);
+    const handleSortColumn = (_sortColumn: any, _sortType: any) => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            setSortColumn(_sortColumn);
+            setSortType(_sortType);
+        }, 250);
+    };
+    useEffect(() => {
+        setData([...deals]);
+    }, [deals]);
+    const getData = () => {
+        if (sortColumn && sortType) {
+            return data.sort((a: any, b: any) => {
+                let x = a[sortColumn];
+                let y = b[sortColumn];
+                if (x.month !== undefined && y.month !== undefined) {
+                    if (sortType === 'asc') {
+                        if (x.year > y.year)
+                            return 1;
+                        else if (x.year === y.year) {
+                            if (x.month > y.month)
+                                return 1;
+                            else if (x.month === y.month) {
+                                if (x.day > y.day)
+                                    return 1;
+                                else if (x.day === -y.day)
+                                    return 0;
+                            }
+                        }
+                        return -1;
+                    } else if (sortType === 'desc') {
+                        if (x.year > y.year)
+                            return -1;
+                        else if (x.year === y.year) {
+                            if (x.month > y.month)
+                                return -1;
+                            else if (x.month === y.month) {
+                                if (x.day > y.day)
+                                    return -1;
+                                else if (x.day === -y.day)
+                                    return 0;
+                            }
+                        }
+                        return 1;
+                    }
+                }
+                if (typeof x === 'string') {
+                    x = x.charCodeAt(0);
+                }
+                if (typeof y === 'string') {
+                    y = y.charCodeAt(0);
+                }
+                if (sortType === 'asc') {
+                    return x - y;
+                } else {
+                    return y - x;
+                }
+            });
+        }
+        return data;
+    };
     return (
         <div>
             <Table
@@ -26,7 +97,14 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                 style={{borderRadius: 10, color: "black"}}
                 height={440}
                 autoHeight={autoHeight}
-                data={deals}
+                data={getData()}
+                loading={loading}
+                sortColumn={sortColumn}
+                sortType={sortType}
+                // onDataUpdated={()=>{
+                //     printContentRef.current.scrollTop(Number.MAX_SAFE_INTEGER);
+                // }}
+                onSortColumn={handleSortColumn}
                 defaultExpandAllRows
                 // loading
                 onRowClick={data => {
@@ -34,6 +112,7 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                     setChosenDeal(data);
                     openModal();
                 }}
+
                 onRowContextMenu={(data, event) => {
                     // alert(JSON.stringify(data))
                     return (
@@ -48,17 +127,17 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                 }}
             >
 
-                <Column fixed>
+                <Column fixed sortable resizable>
                     <HeaderCell>تاریخ</HeaderCell>
-                    <Cell>{(rowData: any, rowIndex: number) => {
+                    <Cell dataKey="date">{(rowData: any, rowIndex: number) => {
                         return rowData.date.year + " / " + rowData.date.month + " / " + rowData.date.day;
                     }}</Cell>
                     {/*<Cell dataKey="date.day"/>*/}
                 </Column>
 
-                <Column sortable>
+                <Column sortable resizable>
                     <HeaderCell>شماره صفحه</HeaderCell>
-                    <Cell>
+                    <Cell dataKey="pageNumber">
                         {
                             (rowData: any, rowIndex: number) => {
                                 const {pageNumber} = rowData;
@@ -70,9 +149,9 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                     </Cell>
                 </Column>
 
-                <Column>
+                <Column sortable resizable>
                     <HeaderCell>ورود طلا</HeaderCell>
-                    <Cell>
+                    <Cell dataKey="goldIn">
                         {
                             (rowData: any, rowIndex: number) => {
                                 const {goldIn} = rowData;
@@ -84,9 +163,9 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                     </Cell>
                 </Column>
 
-                <Column>
+                <Column sortable resizable>
                     <HeaderCell>خروج طلا</HeaderCell>
-                    <Cell>
+                    <Cell dataKey="goldOut">
                         {
                             (rowData: any, rowIndex: number) => {
                                 const {goldOut} = rowData;
@@ -98,9 +177,9 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                     </Cell>
                 </Column>
 
-                <Column>
+                <Column sortable resizable>
                     <HeaderCell>ورود پول</HeaderCell>
-                    <Cell>
+                    <Cell dataKey="moneyIn">
                         {
                             (rowData: any, rowIndex: number) => {
                                 const {moneyIn} = rowData;
@@ -112,9 +191,9 @@ const InplaceDealsTable = ({deals, personId, setDeals, printContentRef, autoHeig
                     </Cell>
                 </Column>
 
-                <Column>
+                <Column sortable resizable>
                     <HeaderCell>خروح پول</HeaderCell>
-                    <Cell>
+                    <Cell dataKey="moneyOut">
                         {
                             (rowData: any, rowIndex: number) => {
                                 const {moneyOut} = rowData;

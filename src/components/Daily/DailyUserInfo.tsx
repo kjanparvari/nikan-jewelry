@@ -8,6 +8,7 @@ import {BsArrowsExpand} from 'react-icons/bs';
 import {HiViewGrid} from 'react-icons/hi';
 import {FaEquals} from 'react-icons/fa';
 import {AiFillPrinter} from 'react-icons/ai';
+import {RiMoneyDollarCircleFill} from 'react-icons/ri';
 import Popup from 'reactjs-popup';
 import {Button, Form} from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
@@ -98,6 +99,7 @@ function DailyUserInfo(props: any) {
     const [goldInInput, setGoldInInput] = useState<number>(-1);
     const [goldOutInput, setGoldOutInput] = useState<number>(-1);
     const [ojratInput, setOjratInput] = useState<number>(-1);
+    const [ojratProfitInput, setOjratProfitInput] = useState<number>(-1);
     const [fiInput, setFiInput] = useState<number>(-1);
     const [profitInput, setProfitInput] = useState<number>(-1);
     const [complexInput, setComplexInput] = useState<number>(-1);
@@ -109,6 +111,7 @@ function DailyUserInfo(props: any) {
         setGoldInInput(-1);
         setGoldOutInput(-1);
         setOjratInput(-1);
+        setOjratProfitInput(-1);
         setFiInput(-1);
         setProfitInput(-1);
         setComplexInput(-1);
@@ -118,6 +121,7 @@ function DailyUserInfo(props: any) {
     const [error, setError] = useState<string>("");
     const [currentComplexInput, setCurrentComplexInput] = useState<number>(-1);
     const [currentOjratInput, setCurrentOjratInput] = useState<number>(0);
+    const [currentOjratProfitInput, setCurrentOjratProfitInput] = useState<number>(0);
     const [currentFiInput, setCurrentFiInput] = useState<number>(0);
     const [currentProfitInput, setCurrentProfitInput] = useState<number>(0);
 
@@ -130,6 +134,7 @@ function DailyUserInfo(props: any) {
         const goldIn = goldInInput;
         const goldOut = goldOutInput;
         const ojrat = ojratInput;
+        const ojratProfit = ojratProfitInput;
         const fi = fiInput;
         const profit = profitInput;
         const key = "D:" + props.person.id;
@@ -152,7 +157,10 @@ function DailyUserInfo(props: any) {
             setError("خروج پول وارد نشده است");
             return;
         } else if (ojrat === -1) {
-            setError("اجرت وارد نشده است");
+            setError("اجرت پولی وارد نشده است");
+            return;
+        } else if (ojratProfit === -1) {
+            setError("اجرت درصدی وارد نشده است");
             return;
         } else if (fi === -1) {
             setError("فی وارد نشده است");
@@ -184,7 +192,7 @@ function DailyUserInfo(props: any) {
                     }
                 }
             }
-            const _leftGold = (goldOut - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100));
+            const _leftGold = (goldOut - goldIn) - (moneyIn - moneyOut) / ((ojrat + fi) * (1.0 + profit / 100.0) * (1.0 + ojratProfit / 100.0));
             const maxId = (parseInt(p.maxId) + 1).toString();
             const val = {
                 id: maxId,
@@ -196,6 +204,7 @@ function DailyUserInfo(props: any) {
                 goldOut: goldOut,
                 complex: {
                     ojrat: ojrat,
+                    ojratProfit: ojratProfit,
                     fi: fi,
                     profit: profit
                 },
@@ -233,13 +242,14 @@ function DailyUserInfo(props: any) {
         updateOwings(id);
 
     };
-    const [currentComplex, setCurrentComplex]: any[] = useState({ojrat: -1, fi: -1, profit: -1});
+    const [currentComplex, setCurrentComplex]: any[] = useState({ojrat: -1, ojratProfit: -1, fi: -1, profit: -1});
     const getSavedCurrentComplex = () => {
         const _c: any = localStorage.getItem("daily-complex");
-        let _complex: { ojrat: number, fi: number, profit: number };
+        let _complex: { ojrat: number, ojratProfit: number, fi: number, profit: number };
         if (_c === null || _c === undefined || _c === "") {
             _complex = {
                 ojrat: 0,
+                ojratProfit: 0,
                 fi: 0,
                 profit: 0
             };
@@ -251,34 +261,42 @@ function DailyUserInfo(props: any) {
         setCurrentProfitInput(_complex.profit);
         setCurrentFiInput(_complex.fi);
         setCurrentOjratInput(_complex.ojrat);
+        setCurrentOjratProfitInput(_complex.ojratProfit);
         setCurrentComplex(() => {
             return _complex;
         });
     };
 
     useEffect(() => {
-        const _complex: { ojrat: number, fi: number, profit: number } = {ojrat: 0, fi: 0, profit: 0};
+        const _complex: { ojrat: number, ojratProfit: number, fi: number, profit: number } = {
+            ojrat: 0,
+            ojratProfit: 0,
+            fi: 0,
+            profit: 0
+        };
         _complex.ojrat = currentOjratInput;
+        _complex.ojratProfit = currentOjratProfitInput;
         _complex.fi = currentFiInput;
         _complex.profit = currentProfitInput;
         localStorage.setItem("daily-complex", JSON.stringify(_complex));
         setCurrentComplex(() => {
             return _complex
         });
-    }, [currentProfitInput, currentFiInput, currentOjratInput]);
+    }, [currentProfitInput, currentFiInput, currentOjratInput, currentOjratProfitInput]);
     useEffect(() => {
         let result: number = 0;
         let ojrat: number = ojratInput;
+        let ojratProfit: number = 1.0 + ojratProfitInput / 100;
         let fi: number = fiInput;
         let profit: number = 1.0 + profitInput / 100;
 
-        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit))
+        if (isNaN(ojrat) || isNaN(fi) || isNaN(profit) || isNaN(ojratProfit))
             result = 0;
         else
-            result = (ojrat + fi) * profit;
+            result = (ojrat + fi) * profit * ojratProfit;
         setComplexInput(result);
 
-    }, [fiInput, profitInput, ojratInput]);
+    }, [fiInput, profitInput, ojratInput, ojratProfitInput]);
     if (currentComplex.ojrat === -1)
         getSavedCurrentComplex();
     const {id, name, phone, oGold} = props.person;
@@ -313,10 +331,100 @@ function DailyUserInfo(props: any) {
                                 <div className="float-right">: قیمت مرکب فعلی</div>
                                 <NumberFormat
                                     className="float-right mr-2"
-                                    value={((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toFixed(0)}
+                                    value={((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0) * (1.0 + currentComplex.ojratProfit / 100.0)).toFixed(0)}
                                     displayType="text" decimalSeparator={DECIMAL_SEPARATOR}
                                     thousandSeparator={THOUSAND_SEPARATOR}
                                 />
+                                <Popup
+                                    trigger={<a className="float-left ml-2"><RiMoneyDollarCircleFill
+                                        style={{fontSize: 30, marginTop: "25%", marginLeft: "60px"}}/></a>}
+                                    position="left top"
+                                    on="hover"
+                                    closeOnDocumentClick={true}
+                                    mouseLeaveDelay={200}
+                                    mouseEnterDelay={0}
+                                    contentStyle={{
+                                        padding: "2px",
+                                        paddingRight: "4px",
+                                        border: "none",
+                                        borderRadius: 10,
+                                        // backgroundColor: "#fff",
+                                        backgroundColor: "#343a40",
+                                        width: 500
+                                    }}
+                                    arrow={false}
+                                >
+                                    <div className="m-2 w-100">
+                                        <div className="float-left w-50">
+                                            <div className="mt-1 float-left">
+                                                <label className="float-left text-light" style={{width: "90px"}}>اجرت
+                                                    پولی:</label>
+                                                <NumberFormat className="float-right form-control form-control-sm"
+                                                              onValueChange={({floatValue, formattedValue, value}) => {
+                                                                  setCurrentOjratInput(() => floatValue === undefined ? 0 : floatValue);
+                                                              }}
+                                                              decimalSeparator={DECIMAL_SEPARATOR}
+                                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                                              value={currentOjratInput === 0 ? "" : currentOjratInput}
+                                                              min={0}
+                                                              style={{width: "150px"}}/>
+                                            </div>
+                                            <br/>
+                                            <div className="mt-1 float-left">
+                                                <label className="float-left text-light" style={{width: "90px"}}>اجرت
+                                                    درصدی:</label>
+                                                <NumberFormat className="float-right form-control form-control-sm"
+                                                              onValueChange={({floatValue, formattedValue, value}) => {
+                                                                  setCurrentOjratProfitInput(() => floatValue === undefined ? 0 : floatValue);
+                                                              }}
+                                                              decimalSeparator={DECIMAL_SEPARATOR}
+                                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                                              value={currentOjratProfitInput === 0 ? "" : currentOjratProfitInput}
+                                                              min={0}
+                                                              style={{width: "150px"}}/>
+                                            </div>
+                                        </div>
+                                        <div className="float-left ml-3">
+                                            <div className="">
+                                                <label className="float-left text-light" style={{width: "65px"}}>فی :</label>
+                                                <NumberFormat className="float-right form-control form-control-sm"
+                                                              onValueChange={({floatValue, formattedValue, value}) => {
+                                                                  setCurrentFiInput(() => floatValue === undefined ? 0 : floatValue);
+                                                              }}
+                                                              decimalSeparator={DECIMAL_SEPARATOR}
+                                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                                              value={currentFiInput === 0 ? "" : currentFiInput}
+                                                              min={0}
+                                                              style={{width: "150px"}}/>
+                                            </div>
+                                            <br/>
+                                            <div className="mt-3">
+                                                <label className="float-left text-light" style={{width: "65px"}}>سود :</label>
+                                                <NumberFormat className="float-right small form-control form-control-sm"
+                                                              onValueChange={({floatValue, formattedValue, value}) => {
+                                                                  setCurrentProfitInput(() => floatValue === undefined ? 0 : floatValue);
+
+                                                              }}
+                                                              decimalSeparator={DECIMAL_SEPARATOR}
+                                                              thousandSeparator={THOUSAND_SEPARATOR}
+                                                              value={currentProfitInput === 0 ? "" : currentProfitInput}
+                                                              min={0}
+                                                              style={{width: "150px"}}/>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div className="justify-content-center mt-2">
+                                            <label className=" text-light"> قیمت مرکب فعلی: </label>
+                                            <NumberFormat
+                                                className=" ml-2 text-light"
+                                                value={((currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0) * (1.0 + currentComplex.ojratProfit / 100.0)).toFixed(0)}
+                                                displayType="text" decimalSeparator={DECIMAL_SEPARATOR}
+                                                thousandSeparator={THOUSAND_SEPARATOR}
+                                            />
+                                        </div>
+                                    </div>
+                                </Popup>
+
                             </div>
                             <br/>
 
@@ -333,7 +441,7 @@ function DailyUserInfo(props: any) {
                                               thousandSeparator={THOUSAND_SEPARATOR}
                                               className="float-right mr-2"
                                               displayType="text"
-                                              value={parseInt((oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0)).toString())}
+                                              value={parseInt((oGold * (currentComplex.ojrat + currentComplex.fi) * (1.0 + currentComplex.profit / 100.0) * (1.0 + currentComplex.ojratProfit / 100.0)).toString())}
                                 />
                             </div>
                             <br/>
@@ -351,7 +459,7 @@ function DailyUserInfo(props: any) {
 
                         <Popup
                             trigger={<a className="float-left ml-2"><CgMoreVerticalAlt
-                                style={{fontSize: 40, marginTop: "70%"}}/></a>}
+                                style={{fontSize: 40, marginTop: "50%"}}/></a>}
                             position="right top"
                             on="hover"
                             closeOnDocumentClick={true}
@@ -382,56 +490,7 @@ function DailyUserInfo(props: any) {
                                 </button>
                             </div>
                         </Popup>
-                        {/*<button className="btn btn-primary btn-sm float-left mt-4" style={{fontSize: 13}}>افزودن معامله*/}
-                        {/*</button>*/}
-                        <div className="ml-3 float-left" style={{
-                            // width: "95%",
-                            // margin: "auto",
-                        }}>
-                            <div className="mt-1">
-                                <label className="float-left text-dark" style={{width: "50px"}}>اجرت :</label>
-                                <NumberFormat className="float-right form-control form-control-sm"
-                                              onValueChange={({floatValue, formattedValue, value}) => {
-                                                  setCurrentOjratInput(() => floatValue === undefined ? 0 : floatValue);
-                                              }}
-                                              decimalSeparator={DECIMAL_SEPARATOR}
-                                              thousandSeparator={THOUSAND_SEPARATOR}
-                                              value={currentOjratInput === 0 ? "" : currentOjratInput}
-                                              min={0}
-                                              style={{width: "150px"}}/>
-                            </div>
-                            <br/>
-                            <div className="mt-3">
-                                <label className="float-left text-dark" style={{width: "50px"}}>فی :</label>
-                                <NumberFormat className="float-right form-control form-control-sm"
-                                              onValueChange={({floatValue, formattedValue, value}) => {
-                                                  setCurrentFiInput(() => floatValue === undefined ? 0 : floatValue);
-                                              }}
-                                              decimalSeparator={DECIMAL_SEPARATOR}
-                                              thousandSeparator={THOUSAND_SEPARATOR}
-                                              value={currentFiInput === 0 ? "" : currentFiInput}
-                                              min={0}
-                                              style={{width: "150px"}}/>
-                            </div>
-                            <br/>
-                            <div className="mt-3">
-                                <label className="float-left text-dark" style={{width: "50px"}}>سود :</label>
-                                <NumberFormat className="float-right small form-control form-control-sm"
-                                              onValueChange={({floatValue, formattedValue, value}) => {
-                                                  setCurrentProfitInput(() => floatValue === undefined ? 0 : floatValue);
 
-                                              }}
-                                              decimalSeparator={DECIMAL_SEPARATOR}
-                                              thousandSeparator={THOUSAND_SEPARATOR}
-                                              value={currentProfitInput === 0 ? "" : currentProfitInput}
-                                              min={0}
-                                              style={{width: "150px"}}/>
-                            </div>
-                            <br/>
-                            <br/>
-
-
-                        </div>
                     </div>
                 </div>
             </Tilt>
@@ -538,12 +597,21 @@ function DailyUserInfo(props: any) {
                         <Form.Group>
                             <label className="float-left  text-left">قیمت هر گرم :</label>
                             <NumberFormat min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
-                                          placeholder="اجرت"
+                                          placeholder="اجرت پولی"
                                           decimalSeparator={DECIMAL_SEPARATOR}
                                           thousandSeparator={THOUSAND_SEPARATOR}
                                           value={ojratInput === -1 ? "" : ojratInput}
                                           onValueChange={({floatValue, formattedValue, value}) => {
                                               setOjratInput(() => floatValue === undefined ? 0 : floatValue);
+                                          }}/><GrAdd
+                            style={{marginTop: 10}}/>
+                            <NumberFormat min={0} className="ml-3 mr-1 text-center" style={{width: "18%"}}
+                                          placeholder="اجرت درصدی"
+                                          decimalSeparator={DECIMAL_SEPARATOR}
+                                          thousandSeparator={THOUSAND_SEPARATOR}
+                                          value={ojratProfitInput === -1 ? "" : ojratProfitInput}
+                                          onValueChange={({floatValue, formattedValue, value}) => {
+                                              setOjratProfitInput(() => floatValue === undefined ? 0 : floatValue);
                                           }}/><GrAdd
                             style={{marginTop: 10}}/>
                             <NumberFormat min={0} className="ml-1 mr-1 text-center" style={{width: "18%"}}
@@ -562,12 +630,16 @@ function DailyUserInfo(props: any) {
                                           value={profitInput === -1 ? "" : profitInput}
                                           onValueChange={({floatValue, formattedValue, value}) => {
                                               setProfitInput(() => floatValue === undefined ? 0 : floatValue);
-                                          }}/><FaEquals
-                            style={{marginTop: 10}}/>
+                                          }}/>
+
+
+                        </Form.Group>
+                        <Form.Group className="justify-content-center">
+                            <FaEquals style={{marginTop: 10}}/>
                             <NumberFormat className="ml-1 mr-1 text-center" style={{width: "17%"}}
                                           decimalSeparator={DECIMAL_SEPARATOR} thousandSeparator={THOUSAND_SEPARATOR}
                                           readOnly={true} placeholder={"قیمت مرکب"}
-                                          value={(fiInput < 0 || profitInput < 0 || ojratInput < 0) ? "" : complexInput}/>
+                                          value={(fiInput < 0 || profitInput < 0 || ojratInput < 0 || ojratProfitInput < 0) ? "" : complexInput}/>
                         </Form.Group>
                         <Button type='submit'
                             // onClick={() => console.log(localStorage.getItem("D:" + props.person.id))}>Submit</Button>

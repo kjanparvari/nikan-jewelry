@@ -6,6 +6,7 @@ import Tilt from 'react-tilt/dist/tilt.js';
 import '../styles/themes.css'
 import {BsFillLockFill, BsFillUnlockFill} from "react-icons/bs";
 import {BiExit} from "react-icons/all";
+import {IoMdRefreshCircle} from "react-icons/io"
 
 const allStorage = () => {
     let archive: any = {}; // Notice change here
@@ -73,7 +74,7 @@ function Navbar(props: any) {
                 <Tilt className="Tilt" options={{max: 10, scale: 1.05}} style={{height: 80, width: 70}}>
                     {/*<img className="navbar-brand Tilt-inner mt-3 ml-4" src={logo} style={{width: 80, height: 70}}/>*/}
                     <div
-                        className="p-3 Tilt-inner mt-4 ml-5 badge badge-warning    text-black-50  "
+                        className="p-3 Tilt-inner mt-4 ml-5 badge badge-warning text-black-50  "
                         style={{fontSize: 15, paddingTop: 50, paddingBottom: 50}}>NIKAN
                     </div>
                 </Tilt>
@@ -83,38 +84,43 @@ function Navbar(props: any) {
                             <BsFillUnlockFill style={{fontSize: 30, color: lockColor}}/>}
                     </a>
                 </Tilt>
+                <Tilt className="Tilt" options={{max: 10, scale: 1.1}}>
+                    <a className="float-left" style={{marginLeft: 10, marginTop: 10}} onClick={()=>{window.location.reload(false)}}>
+                        {<IoMdRefreshCircle style={{fontSize: 35, color: lockColor}}/>}
+                    </a>
+                </Tilt>
 
 
                 <div className="collapse navbar-collapse justify-content-center mt-4" id="navbarNavAltMarkup">
                     <div className="navbar-nav ">
                         <Tilt className="Tilt mr-3" options={{max: 10, scale: 1.2}} style={{height: 60, width: 90}}>
-                            <a className={`p-1 nav-link nav-buttons-fa text-${oTheme} theme-${theme} ${panel === "setting" ? `bg-${oTheme} text-${theme}` : ""}`}
+                            <a className={`p-1 nav-link nav-buttons-fa  ${panel === "setting" ? `bg-${oTheme} text-${theme}` : `text-${oTheme}`}`}
                                style={{borderRadius: 10}} onClick={() => setPanel("setting")}>تنظیمات</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 100}}>
-                            <a className={`p-1 nav-link nav-buttons-fa text-${oTheme} theme-${theme} ${panel === "borrowed" ? `bg-${oTheme} text-${theme}` : ""}`}
+                            <a className={`p-1 nav-link nav-buttons-fa  ${panel === "borrowed" ? `bg-${oTheme} text-${theme}` : `text-${oTheme}`}`}
                                style={{borderRadius: 10}} onClick={() => setPanel("borrowed")}>امانی بازار</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 70}}>
-                            <a className={`p-1 nav-link nav-buttons-fa text-${oTheme} theme-${theme} ${panel === "melt" ? `bg-${oTheme} text-${theme}`: ""}`}
+                            <a className={`p-1 nav-link nav-buttons-fa ${panel === "melt" ? `bg-${oTheme} text-${theme}`: `text-${oTheme} `}`}
                                style={{borderRadius: 10}} onClick={() => setPanel("melt")}>آبشده</a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 50, height: 40, width: 70}}>
-                            <a className={`p-1 pl-3 pr-3 nav-link nav-buttons-fa text-${oTheme} theme-${theme} ${panel === "inplace" ? `bg-${oTheme} text-${theme}` : ""}`}
+                            <a className={`p-1 pl-3 pr-3 nav-link nav-buttons-fa  ${panel === "inplace" ? `bg-${oTheme} text-${theme}` : `text-${oTheme}`}`}
                                style={{borderRadius: 10}} onClick={() => setPanel("inplace")}> روزانه   </a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 35, height: 40, width: 150}}>
-                            <a className={`p-1 nav-link nav-buttons-fa text-${oTheme} theme-${theme} ${panel === "daily" ? `bg-${oTheme} text-${theme}` : ""}`}
+                            <a className={`p-1 nav-link nav-buttons-fa  ${panel === "daily" ? `bg-${oTheme} text-${theme}` : `text-${oTheme}`}`}
                                style={{borderRadius: 10}} onClick={() => setPanel("daily")}>قسطی
                             </a>
                         </Tilt>
                         <Tilt className="Tilt" options={{max: 10, scale: 1.2}}
                               style={{marginLeft: 40, height: 40, width: 150}}>
-                            <a className={`p-1 nav-link active nav-buttons-fa Tilt-inner theme-${theme} ${panel === "home" ? `bg-${oTheme} text-${theme}` : ""}`}
+                            <a className={`p-1 nav-link active nav-buttons-fa Tilt-inner ${panel === "home" ? `bg-${oTheme} text-${theme}` : `text-${oTheme}`}`}
                                style={{borderRadius: 10}} onClick={() => setPanel("home")}>صفحه
                                 اصلی <span
                                     className="sr-only">(current)</span></a>
